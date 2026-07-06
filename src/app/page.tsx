@@ -1,9 +1,6 @@
 import Image from "next/image";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { SkillsGrid } from "@/components/home/skills-grid";
 import { WorkGrid } from "@/components/home/work-grid";
-import { BackToTop } from "@/components/back-to-top";
 import { profile } from "@/data/profile";
 
 function Divider() {
@@ -20,12 +17,9 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 export default function HomePage() {
   return (
-    <>
-      <SiteHeader />
-
-      <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-12 sm:px-8 sm:py-16">
-        {/* HERO */}
-        <section>
+    <main className="py-12 min-[900px]:py-[50px]">
+      {/* HERO */}
+      <section>
           <h1 className="text-[clamp(32px,5.4vw,48px)] leading-[1.12] tracking-[-0.028em] text-foreground">
             <span className="mr-2.5 inline-block">{profile.hero.emoji}</span>
             {profile.hero.greeting}
@@ -159,10 +153,6 @@ export default function HomePage() {
           </div>
           <WorkGrid />
         </section>
-      </main>
-
-      <SiteFooter />
-      <BackToTop />
-    </>
+    </main>
   );
 }

@@ -13,7 +13,7 @@ function LinkedinIcon({ className }: { className?: string }) {
 export function SiteFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 min-[900px]:px-0">
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} {profile.name}. All rights reserved.
         </p>

@@ -8,6 +8,7 @@ export const profile = {
   role: "UX/UI & Product Designer",
   email: "hello@example.com", // TODO: ใส่อีเมลจริง
   linkedin: "#", // TODO: ใส่ลิงก์ LinkedIn จริง
+  resumeUrl: "#", // TODO: ลิงก์ไฟล์ resume (เช่น /uploads/resume.pdf หรือ Google Drive)
 
   hero: {
     greeting: "สวัสดีครับ",

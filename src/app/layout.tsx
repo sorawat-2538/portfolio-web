@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SidebarProvider } from "@/components/sidebar/sidebar-context";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteSidebar } from "@/components/sidebar/site-sidebar";
+import { BackToTop } from "@/components/back-to-top";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -30,7 +35,17 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="pf-theme"
         >
-          {children}
+          <SidebarProvider>
+            <SiteHeader />
+            <div className="mx-auto flex w-full max-w-[1180px] flex-1 px-5 sm:px-8 min-[900px]:px-0">
+              <SiteSidebar />
+              <div className="min-w-0 flex-1 min-[900px]:pl-[50px]">
+                {children}
+              </div>
+            </div>
+            <SiteFooter />
+            <BackToTop />
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { BackToTop } from "@/components/back-to-top";
 import { CaseStudyView } from "@/components/case-study/case-study-view";
 import {
   getProject,
@@ -38,14 +35,5 @@ export default async function WorkPage({
   const project = getProject(slug);
   if (!project) notFound();
 
-  return (
-    <>
-      <SiteHeader />
-      <main className="flex-1">
-        <CaseStudyView slug={slug as ProjectSlug} project={project} />
-      </main>
-      <SiteFooter />
-      <BackToTop />
-    </>
-  );
+  return <CaseStudyView slug={slug as ProjectSlug} project={project} />;
 }
