@@ -9,7 +9,7 @@ import { SiteSidebar } from "@/components/sidebar/site-sidebar";
 import { BackToTop } from "@/components/back-to-top";
 
 const inter = Inter({
-  variable: "--font-sans",
+  variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" suppressHydrationWarning className={`${inter.variable} h-full`}>
+    <html lang="th" suppressHydrationWarning className={`${inter.variable} h-full font-sans`}>
       <body className="min-h-full flex flex-col antialiased">
         <ThemeProvider
           attribute="class"
