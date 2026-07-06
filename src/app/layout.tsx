@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/components/sidebar/sidebar-context";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -26,27 +25,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" suppressHydrationWarning className={`${inter.variable} h-full font-sans`}>
+    <html lang="th" className={`${inter.variable} h-full font-sans`}>
       <body className="min-h-full flex flex-col antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-          storageKey="pf-theme"
-        >
-          <SidebarProvider>
-            <SiteHeader />
-            <div className="mx-auto flex w-full max-w-[1180px] flex-1 px-5 sm:px-8 min-[900px]:px-0">
-              <SiteSidebar />
-              <div className="min-w-0 flex-1 min-[900px]:pl-[50px]">
-                {children}
-              </div>
+        <SidebarProvider>
+          <SiteHeader />
+          <div className="mx-auto flex w-full max-w-[1180px] flex-1 px-5 sm:px-8 min-[900px]:px-0">
+            <SiteSidebar />
+            <div className="min-w-0 flex-1 min-[900px]:pl-[50px]">
+              {children}
             </div>
-            <SiteFooter />
-            <BackToTop />
-          </SidebarProvider>
-        </ThemeProvider>
+          </div>
+          <SiteFooter />
+          <BackToTop />
+        </SidebarProvider>
       </body>
     </html>
   );

@@ -19,40 +19,48 @@ Stack สากล: **Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + sha
 ```
 src/
 ├─ data/
-│  ├─ profile.ts      ← ข้อความหน้าแรกทั้งหมด (hero, about, education, งาน, skills, email, LinkedIn)
-│  └─ projects.ts     ← ข้อมูล case study ทั้ง 5 โปรเจกต์ ("หลังบ้าน")
+│  ├─ profile.ts   ← เนื้อหาหน้าแรกทั้งหมด: hero, aboutSummary, headline, stats,
+│  │                 certifications, education, employment, skillGroups(3 กลุ่ม), contact
+│  ├─ projects.ts  ← ข้อมูล case study 5 โปรเจกต์ (มี screens[] ต่อโปรเจกต์)
+│  ├─ nav.ts       ← โฟลเดอร์เมนู sidebar (จัดกลุ่มโปรเจกต์)
+│  └─ tools.ts     ← โลโก้/แบดจ์เครื่องมือในหน้า case study
 ├─ app/
-│  ├─ page.tsx                 ← หน้าแรก (Home/About) — ประกอบ section จาก profile.ts
-│  ├─ work/[slug]/page.tsx     ← หน้า case study (สร้าง static ทุก slug อัตโนมัติ + SEO metadata)
-│  ├─ layout.tsx               ← ฟอนต์ Inter + ThemeProvider (dark mode)
-│  └─ globals.css              ← design tokens (สี light/dark) + @font-face Aktiv Grotesk Thai
+│  ├─ page.tsx              ← หน้าแรก — ประกอบ section: hero, AboutMe, Education,
+│  │                          Employment, SkillsGrid, SkillsConstellation, ContactMe
+│  ├─ work/[slug]/page.tsx  ← case study (static ทุก slug + SEO metadata)
+│  ├─ layout.tsx            ← Inter + SidebarProvider + shell (header/sidebar/footer). ⚠️ ไม่มี dark mode แล้ว
+│  └─ globals.css           ← design tokens + @font-face Aktiv Grotesk Thai + keyframes (orbit, reveal)
 ├─ components/
-│  ├─ site-header.tsx / site-footer.tsx / theme-toggle.tsx / back-to-top.tsx
-│  ├─ home/  → skills-grid.tsx, work-grid.tsx
-│  ├─ case-study/ → case-study-view.tsx   ← 7 section ของ case study อยู่ไฟล์นี้ไฟล์เดียว
-│  └─ ui/    → shadcn components (button, card, badge, separator)
-public/
-├─ uploads/   ← รูปงาน (profile.png, Home.jpg, ฯลฯ)
-└─ fonts/     ← aktiv-grotesk-thai.woff2
+│  ├─ site-header.tsx (มี avatar วงกลม) / site-footer.tsx / back-to-top.tsx / reveal.tsx
+│  ├─ sidebar/ → site-sidebar.tsx (accordion + mobile drawer), sidebar-context.tsx, menu-button.tsx
+│  ├─ home/  → about-me.tsx, skills-grid.tsx, skills-constellation.tsx, contact-me.tsx, work-grid.tsx*
+│  └─ case-study/ → case-study-view.tsx (7 section), screen-gallery.tsx (thumbnail+lightbox)
+public/  uploads/ (รูปงาน) · fonts/ (aktiv-grotesk-thai.woff2)
 ```
+*work-grid.tsx ยังมีอยู่แต่ไม่ได้ใช้ (เอา Selected Work ออกจากหน้าแรกแล้ว เพราะซ้ำ sidebar) — โปรเจกต์เข้าถึงผ่าน sidebar
 
-**หลักการ:** เพิ่มงาน/แก้ข้อความ = แก้ที่ `data/*.ts` เท่านั้น โค้ด UI ไม่ต้องแตะ → ไฟล์ไม่บวมตามจำนวนโปรเจกต์
+**หลักการ:** แก้ข้อความ/เพิ่มงาน = แก้ `data/*.ts` เท่านั้น UI ไม่ต้องแตะ
 
 ## วิธีเพิ่มโปรเจกต์ใหม่
-1. วางรูปที่ `public/uploads/<ไฟล์>`
-2. เพิ่ม entry ใน `projects` ที่ `src/data/projects.ts` (copy ของเดิมเป็นแม่แบบ ครบ 7-section)
-3. หน้า `/work/<slug>` + การ์ดหน้าแรก + next/prev nav ถูกสร้างให้อัตโนมัติ
+1. วางรูปที่ `public/uploads/` 2. เพิ่ม entry ใน `projects.ts` + `nav.ts` 3. หน้า `/work/<slug>` สร้างอัตโนมัติ
+- หลายจอต่อโปรเจกต์: ใส่ `screens: [{label, src}]` → โชว์เป็น gallery คลิกดูเต็มจอ (lightbox)
 
-## Design tokens
-- สี light/dark port 1:1 จาก DC เดิม อยู่ใน `globals.css` (`:root` / `.dark`)
-- palette เป็น mono เจตนา — **user ไม่เอาสีน้ำเงินทุกที่** (`--primary` = `#1a1a18` light / `#f3f3f0` dark)
-- ค่าพิเศษเดิม: `--faint`, `--hover` → ใช้เป็น `text-faint`, `bg-hover`
-- ฟอนต์: Inter (ทั่วไป) · Aktiv Grotesk Thai (`font-thai`) ใช้ในหน้า case study
-- case study ทั้งหน้า **font-weight 400** (ไม่ bold) hierarchy ด้วย size+color+letter-spacing
+## Design / tokens (globals.css :root)
+- **ไม่มี dark mode แล้ว** (เอา next-themes/ThemeProvider ออก) — light อย่างเดียว (บล็อก `.dark` ใน css เป็น dead code)
+- **title = `#1a1a1a`** (`--foreground`) · **body/รอง = `#434e62`** slate (`--muted-foreground`) · `--faint`, `--hover`
+- palette mono — **user ไม่เอาสีน้ำเงิน** (ยกเว้น slate body ที่ user สั่งเอง) · **`--radius: 0.5rem`** (cap ที่ rounded-xl)
+- ฟอนต์: **Inter** ทั่วเว็บ (`--font-sans` = Inter + Aktiv Grotesk Thai fallback → ไทยเรนเดอร์ทุกเครื่อง)
+- **หัวข้อทุกอันเป็นอังกฤษ + สไตล์เดียวกัน** (ดู [[portfolio-title-standard]]) — home ใช้ `SectionHeading`, case study ใช้ `H2`
+- animation: `<Reveal>` (fade+rise ตอน scroll เข้า, respect reduced-motion) · constellation หมุนด้วย CSS
+
+## Deploy / สถานะ
+- live: https://portfolio-web-sigma-tan.vercel.app · GitHub: `sorawat-2538/portfolio-web` (auto-deploy ทุก push main)
+- push จากเครื่องนี้ผ่าน SSH alias `github-personal` (ดู memory) — เครื่องนี้จะคืนออฟฟิศ
+- ⚠️ งานหลายรอบยังอยู่แค่ localhost ยังไม่ push (user review บน localhost ก่อนแล้วค่อยสั่ง "ขึ้นเว็บ")
 
 ## ยังเป็น placeholder รอข้อมูลจริง
-- `profile.ts`: email, LinkedIn, ชื่อใบรับรอง (Certification)
-- `projects.ts`: ทุกค่าที่เป็น `[ ... ]` = metric จริงจาก GA4/Clarity, decision titles, liveUrl, heroImage ของ renthub/ai-copilot/brand/market-insight
+- `profile.ts`: phone, LinkedIn, resumeUrl, certifications (ชื่อจริง), avatar (ยัง pixel art — รอรูปถ่ายจริง)
+- `projects.ts`: metric `[ ... ]` จาก GA4/Clarity, decision titles, heroImage/screens ของ renthub/ai-copilot/brand/market-insight (propertyhub มี Home.jpg + liveUrl จริงแล้ว)
 
 ## คำสั่ง
 - `npm run dev` — dev server (http://localhost:3000)

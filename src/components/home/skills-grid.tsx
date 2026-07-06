@@ -1,45 +1,77 @@
 import {
   AppWindow,
-  ClipboardList,
+  Bot,
+  Boxes,
+  Braces,
+  BrainCircuit,
+  Brush,
+  ClipboardCheck,
   Code2,
-  Component,
-  Focus,
-  Layers,
+  FileCode2,
+  Frame,
+  GitBranch,
+  Image as ImageIcon,
+  MousePointerClick,
+  Palette,
   PenTool,
+  Search,
   Sparkles,
+  Workflow,
   type LucideIcon,
 } from "lucide-react";
 import { profile } from "@/data/profile";
 
-// map ชื่อไอคอน (string ใน profile.ts) → component จริงของ lucide
-// หมายเหตุ: lucide เอา brand icon (Figma ฯลฯ) ออกแล้ว — ใช้ไอคอนทั่วไปแทน
 const ICONS: Record<string, LucideIcon> = {
+  Search,
   AppWindow,
-  Layers,
-  Component,
-  Focus,
-  ClipboardList,
-  Figma: PenTool,
+  Palette,
+  MousePointerClick,
+  ClipboardCheck,
+  Boxes,
+  Workflow,
+  Frame,
   PenTool,
-  Sparkles,
+  Image: ImageIcon,
+  Brush,
   Code2,
+  FileCode2,
+  Sparkles,
+  Bot,
+  GitBranch,
+  BrainCircuit,
+  Braces,
 };
 
 export function SkillsGrid() {
   return (
-    <div className="mt-7 grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
-      {profile.skills.map((skill) => {
-        const Icon = ICONS[skill.icon] ?? AppWindow;
-        return (
-          <div
-            key={skill.label}
-            className="flex items-center gap-4 rounded-[14px] border border-foreground bg-background px-5 py-4 text-foreground"
-          >
-            <Icon className="h-[22px] w-[22px] shrink-0" strokeWidth={1.7} />
-            <span className="text-[15px] font-medium">{skill.label}</span>
+    <div className="mt-7 space-y-8">
+      {profile.skillGroups.map((group) => (
+        <div key={group.title}>
+          <h3 className="text-[16px] font-bold tracking-[-0.01em] text-foreground">
+            {group.title}
+          </h3>
+
+          <div className="mt-4 grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+            {group.items.map((item) => {
+              const Icon = ICONS[item.icon] ?? Sparkles;
+              return (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-3.5 rounded-xl border border-border bg-card px-5 py-3.5"
+                >
+                  <Icon
+                    className="h-[18px] w-[18px] shrink-0 text-muted-foreground"
+                    strokeWidth={1.7}
+                  />
+                  <span className="text-[15px] text-muted-foreground">
+                    {item.label}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 }

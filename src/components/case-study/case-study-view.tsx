@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, Rocket } from "lucide-react";
 import type { Project, ProjectSlug } from "@/data/projects";
 import { getNextSlug, getPrevSlug, projects } from "@/data/projects";
 import { toolMeta } from "@/data/tools";
+import { ScreenGallery } from "./screen-gallery";
 
 // ── shared building blocks ──────────────────────────────────────────────────
 
@@ -57,6 +58,80 @@ function PlaceholderSlot({ label, ratio }: { label: string; ratio: string }) {
   );
 }
 
+/** macOS-style title bar (traffic-light dots + centered label) */
+function WindowBar({ label }: { label?: string }) {
+  return (
+    <div className="relative flex items-center border-b border-border bg-card px-4 py-2.5">
+      <span className="absolute left-4 flex gap-1.5">
+        <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
+        <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
+        <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
+      </span>
+      {label && (
+        <span className="w-full text-center text-[12.5px] text-muted-foreground">
+          {label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** กรอบแสดงจอผลงาน
+ *  chrome = แถบ title แบบ macOS · scroll=false = โชว์รูปเต็มไม่ scroll ในกรอบ */
+function ScreenFrame({
+  src,
+  alt,
+  label,
+  priority,
+  chrome,
+  scroll = true,
+}: {
+  src?: string;
+  alt: string;
+  label?: string;
+  priority?: boolean;
+  chrome?: boolean;
+  scroll?: boolean;
+}) {
+  const img = src ? (
+    <Image
+      src={src}
+      alt={alt}
+      width={2880}
+      height={12658}
+      className="block h-auto w-full"
+      sizes="(max-width: 900px) 100vw, 780px"
+      priority={priority}
+    />
+  ) : null;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-hover">
+      {chrome ? (
+        <WindowBar label={label} />
+      ) : label ? (
+        <div className="border-b border-border bg-card px-4 py-2.5 text-[12.5px] text-muted-foreground">
+          {label}
+        </div>
+      ) : null}
+
+      {img ? (
+        scroll ? (
+          <div className="max-h-[560px] overflow-y-auto">{img}</div>
+        ) : (
+          img
+        )
+      ) : (
+        <div className="flex aspect-[16/9] items-center justify-center">
+          <span className="font-mono text-[11px] tracking-[0.05em] text-faint">
+            {(label ?? "screen") + " · แทนที่ด้วยภาพจริง"}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ToolCard({ name }: { name: string }) {
   const meta = toolMeta(name);
   return (
@@ -104,27 +179,41 @@ export function CaseStudyView({
   const prevSlug = getPrevSlug(slug);
 
   return (
-    <article className="py-12 font-thai font-normal min-[900px]:py-[50px]">
+    <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            {p.category}
-          </span>
-          <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            {p.title}
-          </span>
+        <div className="text-[13px] uppercase tracking-[0.18em] text-faint">
+          {p.category}
         </div>
-
-        <h1 className="mt-[18px] text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
+        <h1 className="mt-2.5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
         </h1>
-        <p className="mt-[18px] text-[clamp(17px,1.7vw,19px)] leading-[1.66] text-muted-foreground">
+        <p className="mt-3 line-clamp-1 text-[clamp(16px,1.7vw,19px)] text-muted-foreground">
           {p.tagline}
         </p>
 
+        {/* action row (product-page style) */}
+        <div className="mt-6 flex flex-col gap-4 border-y border-border py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2.5 text-[13.5px] text-muted-foreground">
+            <span>{p.year}</span>
+            <span className="text-faint">·</span>
+            <span>{p.metaRole}</span>
+          </div>
+          {p.liveUrl && p.liveUrl !== "#" && (
+            <a
+              href={p.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[14px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Rocket className="h-4 w-4" />
+              Visit site
+            </a>
+          )}
+        </div>
+
         {/* meta grid */}
-        <div className="mt-[34px] grid gap-x-[30px] gap-y-[26px] border-t border-border pt-[30px] [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
+        <div className="mt-8 grid gap-x-[30px] gap-y-[26px] [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
           {meta.map((m) => (
             <div key={m.k}>
               <div className="text-[11.5px] uppercase tracking-[0.14em] text-faint">
@@ -138,30 +227,14 @@ export function CaseStudyView({
         </div>
 
         {/* hero: scrollable 560px frame (keeps a tall screenshot compact) */}
-        <div className="mt-[34px] overflow-hidden rounded-xl border border-border bg-hover">
-          {p.heroImage ? (
-            <div className="max-h-[560px] overflow-y-auto">
-              <Image
-                src={p.heroImage}
-                alt={p.title}
-                width={2880}
-                height={12658}
-                className="block h-auto w-full"
-                sizes="(max-width: 900px) 100vw, 780px"
-                priority
-              />
-            </div>
-          ) : (
-            <PlaceholderSlot label="final screen · แทนที่ด้วยภาพจริง" ratio="16/9" />
-          )}
+        <div className="mt-[34px]">
+          <ScreenFrame src={p.heroImage} alt={p.title} priority />
         </div>
 
         {/* tools */}
-        <div className="mt-[26px]">
-          <div className="text-[11.5px] uppercase tracking-[0.14em] text-faint">
-            Tools
-          </div>
-          <div className="mt-3.5 flex flex-wrap gap-3 min-[560px]:flex-nowrap">
+        <div className="mt-[40px]">
+          <H2>Tools</H2>
+          <div className="mt-5 flex flex-wrap gap-3 min-[560px]:flex-nowrap">
             {p.tools.map((tool) => (
               <ToolCard key={tool} name={tool} />
             ))}
@@ -173,7 +246,7 @@ export function CaseStudyView({
 
       {/* ── 1 · OVERVIEW ── */}
       <section>
-        <H2>ภาพรวมโปรเจกต์</H2>
+        <H2>Overview</H2>
         <div className="mt-[22px] space-y-[18px]">
           {p.overview.map((para, i) => (
             <Body key={i}>{para}</Body>
@@ -181,11 +254,25 @@ export function CaseStudyView({
         </div>
       </section>
 
+      {/* ── SCREENS (จอที่ออกแบบ) — stacked labeled frames ── */}
+      {p.screens && p.screens.length > 0 && (
+        <>
+          <Spacer />
+          <section>
+            <H2>Screens</H2>
+            <p className="mt-2 text-[14px] text-faint">กดที่ภาพเพื่อดูเต็มจอ</p>
+            <div className="mt-[26px]">
+              <ScreenGallery screens={p.screens} title={p.title} />
+            </div>
+          </section>
+        </>
+      )}
+
       <Spacer />
 
       {/* ── 2 · CONTEXT & CONSTRAINT ── */}
       <section>
-        <H2>บริบทและข้อจำกัด</H2>
+        <H2>Context & Constraint</H2>
         <div className="mt-[26px]">
           <H3>The Business</H3>
           <Body className="mt-2.5">{p.ctxBusiness}</Body>
@@ -208,7 +295,7 @@ export function CaseStudyView({
 
       {/* ── 3 · HYPOTHESIS ── */}
       <section>
-        <H2>สมมติฐาน</H2>
+        <H2>Hypothesis</H2>
         <div className="mt-6 rounded-r-xl border-l-[3px] border-foreground bg-hover px-[26px] py-6">
           <p className="text-[clamp(18px,2vw,21px)] leading-[1.62] text-foreground">
             {p.hypothesis}
@@ -242,13 +329,13 @@ export function CaseStudyView({
 
       {/* ── 4 · DESIGN DECISIONS ── */}
       <section>
-        <H2>การตัดสินใจในการออกแบบ</H2>
+        <H2>Design Decisions</H2>
         <Body className="mt-[18px]">{p.decisionsIntro}</Body>
         <div className="mt-[30px] flex flex-col gap-[22px]">
           {p.decisions.map((d, i) => (
             <div
               key={i}
-              className="overflow-hidden rounded-2xl border border-border bg-card"
+              className="overflow-hidden rounded-xl border border-border bg-card"
             >
               <div className="border-b border-border">
                 <PlaceholderSlot label="screen · แทนที่ด้วยภาพ decision" ratio="16/6" />
@@ -292,7 +379,7 @@ export function CaseStudyView({
           <Body className="mt-2.5">{p.expWhy}</Body>
         </div>
 
-        <div className="mt-[26px] grid gap-px overflow-hidden rounded-[14px] border border-border bg-border [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
+        <div className="mt-[26px] grid gap-px overflow-hidden rounded-lg border border-border bg-border [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
           {[
             { k: "Segmentation", v: p.expSegment },
             { k: "Tracking", v: p.expTracking },
@@ -311,7 +398,7 @@ export function CaseStudyView({
         </div>
 
         {/* segmentation flow diagram */}
-        <div className="mt-[22px] rounded-2xl border border-border bg-card px-[clamp(22px,3vw,34px)] py-[clamp(22px,3vw,34px)]">
+        <div className="mt-[22px] rounded-xl border border-border bg-card px-[clamp(22px,3vw,34px)] py-[clamp(22px,3vw,34px)]">
           <div className="mb-[22px] text-[11.5px] uppercase tracking-[0.12em] text-faint">
             Manual segmentation flow
           </div>
@@ -344,10 +431,10 @@ export function CaseStudyView({
 
       {/* ── 6 · RESULTS ── */}
       <section>
-        <H2>ผลลัพธ์</H2>
+        <H2>Results</H2>
 
         {/* primary metric */}
-        <div className="mt-[26px] rounded-[18px] border border-foreground bg-hover px-[clamp(26px,4vw,40px)] py-[clamp(26px,4vw,40px)]">
+        <div className="mt-[26px] rounded-xl border border-foreground bg-hover px-[clamp(26px,4vw,40px)] py-[clamp(26px,4vw,40px)]">
           <div className="text-[12px] uppercase tracking-[0.14em] text-faint">
             Primary Metric
           </div>
@@ -369,7 +456,7 @@ export function CaseStudyView({
         </div>
 
         {/* secondary metrics */}
-        <div className="mt-5 overflow-hidden rounded-[14px] border border-border">
+        <div className="mt-5 overflow-hidden rounded-lg border border-border">
           {p.resultsSecondary.map((row, i) => (
             <div
               key={i}
@@ -389,7 +476,7 @@ export function CaseStudyView({
         {/* device breakdown */}
         <div className="mt-[34px]">
           <H3>Device Breakdown</H3>
-          <div className="mt-4 overflow-hidden rounded-[14px] border border-border tabular-nums">
+          <div className="mt-4 overflow-hidden rounded-lg border border-border tabular-nums">
             <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-b border-border bg-hover">
               {["Device", "Before", "After", "Change"].map((h, i) => (
                 <span
@@ -430,7 +517,7 @@ export function CaseStudyView({
         </div>
 
         {/* GA4 screenshot slot */}
-        <div className="mt-6 overflow-hidden rounded-[14px] border border-border">
+        <div className="mt-6 overflow-hidden rounded-lg border border-border">
           <PlaceholderSlot label="screenshot GA4 / Clarity · blur sensitive" ratio="16/7" />
         </div>
       </section>
@@ -471,7 +558,7 @@ export function CaseStudyView({
           rel="noopener noreferrer"
           className="mt-[34px] inline-flex items-center gap-[11px] rounded-full bg-primary px-8 py-4 text-[16.5px] text-primary-foreground no-underline transition-opacity hover:opacity-90"
         >
-          <ExternalLink className="h-[19px] w-[19px]" strokeWidth={1.7} />
+          <Rocket className="h-[19px] w-[19px]" strokeWidth={1.7} />
           เปิดดูเว็บไซต์
         </a>
       </section>

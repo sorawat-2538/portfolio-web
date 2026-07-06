@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, Folder, X } from "lucide-react";
 import { Mail } from "lucide-react";
 import { navGroups, groupKeyForSlug } from "@/data/nav";
 import { profile } from "@/data/profile";
@@ -43,12 +43,12 @@ function NavAccordion({ onNavigate }: { onNavigate?: () => void }) {
               className="flex w-full items-center justify-between gap-2.5 px-0.5 py-4 text-left text-foreground"
             >
               <span className="flex items-center gap-2.5 whitespace-nowrap text-2xl font-semibold tracking-[-0.015em]">
-                <span className="text-xl">📁</span>
+                <Folder className="h-5 w-5 shrink-0 text-foreground" strokeWidth={1.8} />
                 {group.title}
               </span>
               <ChevronDown
                 className={
-                  "h-5 w-5 shrink-0 text-faint transition-transform duration-200 " +
+                  "h-5 w-5 shrink-0 text-foreground transition-transform duration-200 " +
                   (isOpen ? "rotate-180" : "")
                 }
               />
@@ -72,7 +72,7 @@ function NavAccordion({ onNavigate }: { onNavigate?: () => void }) {
                         "-mx-1 block truncate rounded-none px-3 py-2 text-[16px] tracking-[-0.01em] transition-colors " +
                         (active
                           ? "bg-primary font-semibold text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground")
+                          : "text-foreground hover:underline hover:underline-offset-4 hover:decoration-foreground")
                       }
                     >
                       {item.label}

@@ -67,19 +67,19 @@
 
 /* ---- Light theme (ported 1:1 from the original .dc.html :root) ---- */
 :root {
-  --radius: 0.75rem; /* 12px, matches original statement box */
+  --radius: 0.5rem; /* trimmed roundness (was 0.75rem) */
   --background: #ffffff;
-  --foreground: #1a1a18;
+  --foreground: #1a1a1a; /* main text / titles */
   --card: #ffffff;
-  --card-foreground: #1a1a18;
+  --card-foreground: #1a1a1a;
   --popover: #ffffff;
-  --popover-foreground: #1a1a18;
-  --primary: #1a1a18;
+  --popover-foreground: #1a1a1a;
+  --primary: #1a1a1a; /* backgrounds/active */
   --primary-foreground: #ffffff;
   --secondary: #f3f3f1;
-  --secondary-foreground: #1a1a18;
+  --secondary-foreground: #1a1a1a;
   --muted: #f3f3f1;
-  --muted-foreground: #6f6f6a;
+  --muted-foreground: #434e62; /* slate — secondary text */
   --accent: #f3f3f1;
   --accent-foreground: #1a1a18;
   --destructive: oklch(0.577 0.245 27.325);
@@ -107,17 +107,17 @@
 /* ---- Dark theme (ported 1:1 from the original [data-theme="dark"]) ---- */
 .dark {
   --background: #0c0c0d;
-  --foreground: #f3f3f0;
+  --foreground: #ffffff;
   --card: #0c0c0d;
-  --card-foreground: #f3f3f0;
+  --card-foreground: #ffffff;
   --popover: #0c0c0d;
-  --popover-foreground: #f3f3f0;
-  --primary: #f3f3f0;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
   --primary-foreground: #0c0c0d;
   --secondary: #1d1d20;
-  --secondary-foreground: #f3f3f0;
+  --secondary-foreground: #ffffff;
   --muted: #1d1d20;
-  --muted-foreground: #9b9b95;
+  --muted-foreground: #a8b0c0; /* slate (light) — non-title text in dark mode */
   --accent: #1d1d20;
   --accent-foreground: #f3f3f0;
   --destructive: oklch(0.704 0.191 22.216);
@@ -158,5 +158,70 @@
   ::selection {
     background: var(--primary);
     color: var(--primary-foreground);
+  }
+}
+
+/* Rotating skills constellation (outer ring spins, bubbles counter-spin to stay upright) */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.orbit-ring {
+  animation: orbit-spin 44s linear infinite;
+}
+.orbit-node {
+  animation: orbit-spin-reverse 44s linear infinite;
+}
+/* pause the whole constellation on hover so it can be read */
+.orbit-wrap:hover .orbit-ring,
+.orbit-wrap:hover .orbit-node {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring,
+  .orbit-node {
+    animation: none;
+  }
+}
+
+/* hero 👋 waves a couple times on first load */
+@keyframes hero-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10%, 30%, 50% { transform: rotate(14deg); }
+  20%, 40% { transform: rotate(-8deg); }
+}
+.hero-wave {
+  animation: hero-wave 2.2s ease-in-out 0.3s 2;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-wave {
+    animation: none;
+  }
+}
+
+/* Scroll reveal — fade + rise when a section enters the viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

@@ -32,6 +32,9 @@ export type Project = {
   liveUrl: string;
   /** รูป hero ของงาน (path ใน public/) — ถ้าไม่มีจะโชว์ placeholder */
   heroImage?: string;
+  /** จอเพิ่มเติมที่โชว์ในหน้า case study (Home/Result/Listing ฯลฯ)
+   *  แต่ละจอเป็น frame scroll แยก มี label — ใส่ src เมื่อมีรูปจริง */
+  screens?: { label: string; src?: string }[];
 
   metaRole: string;
   metaTimeline: string;
@@ -76,7 +79,14 @@ export const projects = {
     category: "Digital Product",
     year: "2021 – ปัจจุบัน",
     heroImage: "/uploads/Home.jpg",
-    liveUrl: "#",
+    // ตัวอย่างโชว์ 3 จอ (ตอนนี้ duplicate Home ก่อนเพื่อดูความยาว/รายละเอียด)
+    // เปลี่ยน src เป็นรูป Result / Listing จริงได้เลยเมื่อมีภาพ
+    screens: [
+      { label: "Home", src: "/uploads/Home.jpg" },
+      { label: "Result page", src: "/uploads/Home.jpg" },
+      { label: "Listing detail", src: "/uploads/Home.jpg" },
+    ],
+    liveUrl: "https://propertyhub.in.th/",
     tagline:
       "Real estate marketplace ไทย ที่ redesign เพื่อ push traffic ผ่าน funnel ไปหน้า SEO landing ที่เป็น revenue driver — โดยผมเป็น designer คนเดียวของทีม",
     metaRole: "Sole Product Designer",

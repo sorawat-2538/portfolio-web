@@ -1,17 +1,67 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Briefcase, ChevronRight, GraduationCap } from "lucide-react";
+import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
-import { WorkGrid } from "@/components/home/work-grid";
+import { SkillsConstellation } from "@/components/home/skills-constellation";
+import { AboutMe } from "@/components/home/about-me";
+import { ContactMe } from "@/components/home/contact-me";
+import { Reveal } from "@/components/reveal";
 import { profile } from "@/data/profile";
 
 function Divider() {
   return <div className="my-[50px] h-px bg-border" />;
 }
 
+// Standard section title — English, bold, consistent everywhere.
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[clamp(22px,2.8vw,30px)] font-bold leading-tight tracking-[-0.02em] text-foreground">
+    <h2 className="text-[clamp(24px,3vw,32px)] font-bold leading-tight tracking-[-0.02em] text-foreground">
       {children}
     </h2>
+  );
+}
+
+/** timeline entry with a continuous 2px line running through the icon nodes */
+function TimelineItem({
+  icon,
+  period,
+  title,
+  company,
+  children,
+  first,
+}: {
+  icon: React.ReactNode;
+  period: string;
+  title: string;
+  company?: string;
+  children?: React.ReactNode;
+  first?: boolean;
+}) {
+  return (
+    <div className="relative flex gap-5 pb-10 last:pb-0">
+      <div className="relative flex w-11 shrink-0 flex-col items-center">
+        {/* continuous line: starts at first node, runs to the bottom of every item */}
+        <span
+          className="absolute left-1/2 bottom-0 w-0.5 -translate-x-1/2 bg-border"
+          style={{ top: first ? 22 : 0 }}
+        />
+        <span className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-border bg-background text-faint">
+          {icon}
+        </span>
+      </div>
+      <div className="pb-2">
+        <span className="inline-flex rounded-full bg-hover px-3 py-1 text-[13px] text-muted-foreground">
+          {period}
+        </span>
+        <h3 className="mt-3 text-[19px] font-bold tracking-[-0.01em] text-foreground">
+          {title}
+        </h3>
+        {company && (
+          <div className="mt-1 text-[14.5px] text-muted-foreground">{company}</div>
+        )}
+        {children}
+      </div>
+    </div>
   );
 }
 
@@ -19,140 +69,118 @@ export default function HomePage() {
   return (
     <main className="py-12 min-[900px]:py-[50px]">
       {/* HERO */}
-      <section>
-          <h1 className="text-[clamp(32px,5.4vw,48px)] leading-[1.12] tracking-[-0.028em] text-foreground">
-            <span className="mr-2.5 inline-block">{profile.hero.emoji}</span>
+      <Reveal>
+        <section className="pb-[50px]">
+          <h1 className="text-[clamp(32px,5.4vw,48px)] font-bold leading-[1.12] tracking-[-0.028em] text-foreground">
+            <span className="hero-wave mr-2.5 inline-block origin-[70%_80%]">
+              {profile.hero.emoji}
+            </span>
             {profile.hero.greeting}
           </h1>
-          <p className="mt-6 text-[clamp(16px,1.5vw,17.5px)] leading-[1.85] text-muted-foreground">
-            {profile.hero.intro}
-          </p>
-
-          <div className="mt-8 rounded-r-xl border-l-[3px] border-foreground bg-hover px-7 py-7 sm:px-9 sm:py-8">
-            <p className="text-[clamp(21px,2.9vw,29px)] font-bold leading-[1.4] tracking-[-0.015em] text-foreground">
-              {profile.hero.statement}
-            </p>
-          </div>
-
-          <div className="mt-12 flex justify-center">
-            <Image
-              src={profile.hero.avatar}
-              alt={profile.name}
-              width={548}
-              height={714}
-              className="h-auto w-[clamp(200px,32vw,280px)] [image-rendering:pixelated]"
-              priority
-            />
-          </div>
         </section>
+      </Reveal>
 
-        <Divider />
+      {/* ABOUT */}
+      <Reveal>
+        <AboutMe />
+      </Reveal>
 
-        {/* ABOUT */}
-        <section>
-          <SectionHeading>About</SectionHeading>
-          {profile.about.map((para, i) => (
-            <p
-              key={i}
-              className="mt-4 text-[17px] leading-[1.78] text-muted-foreground"
-            >
-              {para}
-            </p>
-          ))}
-        </section>
+      <Divider />
 
-        <Divider />
-
-        {/* EDUCATION */}
+      {/* EDUCATION */}
+      <Reveal>
         <section>
           <SectionHeading>Education</SectionHeading>
-          <div className="mt-6 space-y-4">
+          <div className="mt-8 flex flex-col">
             {profile.education.map((edu) => (
-              <div
+              <TimelineItem
                 key={edu.title}
-                className="rounded-2xl border border-border bg-hover px-6 py-6"
+                icon={<GraduationCap className="h-[18px] w-[18px]" strokeWidth={1.6} />}
+                period={edu.period}
+                title={edu.title}
+                first
               >
-                <div className="text-[12.5px] text-faint">{edu.period}</div>
-                <div className="mt-2.5 text-[17px] leading-snug text-foreground">
-                  {edu.title}
-                </div>
-                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
                   {edu.detail}
-                </div>
-              </div>
+                </p>
+              </TimelineItem>
             ))}
           </div>
         </section>
+      </Reveal>
 
-        <Divider />
+      <Divider />
 
-        {/* CERTIFICATION */}
-        <section>
-          <SectionHeading>Certification</SectionHeading>
-          <div className="mt-6 space-y-4">
-            {profile.certifications.map((cert, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border border-border bg-hover px-6 py-6"
-              >
-                <div className="text-[12.5px] text-faint">{cert.label}</div>
-                <div className="mt-2.5 text-[17px] leading-snug text-foreground">
-                  {cert.title}
-                </div>
-                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {cert.detail}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <Divider />
-
-        {/* EMPLOYMENT */}
+      {/* EMPLOYMENT */}
+      <Reveal>
         <section>
           <SectionHeading>Employment History</SectionHeading>
-          <div className="ml-1.5 mt-8 flex flex-col gap-9 border-l border-border pl-8">
-            {profile.employment.map((job) => (
-              <div key={job.company} className="relative">
-                <span className="absolute -left-[34.5px] top-[7px] h-[9px] w-[9px] rounded-full bg-primary shadow-[0_0_0_4px_var(--background)]" />
-                <div className="text-[13px] text-faint">{job.period}</div>
-                <div className="mt-1.5 text-[18px] tracking-[-0.01em] text-foreground">
-                  {job.title}
-                </div>
-                <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
-                  <span className="text-[14.5px] text-muted-foreground">
-                    {job.company}
-                  </span>
-                  <span className="inline-flex rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground">
-                    {job.tag}
-                  </span>
-                </div>
-              </div>
+          <div className="mt-8 flex flex-col">
+            {profile.employment.map((job, i) => (
+              <TimelineItem
+                key={job.company}
+                icon={<Briefcase className="h-[18px] w-[18px]" strokeWidth={1.6} />}
+                period={job.period}
+                title={job.title}
+                company={job.company}
+                first={i === 0}
+              >
+                <p className="mt-3 text-[15.5px] leading-[1.7] text-muted-foreground">
+                  {job.description}
+                </p>
+              </TimelineItem>
             ))}
           </div>
         </section>
+      </Reveal>
 
-        <Divider />
+      <Divider />
 
-        {/* SKILLS */}
+      {/* SKILLS */}
+      <Reveal>
         <section>
           <SectionHeading>Technical Skills</SectionHeading>
           <SkillsGrid />
         </section>
+      </Reveal>
 
-        <Divider />
+      <Divider />
 
-        {/* SELECTED WORK */}
-        <section>
-          <div className="flex items-end justify-between gap-4">
-            <SectionHeading>Selected Work</SectionHeading>
-            <span className="text-[13px] uppercase tracking-[0.22em] text-faint">
-              {profile.role}
+      {/* SKILLS — constellation variant */}
+      <Reveal>
+        <SkillsConstellation />
+      </Reveal>
+
+      <Divider />
+
+      {/* CONTACT */}
+      <Reveal>
+        <ContactMe />
+      </Reveal>
+
+      <Divider />
+
+      {/* VIEW MY WORK CTA */}
+      <Reveal>
+        <div className="flex justify-end">
+          <Link
+            href={`/work/${projectSlugs[0]}`}
+            className="group inline-flex items-center gap-5 text-right"
+          >
+            <span className="flex flex-col items-end gap-1 leading-none">
+              <span className="text-[13px] uppercase tracking-[0.22em] text-faint">
+                Selected work
+              </span>
+              <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
+                View my work
+              </span>
             </span>
-          </div>
-          <WorkGrid />
-        </section>
+            <span className="inline-flex h-[54px] w-[54px] items-center justify-center rounded-full border-[1.5px] border-foreground text-foreground transition-transform duration-300 group-hover:translate-x-1">
+              <ChevronRight className="h-[22px] w-[22px]" />
+            </span>
+          </Link>
+        </div>
+      </Reveal>
     </main>
   );
 }

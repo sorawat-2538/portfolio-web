@@ -1,8 +1,29 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { MenuButton } from "@/components/sidebar/menu-button";
 import { profile } from "@/data/profile";
+
+function Avatar() {
+  return (
+    <div className="group relative">
+      <span className="relative block h-9 w-9 overflow-hidden rounded-full border border-border bg-hover">
+        <Image
+          src={profile.hero.avatar}
+          alt={profile.name}
+          fill
+          sizes="36px"
+          className="object-cover object-top [image-rendering:pixelated]"
+        />
+      </span>
+      {/* hover toast */}
+      <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] z-50 whitespace-nowrap rounded-lg bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground opacity-0 shadow-lg transition-all duration-200 group-hover:opacity-100">
+        Please feel free to contact me 👋
+        <span className="absolute -top-1 right-4 h-2 w-2 rotate-45 bg-primary" />
+      </span>
+    </div>
+  );
+}
 
 function Logo() {
   return (
@@ -36,15 +57,6 @@ function Logo() {
   );
 }
 
-// LinkedIn brand mark (lucide removed brand icons; inline SVG keeps the real logo)
-function LinkedinIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
-    </svg>
-  );
-}
-
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
@@ -52,25 +64,16 @@ export function SiteHeader() {
         <Logo />
 
         {/* desktop controls */}
-        <nav className="hidden items-center gap-[clamp(14px,2vw,24px)] min-[900px]:flex">
+        <nav className="hidden items-center gap-5 min-[900px]:flex">
           <a
             href={`mailto:${profile.email}`}
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-[13.5px] font-medium text-foreground transition-colors hover:bg-hover"
           >
             <Mail className="h-[15px] w-[15px]" />
             {profile.email}
           </a>
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <LinkedinIcon className="h-[15px] w-[15px]" />
-            LinkedIn
-          </a>
           <span className="h-5 w-px bg-border" />
-          <ThemeToggle />
+          <Avatar />
           <a
             href={profile.resumeUrl}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-[13.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
@@ -80,8 +83,8 @@ export function SiteHeader() {
         </nav>
 
         {/* mobile controls */}
-        <div className="flex items-center gap-2 min-[900px]:hidden">
-          <ThemeToggle />
+        <div className="flex items-center gap-2.5 min-[900px]:hidden">
+          <Avatar />
           <MenuButton />
         </div>
       </div>
