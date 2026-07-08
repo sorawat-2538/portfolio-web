@@ -60,7 +60,7 @@ export function SkillsGrid() {
                   className="flex items-center gap-3.5 rounded-xl border border-border bg-card px-5 py-3.5"
                 >
                   <Icon
-                    className="h-[18px] w-[18px] shrink-0 text-muted-foreground"
+                    className="h-[18px] w-[18px] shrink-0 text-[#2d68ff]"
                     strokeWidth={1.7}
                   />
                   <span className="text-[15px] text-muted-foreground">

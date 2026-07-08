@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/components/sidebar/sidebar-context";
 import { SiteHeader } from "@/components/site-header";
@@ -7,9 +7,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteSidebar } from "@/components/sidebar/site-sidebar";
 import { BackToTop } from "@/components/back-to-top";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+// ฟอนต์เดียวทั้งเว็บ — Noto Sans Thai ใช้ทั้งไทยและอังกฤษ (ไม่ใช้ Inter แล้ว)
+const notoSansThai = Noto_Sans_Thai({
+  variable: "--font-noto-thai",
+  subsets: ["thai", "latin"],
   weight: ["400", "500", "600", "700"],
 });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className={`${inter.variable} h-full font-sans`}>
+    <html lang="th" className={`${notoSansThai.variable} h-full font-sans`}>
       <body className="min-h-full flex flex-col antialiased">
         <SidebarProvider>
           <SiteHeader />

@@ -45,12 +45,12 @@ function TimelineItem({
           className="absolute left-1/2 bottom-0 w-0.5 -translate-x-1/2 bg-border"
           style={{ top: first ? 22 : 0 }}
         />
-        <span className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-border bg-background text-faint">
+        <span className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-border bg-background text-brand">
           {icon}
         </span>
       </div>
       <div className="pb-2">
-        <span className="inline-flex rounded-full bg-hover px-3 py-1 text-[13px] text-muted-foreground">
+        <span className="inline-flex rounded-full bg-hover px-3 py-1 text-[13px] font-medium text-muted-foreground">
           {period}
         </span>
         <h3 className="mt-3 text-[19px] font-bold tracking-[-0.01em] text-foreground">
@@ -75,7 +75,8 @@ export default function HomePage() {
             <span className="hero-wave mr-2.5 inline-block origin-[70%_80%]">
               {profile.hero.emoji}
             </span>
-            {profile.hero.greeting}
+            {profile.hero.greeting}{" "}
+            <span className="text-brand">{profile.hero.nickname}</span>
           </h1>
         </section>
       </Reveal>

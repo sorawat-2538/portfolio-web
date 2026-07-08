@@ -43,10 +43,10 @@ export function SkillsConstellation() {
 
           {/* center node */}
           <div className="absolute left-1/2 top-1/2 z-10 flex h-[128px] w-[128px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <span className="text-[22px] font-bold leading-none tracking-[-0.02em] text-[#facc15]">
+            <span className="text-[22px] font-bold leading-none tracking-[-0.02em] text-brand">
               STACK
             </span>
-            <span className="mt-1.5 text-[10px] uppercase tracking-[0.2em] text-primary-foreground/60">
+            <span className="mt-1.5 text-[10px] tracking-[0.12em] text-primary-foreground/60">
               Design &amp; Code
             </span>
           </div>

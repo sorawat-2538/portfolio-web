@@ -43,14 +43,14 @@ export function ContactMe() {
             href={href}
             target={label === "Email" ? undefined : "_blank"}
             rel="noreferrer"
-            className="flex flex-col items-center gap-3 rounded-xl border border-border bg-[#F9FAFB] px-5 py-7 text-center"
+            className="flex flex-col items-center gap-3 rounded-xl border border-border bg-white px-5 py-7 text-center"
           >
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-hover text-foreground">
-              <Icon className="h-5 w-5" />
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2d68ff]/10 text-[#2d68ff]">
+              <Icon className="h-[22px] w-[22px]" strokeWidth={2} />
             </span>
             <span>
-              <span className="block text-[13px] text-faint">{label}</span>
-              <span className="mt-0.5 block text-[15px] font-medium text-foreground">
+              <span className="block text-[13px] text-[#434E62]">{label}</span>
+              <span className="mt-0.5 block text-[15px] font-medium text-[#1A1A1A]">
                 {value}
               </span>
             </span>

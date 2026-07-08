@@ -32,9 +32,14 @@ export type Project = {
   liveUrl: string;
   /** รูป hero ของงาน (path ใน public/) — ถ้าไม่มีจะโชว์ placeholder */
   heroImage?: string;
+  /** โหมด hero mockup — "product" = fake product-UI, "code" = code editor.
+   *  มีค่านี้จะ override heroImage ในหน้า case study (แต่ heroImage ยังใช้เป็น thumbnail ในหน้าแรก) */
+  heroMock?: "product" | "code";
   /** จอเพิ่มเติมที่โชว์ในหน้า case study (Home/Result/Listing ฯลฯ)
    *  แต่ละจอเป็น frame scroll แยก มี label — ใส่ src เมื่อมีรูปจริง */
   screens?: { label: string; src?: string }[];
+  /** การ์ด stat ลอยบน hero (portpro-style) — ไม่ใส่ก็ได้, โชว์เฉพาะที่มีข้อมูล */
+  heroBadges?: { icon: string; value: string; label: string }[];
 
   metaRole: string;
   metaTimeline: string;
@@ -79,6 +84,7 @@ export const projects = {
     category: "Digital Product",
     year: "2021 – ปัจจุบัน",
     heroImage: "/uploads/Home.jpg",
+    heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
     // ตัวอย่างโชว์ 3 จอ (ตอนนี้ duplicate Home ก่อนเพื่อดูความยาว/รายละเอียด)
     // เปลี่ยน src เป็นรูป Result / Listing จริงได้เลยเมื่อมีภาพ
     screens: [
@@ -87,17 +93,19 @@ export const projects = {
       { label: "Listing detail", src: "/uploads/Home.jpg" },
     ],
     liveUrl: "https://propertyhub.in.th/",
+    heroBadges: [
+      { icon: "LayoutGrid", value: "5 Pages", label: "Full redesign" },
+      { icon: "Activity", value: "A/B tested", label: "GA4 + Clarity" },
+    ],
     tagline:
-      "Real estate marketplace ไทย ที่ redesign เพื่อ push traffic ผ่าน funnel ไปหน้า SEO landing ที่เป็น revenue driver — โดยผมเป็น designer คนเดียวของทีม",
+      "PropertyHub คือแพลตฟอร์มค้นหาอสังหาริมทรัพย์ ที่ช่วยให้ผู้ใช้ค้นหาบ้านและคอนโดได้ง่าย พร้อมข้อมูลครบถ้วนเพื่อการตัดสินใจที่มั่นใจ",
     metaRole: "Sole Product Designer",
     metaTimeline: "[ MMM YYYY – MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
     tools: ["Figma", "Claude", "Google Analytics", "Microsoft Clarity"],
     overview: [
-      "Propertyhub คือ real estate marketplace ไทย ที่รวมประกาศเช่า/ขายคอนโด บ้าน และที่ดินจากเจ้าของทรัพย์และ agent — revenue signal หลักคือการที่ user กด contact agent (Line/phone/email)",
-      "Project นี้เป็นการ redesign ทั้งเว็บ ครอบคลุม 5 หน้าหลัก: Home, Project page, Listing detail, Listing result และหน้ารวมทรัพย์จากธนาคาร (สร้างใหม่ 0→1) โดย deep dive ใน case นี้จะโฟกัสที่ Project page ซึ่งเป็นหน้าที่มี traffic และ business impact สูงสุด",
-      "ผมเป็น designer คนเดียวของทีม รับผิดชอบตั้งแต่ requirement, research, design, prototype, hand-off ให้ dev จนถึง measure ผลหลัง ship",
+      "Propertyhub คือ real estate marketplace ไทย ที่รวมประกาศเช่า/ขายคอนโด บ้าน และที่ดิน โดย revenue signal หลักคือการที่ user กด contact agent งานนี้คือ redesign ทั้งเว็บ 5 หน้าหลัก ซึ่งผมรับผิดชอบคนเดียวตั้งแต่ research จนถึง measure ผลหลัง ship — โดย case นี้จะ deep dive ที่ Project page หน้าที่มี traffic และ business impact สูงสุด",
     ],
     ctxBusiness:
       "Propertyhub ทำเงินจากการที่ user กด contact agent — critical path คือ traffic เข้า → เจอทรัพย์ที่ตรง intent → ติดต่อ agent หน้า Project page เป็นจุดที่ traffic เข้ามาเยอะและกระจายต่อไปยัง listing",

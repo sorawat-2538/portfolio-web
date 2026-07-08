@@ -4,7 +4,8 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 export const profile = {
-  name: "S.Tunaram",
+  name: "S.Tunaram", // ชื่อสั้น (โลโก้/header/footer)
+  fullName: "Sorawat Tunaram", // ชื่อเต็ม (author credit ในหน้า case study)
   role: "UX/UI & Product Designer",
   headline: "UX/UI Designer", // ตำแหน่งใหญ่ในการ์ด About
   email: "sorawat.tun@gmail.com",
@@ -12,10 +13,11 @@ export const profile = {
   lineId: "sorawat2538",
   location: "Bangkok, Thailand",
   linkedin: "#", // TODO: ใส่ลิงก์ LinkedIn จริง
-  resumeUrl: "#", // TODO: ลิงก์ไฟล์ resume (เช่น /uploads/resume.pdf หรือ Google Drive)
+  resumeUrl: "#", // TODO: ลิงก์ resume แยกจาก portfolio (เช่น PDF / Google Drive)
 
   hero: {
-    greeting: "Hello there! I'm Fluke",
+    greeting: "Hello there! I'm",
+    nickname: "Fluke",
     emoji: "👋",
     intro:
       "ผมเป็น UX/UI & Product Designer ที่จบจากศิลปากร เอกออกแบบเว็บและสื่อโต้ตอบ และทำงานสายออกแบบมาตลอดตั้งแต่วันแรกที่เริ่มทำงาน ตลอด 7 ปีที่ผ่านมา ผมเป็นดีไซเนอร์คนเดียวของบริษัท — รับโจทย์เอง คิดเอง จบงานเอง ทั้งสาย construction และ real estate",
@@ -53,8 +55,8 @@ export const profile = {
   education: [
     {
       period: "2014 - 2018",
-      title: "ปริญญาตรี เทคโนโลยีสารสนเทศและการสื่อสาร",
-      detail: "เอกออกแบบเว็บและสื่อโต้ตอบ · มหาวิทยาลัยศิลปากร (ICT)",
+      title: "Silpakorn University (ICT)",
+      detail: "ปริญญาตรี · สาขาเทคโนโลยีสารสนเทศและการสื่อสาร · เอกออกแบบเว็บและสื่อโต้ตอบ",
     },
   ],
 
@@ -95,21 +97,21 @@ export const profile = {
       title: "Computer Skills",
       items: [
         { label: "Figma", icon: "Frame" },
-        { label: "Adobe XD", icon: "PenTool" },
-        { label: "Adobe Photoshop", icon: "Image" },
-        { label: "Adobe Illustrator", icon: "Brush" },
-        { label: "VS Code", icon: "Code2" },
+        { label: "Adobe xd", icon: "PenTool" },
+        { label: "Adobe photoshop", icon: "Image" },
+        { label: "Adobe illustrator", icon: "Brush" },
+        { label: "VS code", icon: "Code2" },
         { label: "HTML", icon: "FileCode2" },
       ],
     },
     {
       title: "AI Skills",
       items: [
-        { label: "Claude Design", icon: "Sparkles" },
+        { label: "Claude design", icon: "Sparkles" },
         { label: "Claude Code", icon: "Bot" },
         { label: "Claude → MCP → Figma", icon: "Workflow" },
-        { label: "Design Workflow AI", icon: "GitBranch" },
-        { label: "AI Agents", icon: "BrainCircuit" },
+        { label: "AI design workflow", icon: "GitBranch" },
+        { label: "AI agents", icon: "BrainCircuit" },
         { label: "Design tokens", icon: "Braces" },
       ],
     },

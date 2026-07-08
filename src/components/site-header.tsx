@@ -76,7 +76,7 @@ export function SiteHeader() {
           <Avatar />
           <a
             href={profile.resumeUrl}
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-[13.5px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-[13.5px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Resume
           </a>

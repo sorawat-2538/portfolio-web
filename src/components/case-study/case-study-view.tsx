@@ -1,15 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Rocket } from "lucide-react";
+import {
+  Activity,
+  ArrowLeft,
+  ArrowRight,
+  LayoutGrid,
+  Lock,
+  MousePointerClick,
+  Rocket,
+  TrendingUp,
+  Users,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import type { Project, ProjectSlug } from "@/data/projects";
 import { getNextSlug, getPrevSlug, projects } from "@/data/projects";
+import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
+import { CodeEditorMock } from "./code-editor-mock";
+import { ProductMock } from "./product-mock";
+import { ScrollWindow } from "./scroll-window";
 import { ScreenGallery } from "./screen-gallery";
 
 // ── shared building blocks ──────────────────────────────────────────────────
 
 function Spacer() {
-  return <div className="h-[60px]" />;
+  return <div className="h-[50px]" />;
 }
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -58,76 +74,97 @@ function PlaceholderSlot({ label, ratio }: { label: string; ratio: string }) {
   );
 }
 
-/** macOS-style title bar (traffic-light dots + centered label) */
-function WindowBar({ label }: { label?: string }) {
+/** Browser window mockup — chrome + address bar (URL จริง) + จอ scroll ได้ข้างใน */
+function BrowserFrame({
+  src,
+  alt,
+  url,
+  priority,
+}: {
+  src?: string;
+  alt: string;
+  url?: string;
+  priority?: boolean;
+}) {
   return (
-    <div className="relative flex items-center border-b border-border bg-card px-4 py-2.5">
-      <span className="absolute left-4 flex gap-1.5">
-        <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
-        <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
-        <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
-      </span>
-      {label && (
-        <span className="w-full text-center text-[12.5px] text-muted-foreground">
-          {label}
+    <div className="mx-auto w-full select-none overflow-hidden rounded-[14px] border border-white/10 bg-[#0d1a2b] shadow-[0_28px_60px_-20px_rgba(8,15,30,0.6)]">
+      {/* ── CHROME BAR (dark) ── */}
+      <div className="flex items-center gap-3 border-b border-white/[0.06] bg-[#0f1f33] px-4 py-3">
+        <span className="flex shrink-0 gap-1.5">
+          <span className="h-3 w-3 rounded-full" style={{ background: "#ff5f57" }} />
+          <span className="h-3 w-3 rounded-full" style={{ background: "#febc2e" }} />
+          <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
         </span>
+        {url && (
+          <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md bg-white/[0.06] px-3 py-1 text-[12.5px] text-slate-300 ring-1 ring-white/10">
+            <Lock className="h-3 w-3 shrink-0 text-slate-400" strokeWidth={2.2} />
+            <span className="truncate">{url}</span>
+          </span>
+        )}
+      </div>
+
+      {/* ── SCREEN — capture นิ่ง (crop ส่วนบน ไม่ scroll) ── */}
+      {src ? (
+        <div className="h-[clamp(300px,42vw,400px)] overflow-hidden bg-[#0d1a2b]">
+          <Image
+            src={src}
+            alt={alt}
+            width={2880}
+            height={12658}
+            className="block h-auto w-full"
+            sizes="(max-width: 900px) 100vw, 760px"
+            priority={priority}
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-[16/10] items-center justify-center bg-white/[0.03]">
+          <span className="font-mono text-[11px] tracking-[0.05em] text-slate-500">
+            screen · แทนที่ด้วยภาพจริง
+          </span>
+        </div>
       )}
     </div>
   );
 }
 
-/** กรอบแสดงจอผลงาน
- *  chrome = แถบ title แบบ macOS · scroll=false = โชว์รูปเต็มไม่ scroll ในกรอบ */
-function ScreenFrame({
-  src,
-  alt,
+const BADGE_ICONS: Record<string, LucideIcon> = {
+  TrendingUp,
+  Users,
+  Activity,
+  LayoutGrid,
+  MousePointerClick,
+  Zap,
+};
+
+/** การ์ด stat ลอยบน hero (portpro-style) — พื้นขาวโปร่ง เงานุ่ม ไอคอนน้ำเงิน */
+function HeroBadge({
+  icon,
+  value,
   label,
-  priority,
-  chrome,
-  scroll = true,
+  className = "",
 }: {
-  src?: string;
-  alt: string;
-  label?: string;
-  priority?: boolean;
-  chrome?: boolean;
-  scroll?: boolean;
+  icon: string;
+  value: string;
+  label: string;
+  className?: string;
 }) {
-  const img = src ? (
-    <Image
-      src={src}
-      alt={alt}
-      width={2880}
-      height={12658}
-      className="block h-auto w-full"
-      sizes="(max-width: 900px) 100vw, 780px"
-      priority={priority}
-    />
-  ) : null;
-
+  const Icon = BADGE_ICONS[icon] ?? TrendingUp;
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-hover">
-      {chrome ? (
-        <WindowBar label={label} />
-      ) : label ? (
-        <div className="border-b border-border bg-card px-4 py-2.5 text-[12.5px] text-muted-foreground">
-          {label}
-        </div>
-      ) : null}
-
-      {img ? (
-        scroll ? (
-          <div className="max-h-[560px] overflow-y-auto">{img}</div>
-        ) : (
-          img
-        )
-      ) : (
-        <div className="flex aspect-[16/9] items-center justify-center">
-          <span className="font-mono text-[11px] tracking-[0.05em] text-faint">
-            {(label ?? "screen") + " · แทนที่ด้วยภาพจริง"}
-          </span>
-        </div>
-      )}
+    <div
+      className={
+        "absolute z-20 hidden items-center gap-2.5 rounded-2xl border border-white/70 bg-white/90 px-3.5 py-2.5 shadow-[0_12px_32px_-10px_rgba(30,50,90,0.28)] backdrop-blur-sm min-[560px]:flex " +
+        className
+      }
+    >
+      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d68ff]/10 text-[#2d68ff]">
+        <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+      </span>
+      <span className="leading-tight">
+        <span className="block text-[15px] font-bold tracking-[-0.01em] text-foreground">
+          {value}
+        </span>
+        <span className="block text-[11.5px] text-muted-foreground">{label}</span>
+      </span>
     </div>
   );
 }
@@ -169,76 +206,136 @@ export function CaseStudyView({
   slug: ProjectSlug;
   project: Project;
 }) {
-  const meta = [
-    { k: "Role", v: p.metaRole },
-    { k: "Timeline", v: p.metaTimeline },
-    { k: "Method", v: p.metaMethod },
-    { k: "Scale", v: p.metaScale },
-  ];
   const nextSlug = getNextSlug(slug);
   const prevSlug = getPrevSlug(slug);
+  // host สำหรับ address bar ของ browser mockup (ตัด protocol + / ท้าย)
+  const heroUrl =
+    p.liveUrl && p.liveUrl !== "#"
+      ? p.liveUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")
+      : undefined;
+
+  // hero เดิม (ProductMock + รูป static) เก็บโค้ดไว้ก่อน — เปลี่ยนเป็น true เพื่อกลับมาแสดง
+  const SHOW_HERO_MOCKS = false;
 
   return (
     <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
-        <div className="text-[13px] uppercase tracking-[0.18em] text-faint">
-          {p.category}
-        </div>
-        <h1 className="mt-2.5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
+        {/* availability status — blinking dot */}
+        <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-[12.5px] font-medium text-emerald-600 dark:text-emerald-400">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 motion-safe:animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          Project available
+        </span>
+
+        <h1 className="mt-5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
         </h1>
-        <p className="mt-3 line-clamp-1 text-[clamp(16px,1.7vw,19px)] text-muted-foreground">
+        <p className="mt-3 text-[16px] leading-[1.7] text-muted-foreground">
           {p.tagline}
         </p>
 
-        {/* action row (product-page style) */}
-        <div className="mt-6 flex flex-col gap-4 border-y border-border py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2.5 text-[13.5px] text-muted-foreground">
-            <span>{p.year}</span>
-            <span className="text-faint">·</span>
-            <span>{p.metaRole}</span>
+        {/* identity + action bar (product-page style) */}
+        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* who — avatar + name + role */}
+          <div className="flex items-center gap-3">
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
+              <Image
+                src={profile.hero.avatar}
+                alt={profile.name}
+                fill
+                sizes="40px"
+                className="object-cover object-top [image-rendering:pixelated]"
+              />
+            </span>
+            <div className="min-w-0 leading-tight">
+              <div className="text-[15px] font-semibold text-foreground">
+                {profile.fullName}
+              </div>
+              <div className="mt-0.5 text-[13px] text-muted-foreground">
+                {profile.headline}
+              </div>
+            </div>
           </div>
+
+          {/* primary action */}
           {p.liveUrl && p.liveUrl !== "#" && (
             <a
               href={p.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[14px] font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
             >
               <Rocket className="h-4 w-4" />
-              Visit site
+              เปิดดูเว็บไซต์
             </a>
           )}
         </div>
 
-        {/* meta grid */}
-        <div className="mt-8 grid gap-x-[30px] gap-y-[26px] [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
-          {meta.map((m) => (
-            <div key={m.k}>
-              <div className="text-[11.5px] uppercase tracking-[0.14em] text-faint">
-                {m.k}
-              </div>
-              <div className="mt-2 text-[15px] leading-[1.5] text-foreground">
-                {m.v}
-              </div>
+        {/* divider between the action bar and the hero */}
+        <div className="mt-6 border-t border-border" />
+
+        {/* hero เดิม (ProductMock + รูป static) — เก็บไว้ก่อน; ตั้ง SHOW_HERO_MOCKS=true เพื่อกลับมาแสดง */}
+        {SHOW_HERO_MOCKS && (
+          <>
+        {/* hero: MacBook mockup ในกรอบ gradient + floating badge (portpro-style) */}
+        <div className="mt-8">
+          <div className="relative px-[clamp(0px,3vw,32px)] py-[clamp(8px,3vw,28px)]">
+            <div className="relative mx-auto max-w-[760px]">
+              {p.heroMock === "product" ? (
+                <ProductMock url={heroUrl} />
+              ) : p.heroMock === "code" ? (
+                <CodeEditorMock />
+              ) : p.heroImage ? (
+                <BrowserFrame
+                  src={p.heroImage}
+                  alt={p.title}
+                  url={heroUrl}
+                  priority
+                />
+              ) : (
+                <CodeEditorMock />
+              )}
+
+              {/* floating badges — overhang the mockup corners */}
+              {p.heroBadges?.[0] && (
+                <HeroBadge {...p.heroBadges[0]} className="-right-5 top-8" />
+              )}
+              {p.heroBadges?.[1] && (
+                <HeroBadge {...p.heroBadges[1]} className="-left-5 bottom-8" />
+              )}
             </div>
-          ))}
-        </div>
-
-        {/* hero: scrollable 560px frame (keeps a tall screenshot compact) */}
-        <div className="mt-[34px]">
-          <ScreenFrame src={p.heroImage} alt={p.title} priority />
-        </div>
-
-        {/* tools */}
-        <div className="mt-[40px]">
-          <H2>Tools</H2>
-          <div className="mt-5 flex flex-wrap gap-3 min-[560px]:flex-nowrap">
-            {p.tools.map((tool) => (
-              <ToolCard key={tool} name={tool} />
-            ))}
           </div>
+        </div>
+
+        {/* second example — optimized (AVIF/WebP, right-sized per device) but
+            quality 90 so UI text/edges stay crisp; lazy-loads by default */}
+        <div className="mt-6">
+          <Image
+            src="/uploads/propertyhub-preview.jpg"
+            alt="Propertyhub homepage — aura.build preview"
+            width={2764}
+            height={1819}
+            quality={90}
+            sizes="(min-width: 900px) 788px, 100vw"
+            className="block h-auto w-full"
+          />
+        </div>
+          </>
+        )}
+
+        {/* live scrollable window of the full homepage — 50px จากเส้นคั่น */}
+        <div className="mt-[50px]">
+          <ScrollWindow
+            src="/uploads/propertyhub-home-full.jpg"
+            url="propertyhub.in.th"
+            alt="Propertyhub homepage — full page"
+            width={1600}
+            height={7403}
+            priority
+          />
         </div>
       </section>
 
@@ -250,6 +347,18 @@ export function CaseStudyView({
         <div className="mt-[22px] space-y-[18px]">
           {p.overview.map((para, i) => (
             <Body key={i}>{para}</Body>
+          ))}
+        </div>
+      </section>
+
+      <Spacer />
+
+      {/* ── TOOLS ── */}
+      <section>
+        <H2>Tools</H2>
+        <div className="mt-5 flex flex-wrap gap-3 min-[560px]:flex-nowrap">
+          {p.tools.map((tool) => (
+            <ToolCard key={tool} name={tool} />
           ))}
         </div>
       </section>
@@ -551,16 +660,6 @@ export function CaseStudyView({
           <H3>Discipline lesson</H3>
           <Body className="mt-2.5">{p.reflectLesson}</Body>
         </div>
-
-        <a
-          href={p.liveUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-[34px] inline-flex items-center gap-[11px] rounded-full bg-primary px-8 py-4 text-[16.5px] text-primary-foreground no-underline transition-opacity hover:opacity-90"
-        >
-          <Rocket className="h-[19px] w-[19px]" strokeWidth={1.7} />
-          เปิดดูเว็บไซต์
-        </a>
       </section>
 
       {/* ── footer nav (prev / next) ── */}
