@@ -34,9 +34,9 @@ export const profile = {
   aboutEnglish:
     "I bring a strong sense of ownership and genuine love for the craft. Being the only designer at my companies taught me to take a brief, shape the flow, and ship it — all on my own. I care about pixel-perfect detail, pick up new things fast, and work smoothly with developers thanks to a working knowledge of code. These days I also bring AI into my design process to move faster and sharper.",
 
-  // สั้นๆ ใต้ตำแหน่งในการ์ด About (ใช้ข้อความเดียวกับ hero intro)
+  // สั้นๆ ใต้ตำแหน่งในการ์ด About — โทนภาษาพูด บอกความเป็นตัวเองผ่านมุมมองการทำงาน
   aboutSummary:
-    "ผมเป็น UX/UI & Product Designer ที่จบจากศิลปากร เอกออกแบบเว็บและสื่อโต้ตอบ ตลอด 7 ปีที่ผ่านมาผมเป็นดีไซเนอร์คนเดียวของบริษัท — รับโจทย์เอง คิดเอง จบงานเอง ทั้งสาย construction และ real estate",
+    "ผมเป็น UX/UI & Product Designer ที่ชอบลุยงานเองตั้งแต่ต้นจนจบ — รับโจทย์มาก็คิด flow เอง ออกแบบเอง แล้วทำจนออกมาเป็นของจริงที่ใช้งานได้ ผมสนุกกับการแก้ปัญหาให้คนใช้ และเชื่อว่ารายละเอียดเล็กๆ นี่แหละที่ทำให้งานออกมาต่างกัน",
 
   // stat 2 ช่องในการ์ด About
   stats: [

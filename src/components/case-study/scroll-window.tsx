@@ -39,7 +39,10 @@ export function ScrollWindow({
 
       {/* ── SCREEN — fixed height, scrolls inside ── */}
       <div className="relative">
-        <div className="h-[clamp(380px,58vh,600px)] overflow-y-auto overscroll-none bg-white [scrollbar-width:thin]">
+        {/* overscroll-auto: when the inner view hits its top/bottom limit, the
+            remaining scroll chains through to the page so the reader keeps going
+            without moving the cursor off the frame. */}
+        <div className="h-[clamp(380px,58vh,600px)] overflow-y-auto overscroll-auto bg-white [scrollbar-width:thin]">
           {/* unoptimized: full-page screenshots are extremely tall (aspect ~1:4.6)
               and Next's optimizer pads some resized variants (1080/1920w) with a
               gray strip at the bottom. Serving the pre-sized source (1600w) as-is

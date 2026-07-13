@@ -20,7 +20,11 @@ import { toolMeta } from "@/data/tools";
 import { CodeEditorMock } from "./code-editor-mock";
 import { ProductMock } from "./product-mock";
 import { ScrollWindow } from "./scroll-window";
+import { CropWindow } from "./crop-window";
+import { LaptopMock } from "./laptop-mock";
 import { ScreenGallery } from "./screen-gallery";
+import { MeasurementStory } from "./measurement-story";
+import { ClaudeSection } from "./claude-section";
 
 // ── shared building blocks ──────────────────────────────────────────────────
 
@@ -217,6 +221,30 @@ export function CaseStudyView({
   // hero เดิม (ProductMock + รูป static) เก็บโค้ดไว้ก่อน — เปลี่ยนเป็น true เพื่อกลับมาแสดง
   const SHOW_HERO_MOCKS = false;
 
+  // hero visual variant — สลับได้ที่เดียว:
+  //   "scroll" = v1 browser chrome + เลื่อนดูในกรอบ
+  //   "crop"   = v2 crop นิ่ง ไม่มีกรอบ/มุมโค้ง/scroll
+  //   "laptop" = v3 MacBook mockup (รูป home crop ในจอ)
+  const HERO_VARIANT = "scroll" as "scroll" | "crop" | "laptop";
+  // ชั่วคราว: วางทั้ง 3 variant เรียงกันเพื่อเทียบบนหน้า — เลือกได้แล้วตั้งเป็น false
+  const HERO_COMPARE = false;
+
+  const heroSrc = "/uploads/propertyhub-home-full.jpg";
+  const renderHero = (v: "scroll" | "crop" | "laptop") => {
+    if (v === "crop")
+      return <CropWindow src={heroSrc} alt={p.title} width={1600} height={7403} priority />;
+    if (v === "laptop")
+      return <LaptopMock src={heroSrc} alt={p.title} width={1600} height={7403} priority />;
+    return (
+      <ScrollWindow src={heroSrc} url="propertyhub.in.th" alt={p.title} width={1600} height={7403} priority />
+    );
+  };
+  const HERO_LABELS: Record<string, string> = {
+    scroll: "v1 — scroll (แบบเดิม)",
+    crop: "v2 — crop นิ่ง",
+    laptop: "v3 — MacBook mockup",
+  };
+
   return (
     <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
@@ -326,16 +354,27 @@ export function CaseStudyView({
           </>
         )}
 
-        {/* live scrollable window of the full homepage — 50px จากเส้นคั่น */}
+        {/* hero visual — 50px จากเส้นคั่น
+            HERO_COMPARE=true → วางทั้ง 3 variant เรียงกันเพื่อเทียบ
+            HERO_COMPARE=false → แสดงตัวเดียวตามค่า HERO_VARIANT */}
         <div className="mt-[50px]">
-          <ScrollWindow
-            src="/uploads/propertyhub-home-full.jpg"
-            url="propertyhub.in.th"
-            alt="Propertyhub homepage — full page"
-            width={1600}
-            height={7403}
-            priority
-          />
+          {HERO_COMPARE ? (
+            <div className="flex flex-col gap-14">
+              {(["scroll", "crop", "laptop"] as const).map((v) => (
+                <div key={v}>
+                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[12.5px] font-medium text-muted-foreground">
+                    <span className="font-mono uppercase tracking-[0.1em] text-brand">
+                      Hero
+                    </span>
+                    {HERO_LABELS[v]}
+                  </div>
+                  {renderHero(v)}
+                </div>
+              ))}
+            </div>
+          ) : (
+            renderHero(HERO_VARIANT)
+          )}
         </div>
       </section>
 
@@ -363,15 +402,14 @@ export function CaseStudyView({
         </div>
       </section>
 
-      {/* ── SCREENS (จอที่ออกแบบ) — stacked labeled frames ── */}
+      {/* ── WORKS (จอที่ออกแบบ) — full-page shots placed side by side ── */}
       {p.screens && p.screens.length > 0 && (
         <>
           <Spacer />
           <section>
-            <H2>Screens</H2>
-            <p className="mt-2 text-[14px] text-faint">กดที่ภาพเพื่อดูเต็มจอ</p>
+            <H2>Works</H2>
             <div className="mt-[26px]">
-              <ScreenGallery screens={p.screens} title={p.title} />
+              <ScreenGallery screens={p.screens} title={p.title} cols={3} />
             </div>
           </section>
         </>
@@ -379,30 +417,7 @@ export function CaseStudyView({
 
       <Spacer />
 
-      {/* ── 2 · CONTEXT & CONSTRAINT ── */}
-      <section>
-        <H2>Context & Constraint</H2>
-        <div className="mt-[26px]">
-          <H3>The Business</H3>
-          <Body className="mt-2.5">{p.ctxBusiness}</Body>
-        </div>
-        <div className="mt-[26px]">
-          <H3>The Problem</H3>
-          <Body className="mt-2.5">{p.ctxProblem}</Body>
-        </div>
-        <div className="mt-[26px]">
-          <H3>Constraint</H3>
-          <div className="mt-3.5 flex flex-col gap-[11px]">
-            {p.constraints.map((c, i) => (
-              <Bullet key={i}>{c}</Bullet>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Spacer />
-
-      {/* ── 3 · HYPOTHESIS ── */}
+      {/* ── HYPOTHESIS ── */}
       <section>
         <H2>Hypothesis</H2>
         <div className="mt-6 rounded-r-xl border-l-[3px] border-foreground bg-hover px-[26px] py-6">
@@ -480,7 +495,10 @@ export function CaseStudyView({
 
       <Spacer />
 
-      {/* ── 5 · EXPERIMENT SETUP ── */}
+      {/* ── 5 · HOW I MEASURED ── */}
+      {p.measure ? (
+        <MeasurementStory measure={p.measure} title={p.title} />
+      ) : (
       <section>
         <H2>How I Measured</H2>
         <div className="mt-6">
@@ -535,105 +553,19 @@ export function CaseStudyView({
           </div>
         </div>
       </section>
+      )}
+
+      {/* ── HOW CLAUDE HELPED ── (เส้นคั่นปิดท้าย How I Measured? ก่อนเข้า section นี้) */}
+      {p.claude && (
+        <>
+          <div className="my-[50px] h-px bg-border" />
+          <ClaudeSection claude={p.claude} title={p.title} />
+        </>
+      )}
 
       <Spacer />
 
-      {/* ── 6 · RESULTS ── */}
-      <section>
-        <H2>Results</H2>
-
-        {/* primary metric */}
-        <div className="mt-[26px] rounded-xl border border-foreground bg-hover px-[clamp(26px,4vw,40px)] py-[clamp(26px,4vw,40px)]">
-          <div className="text-[12px] uppercase tracking-[0.14em] text-faint">
-            Primary Metric
-          </div>
-          <div className="mt-3.5 text-[16px] text-muted-foreground">
-            {p.resultPrimary.label}
-          </div>
-          <div className="mt-3 flex flex-wrap items-baseline gap-4">
-            <span className="text-[clamp(30px,5vw,46px)] tracking-[-0.02em] text-faint">
-              {p.resultPrimary.before}
-            </span>
-            <span className="text-[clamp(24px,3vw,32px)] text-faint">→</span>
-            <span className="text-[clamp(38px,7vw,64px)] leading-none tracking-[-0.03em] text-foreground">
-              {p.resultPrimary.after}
-            </span>
-          </div>
-          <div className="mt-3.5 text-[16px] text-muted-foreground">
-            {p.resultPrimary.delta}
-          </div>
-        </div>
-
-        {/* secondary metrics */}
-        <div className="mt-5 overflow-hidden rounded-lg border border-border">
-          {p.resultsSecondary.map((row, i) => (
-            <div
-              key={i}
-              className={
-                "flex items-center justify-between gap-4 px-[18px] py-3.5" +
-                (i < p.resultsSecondary.length - 1 ? " border-b border-border" : "")
-              }
-            >
-              <span className="text-[15px] text-foreground">{row.label}</span>
-              <span className="text-right text-[15px] tabular-nums text-muted-foreground">
-                {row.change}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* device breakdown */}
-        <div className="mt-[34px]">
-          <H3>Device Breakdown</H3>
-          <div className="mt-4 overflow-hidden rounded-lg border border-border tabular-nums">
-            <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-b border-border bg-hover">
-              {["Device", "Before", "After", "Change"].map((h, i) => (
-                <span
-                  key={h}
-                  className={
-                    "px-[18px] py-3.5 text-[12px] uppercase tracking-[0.08em] text-faint" +
-                    (i === 0 ? "" : " text-right")
-                  }
-                >
-                  {h}
-                </span>
-              ))}
-            </div>
-            {p.devices.map((d, i) => (
-              <div
-                key={d.device}
-                className={
-                  "grid grid-cols-[1.4fr_1fr_1fr_1fr]" +
-                  (i < p.devices.length - 1 ? " border-b border-border" : "")
-                }
-              >
-                <span className="px-[18px] py-3.5 text-[15px] text-foreground">{d.device}</span>
-                <span className="px-[18px] py-3.5 text-right text-[15px] text-muted-foreground">{d.before}</span>
-                <span className="px-[18px] py-3.5 text-right text-[15px] text-muted-foreground">{d.after}</span>
-                <span className="px-[18px] py-3.5 text-right text-[15px] text-foreground">{d.change}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-[30px]">
-          <H3>What surprised me</H3>
-          <Body className="mt-2.5">{p.surprised}</Body>
-        </div>
-        <div className="mt-[26px]">
-          <H3>Limitation</H3>
-          <Body className="mt-2.5">{p.limitation}</Body>
-        </div>
-
-        {/* GA4 screenshot slot */}
-        <div className="mt-6 overflow-hidden rounded-lg border border-border">
-          <PlaceholderSlot label="screenshot GA4 / Clarity · blur sensitive" ratio="16/7" />
-        </div>
-      </section>
-
-      <Spacer />
-
-      {/* ── 7 · REFLECTION ── */}
+      {/* ── REFLECTION ── */}
       <section>
         <H2>What I&apos;d Do Differently</H2>
         <div className="mt-[26px]">

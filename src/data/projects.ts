@@ -36,10 +36,38 @@ export type Project = {
    *  มีค่านี้จะ override heroImage ในหน้า case study (แต่ heroImage ยังใช้เป็น thumbnail ในหน้าแรก) */
   heroMock?: "product" | "code";
   /** จอเพิ่มเติมที่โชว์ในหน้า case study (Home/Result/Listing ฯลฯ)
-   *  แต่ละจอเป็น frame scroll แยก มี label — ใส่ src เมื่อมีรูปจริง */
-  screens?: { label: string; src?: string }[];
+   *  แต่ละจอเป็น browser frame ที่เลื่อนดูหน้ายาวได้ในกรอบ + กดขยายเต็มจอ
+   *  - label : ชื่อจอ (เช่น "Project detail")
+   *  - desc  : คำอธิบายสั้น 1 บรรทัด ว่าจอนี้ทำหน้าที่อะไร
+   *  - url   : path ที่โชว์ใน address bar ของ browser frame
+   *  - src   : path รูปใน public/ (ใส่เมื่อมีรูปจริง) · w/h = ขนาดจริงของรูป (กัน layout shift) */
+  screens?: { label: string; src?: string; desc?: string; url?: string; w?: number; h?: number }[];
   /** การ์ด stat ลอยบน hero (portpro-style) — ไม่ใส่ก็ได้, โชว์เฉพาะที่มีข้อมูล */
   heroBadges?: { icon: string; value: string; label: string }[];
+
+  /** "How I Measured" แบบเล่าเป็น Step (Goal → Step 1..n) พร้อมรูป analytics จริง
+   *  ถ้ามี field นี้ จะ render section นี้แทนบล็อก How I Measured แบบเดิม */
+  measure?: {
+    goal: string;
+    steps: {
+      title: string;
+      body: string;
+      images?: { src: string; caption: string; w: number; h: number }[];
+    }[];
+  };
+
+  /** "How Claude Helped" — เล่าเป็น flow: ต่อ Claude กับ data → เจอ insight → ขยับบทบาทไปทาง product */
+  claude?: {
+    intro: string;
+    flow: { label: string; sub: string }[];
+    insight: {
+      lead: string;
+      stats: { value: string; label: string }[];
+      takeaway: string;
+      image: { src: string; caption: string; w: number; h: number };
+    };
+    closing: string;
+  };
 
   metaRole: string;
   metaTimeline: string;
@@ -85,12 +113,32 @@ export const projects = {
     year: "2021 – ปัจจุบัน",
     heroImage: "/uploads/Home.jpg",
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
-    // ตัวอย่างโชว์ 3 จอ (ตอนนี้ duplicate Home ก่อนเพื่อดูความยาว/รายละเอียด)
-    // เปลี่ยน src เป็นรูป Result / Listing จริงได้เลยเมื่อมีภาพ
+    // 3 จอจริงจาก Propertyhub — เลื่อนดูทั้งหน้าได้ในกรอบ หรือกดขยายเต็มจอ
     screens: [
-      { label: "Home", src: "/uploads/Home.jpg" },
-      { label: "Result page", src: "/uploads/Home.jpg" },
-      { label: "Listing detail", src: "/uploads/Home.jpg" },
+      {
+        label: "Project detail",
+        desc: "หน้ารายละเอียดโครงการ — รวมข้อมูล ทำเล และประกาศเช่า/ขายในโครงการเดียวกัน เป็นจุดที่ traffic เข้าสูงสุด",
+        url: "propertyhub.in.th/project",
+        src: "/uploads/propertyhub-project-detail.jpg",
+        w: 1600,
+        h: 5106,
+      },
+      {
+        label: "AssetBank — ทรัพย์มือสองจากธนาคาร",
+        desc: "หน้ารวมทรัพย์ NPA ราคาพิเศษจากธนาคารชั้นนำ พร้อมระบบค้นหาและโปรโมชันดอกเบี้ยต่ำ",
+        url: "propertyhub.in.th/asset-bank",
+        src: "/uploads/propertyhub-assetbank.jpg",
+        w: 1600,
+        h: 5890,
+      },
+      {
+        label: "New projects",
+        desc: "หน้ารวมโครงการใหม่ บ้าน–ทาวน์เฮาส์–คอนโด คัดโครงการแนะนำและจัดกลุ่มตามทำเล/ผู้พัฒนา",
+        url: "propertyhub.in.th/new-projects",
+        src: "/uploads/propertyhub-new-projects.jpg",
+        w: 1600,
+        h: 5138,
+      },
     ],
     liveUrl: "https://propertyhub.in.th/",
     heroBadges: [
@@ -98,7 +146,7 @@ export const projects = {
       { icon: "Activity", value: "A/B tested", label: "GA4 + Clarity" },
     ],
     tagline:
-      "PropertyHub คือแพลตฟอร์มค้นหาอสังหาริมทรัพย์ ที่ช่วยให้ผู้ใช้ค้นหาบ้านและคอนโดได้ง่าย พร้อมข้อมูลครบถ้วนเพื่อการตัดสินใจที่มั่นใจ",
+      "PropertyHub คือแพลตฟอร์มที่ช่วยให้การหาบ้านหรือคอนโดเป็นเรื่องง่าย ไม่ว่าจะซื้อหรือเช่า ก็สามารถค้นหา ดูรายละเอียด และติดต่อผู้ลงประกาศได้สะดวกในที่เดียว พร้อมเครื่องมือที่ช่วยให้เลือกที่อยู่อาศัยได้ตรงกับความต้องการมากขึ้น",
     metaRole: "Sole Product Designer",
     metaTimeline: "[ MMM YYYY – MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
@@ -151,6 +199,60 @@ export const projects = {
         cut: "[ option อื่นที่พิจารณาแล้วตัดออก + เหตุผล ]",
       },
     ],
+    measure: {
+      goal: "เป้าหมายหลักของหน้า Project page คือ ส่งผู้ใช้ต่อไปยังหน้า listing เช่า/ขายคอนโด (/เช่าคอนโด · /ขายคอนโด) ให้ได้มากที่สุด — ยิ่งพาไปเจอ listing ที่ตรง intent มากเท่าไหร่ ยิ่งมีโอกาสกด contact agent ซึ่งเป็น revenue signal ของ Propertyhub",
+      steps: [
+        {
+          title: "หลัง redesign หน้า Project Detail ใหม่ ผมวัดผลยังไง?",
+          body: "หลังปล่อย design ใหม่ ผมไม่มี A/B testing tool หรือ research budget จึงวัดผลเองด้วย 3 เครื่องมือฟรี — GA4, Microsoft Clarity และ Zimple Analytics — เก็บพฤติกรรมผู้ใช้จริง แล้วเทียบกับ design เก่าในช่วงเวลาที่ใกล้เคียงกัน เพื่อตอบคำถามเดียวว่า “หน้าใหม่ยังส่งคนไปหน้า listing เช่า/ขายได้ดีขึ้นไหม”",
+          images: [
+            { src: "/uploads/propertyhub-project-detail.jpg", caption: "หน้า Project Detail ที่ redesign ใหม่ — จุดตั้งต้นของการวัดผล", w: 1600, h: 5106 },
+          ],
+        },
+        {
+          title: "วัดผลด้วย GA4 — Funnel Exploration",
+          body: "ตั้ง Funnel Exploration ใน GA4 เอง 4 ขั้น (เข้าหน้าโครงการ → ไปหน้า listing result → เข้าหน้า listing detail → กด contact agent) เพื่อดูว่าหน้า Project ใหม่ยังทำงานได้ดีหรือแย่ลงเมื่อเทียบกับ design เก่า ในช่วงเวลาใกล้เคียงกัน — จากรูป ขั้นแรก session ของ design เก่าจะสูงกว่าราวเท่าตัว เพราะเรื่อง consent การกด Accept cookies ของเว็บ แต่ช่วงกลางและปลาย funnel session ใกล้เคียงกันมาก และเมื่อดูตัวเลขจะเห็นว่า design ใหม่ส่ง user ไปถึงขั้นที่ 4 (กด contact agent) ได้มากกว่า design เก่า",
+          images: [
+            { src: "/uploads/ph-ga4-funnel.jpg", caption: "GA4 Funnel Exploration — 4 ขั้น เทียบ design เก่า (ฟ้า) กับใหม่ (ม่วง) ช่วงเวลาใกล้เคียงกัน", w: 2400, h: 1122 },
+          ],
+        },
+        {
+          title: "ดู Behavior จาก Microsoft Clarity",
+          body: "วัด behavior ของผู้ใช้หลังเปลี่ยน design ใหม่ — ดูว่าคนกดตรงไหนมากที่สุด (heatmap), scroll ลึกแค่ไหน (scroll depth) และกดปุ่ม เช่า/ขาย ที่เราต้องการหรือไม่ ช่วยให้เห็นภาพรวมว่าคนใช้งานหน้านี้จริงอย่างไร ไม่ใช่แค่ตัวเลข conversion",
+          images: [
+            { src: "/uploads/ph-clarity-1.jpg", caption: "Clarity heatmap — ส่วนบนของหน้า: คนคลิกที่แกลเลอรีรูปและปุ่มเช่า/ขายมากที่สุด", w: 2400, h: 1166 },
+            { src: "/uploads/ph-clarity-2.jpg", caption: "Clarity heatmap — ส่วน listing ในโครงการ: การคลิกดูประกาศเช่า/ขายจริง", w: 2400, h: 1166 },
+          ],
+        },
+        {
+          title: "ใช้ Zimple Analytics เพื่อยืนยันและหา Goal ต่อไป",
+          body: "ใช้ Dashboard Navigation Summary ของ Zimple Analytics ยืนยันผลและวิเคราะห์ว่าจะทำอะไรต่อได้ — จากรูป เมื่อเลือก Current Selection เป็น project_detail จะเห็นว่า Next Page เกือบ 50% ของ session ไปหน้า “ประกาศเช่า” ซึ่งตรงกับ goal ของหน้านี้พอดี ยืนยันว่าหน้า Project ใหม่ยังทำงานได้ดี และชี้ทางว่าจะไป optimize ต่อตรงไหน",
+          images: [
+            { src: "/uploads/ph-zimple-projectdetail.jpg", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 2400, h: 1168 },
+          ],
+        },
+      ],
+    },
+    claude: {
+      intro: "งานนี้ผมไม่ได้หยุดที่ design — ผมต่อ Claude เข้ากับ GA4 และ Microsoft Clarity ผ่าน MCP ให้ Claude ดึงและวิเคราะห์ data ได้โดยตรง ทำงานควบคู่กับ Zimple Analytics เพื่อขุด insight เอง โดยไม่ต้องรอทีม data",
+      flow: [
+        { label: "Claude + MCP", sub: "เชื่อมต่อเครื่องมือ" },
+        { label: "GA4 + Clarity", sub: "ดึง data ผ่าน Claude ได้เลย" },
+        { label: "Analyze", sub: "ให้ Claude ช่วยวิเคราะห์" },
+        { label: "Zimple Analytics", sub: "ยืนยัน & หา goal ต่อ" },
+      ],
+      insight: {
+        lead: "พอขุดจริง เจอ insight ที่เปลี่ยนโจทย์ทั้งงาน — ผู้ใช้ส่วนใหญ่ที่เข้าหน้า listing ดูแค่ประกาศเดียวแล้วออก",
+        stats: [
+          { value: "~75%", label: "ของ session ดู listing แค่ 1 view แล้วออก (367K+ sessions)" },
+          { value: "1.31%", label: "contact rate ของกลุ่ม 1 view" },
+          { value: "21.25%", label: "contact rate ของกลุ่มที่ดู 4+ views" },
+        ],
+        takeaway: "ยิ่ง user engage ลึก (ดู listing หลายอัน) contact rate ยิ่งพุ่ง — โจทย์ถัดไปจึงไม่ใช่แค่ “ส่งคนไป listing” แต่คือ “ทำยังไงให้ดูลึกกว่า 1 ประกาศ”",
+        image: { src: "/uploads/ph-zimple-session.jpg", caption: "Zimple Analytics — Session Explorer: engagement depth distribution (1 / 2 / 3 / 4+ views) เทียบ contact rate", w: 2400, h: 1167 },
+      },
+      closing: "จุดนี้ทำให้รู้สึกว่าตัวเองขยับจาก “designer” ไปทาง “product” มากขึ้น — ไม่ใช่แค่ออกแบบหน้าจอ แต่ใช้ data ตั้งโจทย์ วัดผล และหา direction ต่อได้เองทั้งวงจร",
+    },
     expWhy:
       "ไม่มี A/B testing tool และ research budget ผมจึงออกแบบ manual A/B test โดยใช้ GA4 event + Microsoft Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate แบบ before/after ของ variant เดิมกับ design ใหม่",
     expSegment: "[ วิธีแบ่ง variant — เช่น by user ID ]",
