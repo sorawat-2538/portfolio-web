@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { X, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Project } from "@/data/projects";
 
 type Img = { src: string; caption: string; w: number; h: number };
@@ -68,10 +68,12 @@ function Shot({
   img,
   title,
   onOpen,
+  hideCaption = false,
 }: {
   img: Img;
   title: string;
   onOpen: (img: Img) => void;
+  hideCaption?: boolean;
 }) {
   const tall = img.h > img.w;
   return (
@@ -99,15 +101,13 @@ function Shot({
           {tall && (
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/85 to-transparent" />
           )}
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1.5 text-[12px] font-medium text-foreground opacity-0 shadow-sm ring-1 ring-border backdrop-blur transition-opacity group-hover:opacity-100">
-            <Maximize2 className="h-3.5 w-3.5" />
-            เต็มจอ
-          </span>
         </div>
       </button>
-      <figcaption className="mt-2.5 text-[13px] leading-[1.5] text-muted-foreground">
-        {img.caption}
-      </figcaption>
+      {!hideCaption && (
+        <figcaption className="mt-2.5 text-center text-[13px] leading-[1.5] text-muted-foreground">
+          {img.caption}
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -137,38 +137,46 @@ function Slider({
   };
 
   return (
-    <div className="relative">
-      <div
-        ref={ref}
-        onScroll={onScroll}
-        className="flex snap-x snap-mandatory overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {images.map((img) => (
-          <div key={img.src} className="w-full shrink-0 snap-center px-0.5">
-            <Shot img={img} title={title} onOpen={onOpen} />
-          </div>
-        ))}
+    <div>
+      {/* image area — arrows are centered on THIS (caption lives below) */}
+      <div className="relative">
+        <div
+          ref={ref}
+          onScroll={onScroll}
+          className="flex snap-x snap-mandatory overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {images.map((img) => (
+            <div key={img.src} className="w-full shrink-0 snap-center px-0.5">
+              <Shot img={img} title={title} onOpen={onOpen} hideCaption />
+            </div>
+          ))}
+        </div>
+
+        {/* arrows */}
+        <button
+          type="button"
+          aria-label="ก่อนหน้า"
+          onClick={() => go(idx - 1)}
+          disabled={idx === 0}
+          className="absolute left-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-background/90 text-foreground shadow ring-1 ring-border backdrop-blur transition disabled:cursor-default disabled:opacity-0"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="ถัดไป"
+          onClick={() => go(idx + 1)}
+          disabled={idx === images.length - 1}
+          className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-background/90 text-foreground shadow ring-1 ring-border backdrop-blur transition disabled:cursor-default disabled:opacity-0"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
 
-      {/* arrows */}
-      <button
-        type="button"
-        aria-label="ก่อนหน้า"
-        onClick={() => go(idx - 1)}
-        disabled={idx === 0}
-        className="absolute left-2 top-[38%] inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-background/90 text-foreground shadow ring-1 ring-border backdrop-blur transition disabled:cursor-default disabled:opacity-0"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </button>
-      <button
-        type="button"
-        aria-label="ถัดไป"
-        onClick={() => go(idx + 1)}
-        disabled={idx === images.length - 1}
-        className="absolute right-2 top-[38%] inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-background/90 text-foreground shadow ring-1 ring-border backdrop-blur transition disabled:cursor-default disabled:opacity-0"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </button>
+      {/* current caption */}
+      <p className="mt-2.5 text-center text-[13px] leading-[1.5] text-muted-foreground">
+        {images[idx]?.caption}
+      </p>
 
       {/* dots */}
       <div className="mt-3 flex justify-center gap-2">
@@ -233,7 +241,7 @@ export function MeasurementStory({
                 <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
                   {s.title}
                 </h3>
-                <p className="mt-3 max-w-[66ch] text-[16px] leading-[1.75] text-muted-foreground">
+                <p className="mt-3 text-[16px] leading-[1.75] text-muted-foreground">
                   {s.body}
                 </p>
 

@@ -25,6 +25,8 @@ import { LaptopMock } from "./laptop-mock";
 import { ScreenGallery } from "./screen-gallery";
 import { MeasurementStory } from "./measurement-story";
 import { ClaudeSection } from "./claude-section";
+import { WorkflowProcess } from "./workflow-process";
+import { StatusBadge } from "./status-badge";
 
 // ── shared building blocks ──────────────────────────────────────────────────
 
@@ -53,28 +55,6 @@ function Body({ children, className = "" }: { children: React.ReactNode; classNa
     <p className={"text-[17px] leading-[1.8] text-muted-foreground " + className}>
       {children}
     </p>
-  );
-}
-
-function Bullet({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-baseline gap-3 text-[16px] leading-[1.5] text-muted-foreground">
-      <span className="h-[5px] w-[5px] shrink-0 -translate-y-[3px] rounded-full bg-faint" />
-      <span>{children}</span>
-    </div>
-  );
-}
-
-function PlaceholderSlot({ label, ratio }: { label: string; ratio: string }) {
-  return (
-    <div
-      className="flex items-center justify-center bg-hover"
-      style={{ aspectRatio: ratio }}
-    >
-      <span className="font-mono text-[11px] tracking-[0.05em] text-faint">
-        {label}
-      </span>
-    </div>
   );
 }
 
@@ -249,14 +229,8 @@ export function CaseStudyView({
     <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
-        {/* availability status — blinking dot */}
-        <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-[12.5px] font-medium text-emerald-600 dark:text-emerald-400">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 motion-safe:animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          Project available
-        </span>
+        {/* availability status — badge ตาม p.status (Available / On Process / Coming Soon) */}
+        <StatusBadge status={p.status ?? "available"} />
 
         <h1 className="mt-5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
@@ -376,6 +350,7 @@ export function CaseStudyView({
             renderHero(HERO_VARIANT)
           )}
         </div>
+
       </section>
 
       <Spacer />
@@ -390,7 +365,7 @@ export function CaseStudyView({
         </div>
       </section>
 
-      <Spacer />
+      <div className="my-[50px] h-px bg-border" />
 
       {/* ── TOOLS ── */}
       <section>
@@ -402,12 +377,21 @@ export function CaseStudyView({
         </div>
       </section>
 
-      {/* ── WORKS (จอที่ออกแบบ) — full-page shots placed side by side ── */}
+      {/* ── MY WORK FLOW ── */}
+      <div className="my-[50px] h-px bg-border" />
+      <section>
+        <H2>My work flow</H2>
+        <div className="mt-[26px]">
+          <WorkflowProcess />
+        </div>
+      </section>
+
+      {/* ── ALL ABOUT WORKS — the designed screens ── */}
       {p.screens && p.screens.length > 0 && (
         <>
-          <Spacer />
+          <div className="my-[50px] h-px bg-border" />
           <section>
-            <H2>Works</H2>
+            <H2>All about works</H2>
             <div className="mt-[26px]">
               <ScreenGallery screens={p.screens} title={p.title} cols={3} />
             </div>
@@ -415,87 +399,9 @@ export function CaseStudyView({
         </>
       )}
 
-      <Spacer />
+      <div className="my-[50px] h-px bg-border" />
 
-      {/* ── HYPOTHESIS ── */}
-      <section>
-        <H2>Hypothesis</H2>
-        <div className="mt-6 rounded-r-xl border-l-[3px] border-foreground bg-hover px-[26px] py-6">
-          <p className="text-[clamp(18px,2vw,21px)] leading-[1.62] text-foreground">
-            {p.hypothesis}
-          </p>
-        </div>
-        <div className="mt-[30px] grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
-          <div>
-            <h3 className="text-[15px] font-normal tracking-[0.02em] text-foreground">
-              Success Metrics <span className="text-[13px] text-faint">(ตั้งก่อนทำ)</span>
-            </h3>
-            <div className="mt-3.5 flex flex-col gap-2.5">
-              {p.successMetrics.map((m, i) => (
-                <Bullet key={i}>{m}</Bullet>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h3 className="text-[15px] font-normal tracking-[0.02em] text-foreground">
-              Guardrail Metrics <span className="text-[13px] text-faint">(ต้องไม่ลด)</span>
-            </h3>
-            <div className="mt-3.5 flex flex-col gap-2.5">
-              {p.guardrailMetrics.map((m, i) => (
-                <Bullet key={i}>{m}</Bullet>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Spacer />
-
-      {/* ── 4 · DESIGN DECISIONS ── */}
-      <section>
-        <H2>Design Decisions</H2>
-        <Body className="mt-[18px]">{p.decisionsIntro}</Body>
-        <div className="mt-[30px] flex flex-col gap-[22px]">
-          {p.decisions.map((d, i) => (
-            <div
-              key={i}
-              className="overflow-hidden rounded-xl border border-border bg-card"
-            >
-              <div className="border-b border-border">
-                <PlaceholderSlot label="screen · แทนที่ด้วยภาพ decision" ratio="16/6" />
-              </div>
-              <div className="px-[26px] pb-7 pt-[26px]">
-                <div className="text-[12px] uppercase tracking-[0.12em] text-faint">
-                  Decision {i + 1}
-                </div>
-                <h3 className="mt-2 text-[clamp(19px,2.1vw,22px)] font-normal tracking-[-0.01em] text-foreground">
-                  {d.title}
-                </h3>
-                <div className="mt-[22px] grid gap-[22px] [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
-                  {[
-                    { k: "Reasoning", v: d.reasoning },
-                    { k: "Trade-off", v: d.tradeoff },
-                    { k: "What I cut", v: d.cut },
-                  ].map((row) => (
-                    <div key={row.k}>
-                      <div className="text-[12.5px] uppercase tracking-[0.1em] text-foreground">
-                        {row.k}
-                      </div>
-                      <p className="mt-2.5 text-[15px] leading-[1.66] text-muted-foreground">
-                        {row.v}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <Spacer />
-
-      {/* ── 5 · HOW I MEASURED ── */}
+      {/* ── HOW I MEASURED ── */}
       {p.measure ? (
         <MeasurementStory measure={p.measure} title={p.title} />
       ) : (
@@ -562,37 +468,6 @@ export function CaseStudyView({
           <ClaudeSection claude={p.claude} title={p.title} />
         </>
       )}
-
-      <Spacer />
-
-      {/* ── REFLECTION ── */}
-      <section>
-        <H2>What I&apos;d Do Differently</H2>
-        <div className="mt-[26px]">
-          <H3>Hypothesis ที่ควร challenge มากกว่านี้</H3>
-          <Body className="mt-2.5">{p.reflectChallenge}</Body>
-        </div>
-        <div className="mt-[26px]">
-          <H3>Metric ที่ควร track เพิ่ม</H3>
-          <div className="mt-3.5 flex flex-col gap-[11px]">
-            {p.reflectTrack.map((t, i) => (
-              <Bullet key={i}>{t}</Bullet>
-            ))}
-          </div>
-        </div>
-        <div className="mt-[26px]">
-          <H3>ถ้ามี resource ที่ขาด</H3>
-          <div className="mt-3.5 flex flex-col gap-[11px]">
-            {p.reflectResource.map((r, i) => (
-              <Bullet key={i}>{r}</Bullet>
-            ))}
-          </div>
-        </div>
-        <div className="mt-[26px]">
-          <H3>Discipline lesson</H3>
-          <Body className="mt-2.5">{p.reflectLesson}</Body>
-        </div>
-      </section>
 
       {/* ── footer nav (prev / next) ── */}
       <div className="mt-[clamp(56px,8vw,90px)] flex flex-col items-stretch gap-6 border-t border-border pt-8 min-[560px]:flex-row min-[560px]:items-center min-[560px]:justify-between">

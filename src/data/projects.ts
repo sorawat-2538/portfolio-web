@@ -24,10 +24,16 @@ export type DeviceRow = {
   change: string;
 };
 
+/** สถานะโปรเจกต์ — โชว์เป็น badge บนหน้า project detail
+ *  available = พร้อมดู/ใช้งานจริง · process = กำลังทำ · coming = ยังไม่เปิด (เร็ว ๆ นี้) */
+export type ProjectStatus = "available" | "process" | "coming";
+
 export type Project = {
   title: string;
   category: string;
   year: string;
+  /** สถานะที่โชว์เป็น badge บนหัว case study (default: available) */
+  status?: ProjectStatus;
   tagline: string;
   liveUrl: string;
   /** รูป hero ของงาน (path ใน public/) — ถ้าไม่มีจะโชว์ placeholder */
@@ -59,7 +65,13 @@ export type Project = {
   /** "How Claude Helped" — เล่าเป็น flow: ต่อ Claude กับ data → เจอ insight → ขยับบทบาทไปทาง product */
   claude?: {
     intro: string;
-    flow: { label: string; sub: string }[];
+    /** ways I put AI to work — each is its own labeled step-flow.
+     *  icon = lucide icon name resolved in ClaudeSection */
+    flows: {
+      label: string;
+      sub?: string;
+      steps: { label: string; sub: string; icon?: string }[];
+    }[];
     insight: {
       lead: string;
       stats: { value: string; label: string }[];
@@ -111,10 +123,19 @@ export const projects = {
     title: "Propertyhub",
     category: "Digital Product",
     year: "2021 – ปัจจุบัน",
+    status: "available",
     heroImage: "/uploads/Home.jpg",
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
     // 3 จอจริงจาก Propertyhub — เลื่อนดูทั้งหน้าได้ในกรอบ หรือกดขยายเต็มจอ
     screens: [
+      {
+        label: "Home",
+        desc: "หน้าแรกของ Propertyhub — จุดเริ่มต้นการค้นหา รวมทางเข้าไปยังเช่า/ขาย โครงการใหม่ และทรัพย์แนะนำ",
+        url: "propertyhub.in.th",
+        src: "/uploads/propertyhub-home-full.jpg",
+        w: 1600,
+        h: 7403,
+      },
       {
         label: "Project detail",
         desc: "หน้ารายละเอียดโครงการ — รวมข้อมูล ทำเล และประกาศเช่า/ขายในโครงการเดียวกัน เป็นจุดที่ traffic เข้าสูงสุด",
@@ -228,18 +249,36 @@ export const projects = {
           title: "ใช้ Zimple Analytics เพื่อยืนยันและหา Goal ต่อไป",
           body: "ใช้ Dashboard Navigation Summary ของ Zimple Analytics ยืนยันผลและวิเคราะห์ว่าจะทำอะไรต่อได้ — จากรูป เมื่อเลือก Current Selection เป็น project_detail จะเห็นว่า Next Page เกือบ 50% ของ session ไปหน้า “ประกาศเช่า” ซึ่งตรงกับ goal ของหน้านี้พอดี ยืนยันว่าหน้า Project ใหม่ยังทำงานได้ดี และชี้ทางว่าจะไป optimize ต่อตรงไหน",
           images: [
-            { src: "/uploads/ph-zimple-projectdetail.jpg", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 2400, h: 1168 },
+            { src: "/uploads/ph-zimple-projectdetail.png", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 3840, h: 1866 },
           ],
         },
       ],
     },
     claude: {
-      intro: "งานนี้ผมไม่ได้หยุดที่ design — ผมต่อ Claude เข้ากับ GA4 และ Microsoft Clarity ผ่าน MCP ให้ Claude ดึงและวิเคราะห์ data ได้โดยตรง ทำงานควบคู่กับ Zimple Analytics เพื่อขุด insight เอง โดยไม่ต้องรอทีม data",
-      flow: [
-        { label: "Claude + MCP", sub: "เชื่อมต่อเครื่องมือ" },
-        { label: "GA4 + Clarity", sub: "ดึง data ผ่าน Claude ได้เลย" },
-        { label: "Analyze", sub: "ให้ Claude ช่วยวิเคราะห์" },
-        { label: "Zimple Analytics", sub: "ยืนยัน & หา goal ต่อ" },
+      intro: "ผมไม่ได้ใช้ AI แค่ช่วยงาน UX/UI — แต่ใช้ Claude เป็นเครื่องมือตลอดกระบวนการ ตั้งแต่ขุด insight จาก data จริง ไปจนถึงปั้น wireframe/mockup ให้เร็ว จุดนี้ทำให้ผมขยับบทบาทจาก designer ไปทาง product มากขึ้น — มองหาช่องทางเพิ่ม value ในมุมอื่นได้เอง โดยไม่ต้องรอทีม data หรือ dev",
+      flows: [
+        {
+          label: "ขุด insight จาก data",
+          sub: "ต่อ Claude เข้ากับ analytics ผ่าน MCP แล้ววิเคราะห์เอง ไม่ต้องรอทีม data",
+          steps: [
+            { label: "Claude + MCP", sub: "เชื่อมเครื่องมือ", icon: "Plug" },
+            { label: "GA4 · Clarity", sub: "ดึง data ผ่าน MCP", icon: "BarChart3" },
+            { label: "Analyze", sub: "ให้ Claude ช่วยวิเคราะห์", icon: "Brain" },
+            { label: "Zimple confirm", sub: "power dashboard · ยืนยัน funnel", icon: "Database" },
+            { label: "Actionable result", sub: "ได้ทิศทางไป work ต่อ", icon: "Target" },
+          ],
+        },
+        {
+          label: "จาก idea สู่ mockup",
+          sub: "set instruction ให้ Claude วิเคราะห์ สรุปเป็น MD file แล้วต่อยอดเป็น wireframe/UI ได้เร็วเพื่อนำเสนอ",
+          steps: [
+            { label: "Set instructions", sub: "กำหนดสิ่งที่จะทำ", icon: "ClipboardList" },
+            { label: "Claude analyzes", sub: "วิเคราะห์ + ได้ไอเดีย", icon: "Sparkles" },
+            { label: "MD file", sub: "สรุปเป็นสเปก", icon: "FileText" },
+            { label: "Wireframe / UI", sub: "Claude สร้างจาก MD", icon: "LayoutTemplate" },
+            { label: "Present fast", sub: "ได้ UI เร็วเพื่อนำเสนอ", icon: "Presentation" },
+          ],
+        },
       ],
       insight: {
         lead: "พอขุดจริง เจอ insight ที่เปลี่ยนโจทย์ทั้งงาน — ผู้ใช้ส่วนใหญ่ที่เข้าหน้า listing ดูแค่ประกาศเดียวแล้วออก",
@@ -297,6 +336,7 @@ export const projects = {
     title: "Renthub",
     category: "Digital Product",
     year: "2021 – 2023",
+    status: "available",
     liveUrl: "#",
     tagline:
       "มาร์เก็ตเพลสหอพักและคอนโดให้เช่า — redesign flow เปรียบเทียบและนัดดูห้อง เพื่อให้ผู้เช่าตัดสินใจเร็วขึ้นและเจ้าของได้ lead ที่ตรงกลุ่ม",
@@ -371,6 +411,7 @@ export const projects = {
     title: "AI Listing Assistant",
     category: "AI Digital Product",
     year: "2024 – ปัจจุบัน",
+    status: "available",
     liveUrl: "#",
     tagline:
       "ผู้ช่วย AI ในระบบลงประกาศ ที่ช่วยเอเจนต์ร่างคำบรรยาย แนะนำราคา และจัดเรียงรูป — ออกแบบให้โปร่งใสและควบคุมผลลัพธ์ได้",
@@ -447,6 +488,7 @@ export const projects = {
     title: "Brand & Graphic Works",
     category: "Visual",
     year: "2018 – ปัจจุบัน",
+    status: "available",
     liveUrl: "#",
     tagline:
       "งานออกแบบกราฟิกและภาพประกอบสำหรับแคมเปญการตลาดและสื่อภายในองค์กร — ทำควบคู่กับงาน product เพื่อให้ภาพลักษณ์แบรนด์สอดคล้องกัน",
@@ -518,6 +560,7 @@ export const projects = {
     title: "Market Insight Dashboard",
     category: "Analytics",
     year: "2022 – 2023",
+    status: "available",
     liveUrl: "#",
     tagline:
       "แดชบอร์ดสรุปแนวโน้มตลาดอสังหาฯ ที่เปลี่ยนข้อมูลจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ในไม่กี่วินาที",
@@ -606,3 +649,80 @@ export function getPrevSlug(slug: ProjectSlug): ProjectSlug | null {
   const i = projectSlugs.indexOf(slug);
   return i <= 0 ? null : projectSlugs[i - 1];
 }
+
+// ────────────────────────────────────────────────────────────────────────────
+// PLACEHOLDER PROJECTS — งานที่มีในเมนูแต่ยัง "ไม่มี case study เต็ม"
+// หน้า /work/<slug> จะ render เป็นหน้า placeholder (โชว์ status + ข้อความสั้น)
+// พอมีข้อมูลจริงแล้ว → ย้าย entry ไปไว้ใน `projects` ด้านบน (พร้อม field ครบ) ได้เลย
+// ────────────────────────────────────────────────────────────────────────────
+
+export type PlaceholderProject = {
+  title: string;
+  category: string;
+  status: ProjectStatus;
+  tagline: string;
+  /** ภาพผลงาน (mockup มือถือ ฯลฯ มีกรอบเครื่องในตัว) — โชว์ใน section "All about works" ถ้ามี */
+  screens?: { label?: string; src: string; w: number; h: number }[];
+};
+
+export const placeholderProjects = {
+  "propertyhub-app": {
+    title: "Propertyhub App",
+    category: "Digital Product",
+    status: "available",
+    tagline:
+      "แอปมือถือของ Propertyhub — ค้นหา เปรียบเทียบ และติดต่อประกาศเช่า/ขายได้ครบในมือ",
+    screens: [
+      { label: "Home", src: "/uploads/propertyhub-app-home.png", w: 660, h: 1320 },
+      { label: "Listing detail", src: "/uploads/propertyhub-app-detail.png", w: 660, h: 1320 },
+    ],
+  },
+  "renthub-app": {
+    title: "Renthub App",
+    category: "Digital Product",
+    status: "available",
+    tagline:
+      "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
+  },
+  "renthub-agency": {
+    title: "Renthub Agency",
+    category: "Digital Product",
+    status: "coming",
+    tagline:
+      "เครื่องมือสำหรับเอเจนซี/เจ้าของห้อง จัดการประกาศและ lead ผู้เช่าในที่เดียว",
+  },
+  "propertyos-chat": {
+    title: "PropertyOS Chat",
+    category: "AI Product",
+    status: "process",
+    tagline:
+      "ผู้ช่วย AI แชทสำหรับงานอสังหาฯ — ถาม-ตอบข้อมูลทรัพย์และช่วยงานประจำวันของทีม",
+  },
+  baandee: {
+    title: "Baandee",
+    category: "AI Product",
+    status: "coming",
+    tagline: "แพลตฟอร์มผู้ช่วยด้านที่อยู่อาศัย — รายละเอียดเร็ว ๆ นี้",
+  },
+  "website-builder": {
+    title: "Website Builder",
+    category: "AI Product",
+    status: "process",
+    tagline:
+      "เครื่องมือสร้างเว็บไซต์ประกาศอสังหาฯ สำหรับเอเจนต์ — ตั้งค่าและปล่อยเว็บได้เอง",
+  },
+} satisfies Record<string, PlaceholderProject>;
+
+export type PlaceholderSlug = keyof typeof placeholderProjects;
+export const placeholderSlugs = Object.keys(placeholderProjects) as PlaceholderSlug[];
+
+export function getPlaceholder(slug: string): PlaceholderProject | undefined {
+  return (placeholderProjects as Record<string, PlaceholderProject>)[slug];
+}
+
+/** label ไทยของแต่ละ status (ใช้บน badge) */
+export const STATUS_LABEL: Record<ProjectStatus, string> = {
+  available: "Available",
+  process: "On Process",
+  coming: "Coming Soon",
+};

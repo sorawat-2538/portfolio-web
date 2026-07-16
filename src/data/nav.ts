@@ -15,13 +15,21 @@ export const navGroups: NavGroup[] = [
     title: "Digital Product",
     items: [
       { slug: "propertyhub", label: "Propertyhub" },
+      { slug: "propertyhub-app", label: "Propertyhub App" },
       { slug: "renthub", label: "Renthub" },
+      { slug: "renthub-app", label: "Renthub App" },
+      { slug: "renthub-agency", label: "Renthub Agency" },
     ],
   },
   {
     key: "ai",
     title: "AI Product",
-    items: [{ slug: "ai-copilot", label: "AI Listing Assistant" }],
+    items: [
+      { slug: "propertyos-chat", label: "PropertyOS Chat" },
+      { slug: "baandee", label: "Baandee" },
+      { slug: "website-builder", label: "Website Builder" },
+      { slug: "ai-copilot", label: "AI Listing Assistant" },
+    ],
   },
   {
     key: "visual",
