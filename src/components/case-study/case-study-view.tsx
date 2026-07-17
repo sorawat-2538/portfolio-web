@@ -208,6 +208,8 @@ export function CaseStudyView({
   const HERO_VARIANT = "scroll" as "scroll" | "crop" | "laptop";
   // ชั่วคราว: วางทั้ง 3 variant เรียงกันเพื่อเทียบบนหน้า — เลือกได้แล้วตั้งเป็น false
   const HERO_COMPARE = false;
+  // hero อันเก่า (scroll/crop/laptop) — เลือกใช้ Web+App present แทนแล้ว เก็บโค้ดไว้ก่อน
+  const SHOW_OLD_HERO = false;
 
   const heroSrc = "/uploads/propertyhub-home-full.jpg";
   const renderHero = (v: "scroll" | "crop" | "laptop") => {
@@ -235,9 +237,6 @@ export function CaseStudyView({
         <h1 className="mt-5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
         </h1>
-        <p className="mt-3 text-[16px] leading-[1.7] text-muted-foreground">
-          {p.tagline}
-        </p>
 
         {/* identity + action bar (product-page style) */}
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -328,29 +327,54 @@ export function CaseStudyView({
           </>
         )}
 
-        {/* hero visual — 50px จากเส้นคั่น
-            HERO_COMPARE=true → วางทั้ง 3 variant เรียงกันเพื่อเทียบ
-            HERO_COMPARE=false → แสดงตัวเดียวตามค่า HERO_VARIANT */}
-        <div className="mt-[50px]">
-          {HERO_COMPARE ? (
-            <div className="flex flex-col gap-14">
-              {(["scroll", "crop", "laptop"] as const).map((v) => (
-                <div key={v}>
-                  <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[12.5px] font-medium text-muted-foreground">
-                    <span className="font-mono uppercase tracking-[0.1em] text-brand">
-                      Hero
-                    </span>
-                    {HERO_LABELS[v]}
+        {/* hero (อันเก่า) — scroll/crop/laptop variant · เก็บโค้ดไว้ (SHOW_OLD_HERO=false) */}
+        {SHOW_OLD_HERO && (
+          <div className="mt-[50px]">
+            {HERO_COMPARE ? (
+              <div className="flex flex-col gap-14">
+                {(["scroll", "crop", "laptop"] as const).map((v) => (
+                  <div key={v}>
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[12.5px] font-medium text-muted-foreground">
+                      <span className="font-mono uppercase tracking-[0.1em] text-brand">
+                        Hero
+                      </span>
+                      {HERO_LABELS[v]}
+                    </div>
+                    {renderHero(v)}
                   </div>
-                  {renderHero(v)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            renderHero(HERO_VARIANT)
-          )}
-        </div>
+                ))}
+              </div>
+            ) : (
+              renderHero(HERO_VARIANT)
+            )}
+          </div>
+        )}
 
+        {/* ── HERO — Laptop (เว็บ) + App (มือถือ) วางคู่แบบ present ── */}
+        {p.heroWeb && p.heroPhone && (
+          <div className="mt-[50px]">
+            <div className="relative mx-auto max-w-[860px] pr-[2%]">
+              <Image
+                src={p.heroWeb}
+                alt={`${p.title} — เว็บไซต์ (laptop mockup)`}
+                width={2174}
+                height={1318}
+                sizes="(max-width: 900px) 100vw, 860px"
+                className="block h-auto w-full"
+                priority
+              />
+              {/* phone overlapping bottom-right — เว็บ + แอป คู่กัน */}
+              <Image
+                src={p.heroPhone}
+                alt={`${p.title} — แอปมือถือ`}
+                width={660}
+                height={1320}
+                sizes="150px"
+                className="absolute bottom-0 right-0 w-[16%] min-w-[150px] max-w-[200px] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
+              />
+            </div>
+          </div>
+        )}
       </section>
 
       <Spacer />
@@ -367,24 +391,28 @@ export function CaseStudyView({
 
       <div className="my-[50px] h-px bg-border" />
 
-      {/* ── TOOLS ── */}
+      {/* ── TOOLS ── (grid 4 คอลัมน์ → กล่องเดียวก็กว้างเท่าเดิม ไม่ยืดเต็ม) */}
       <section>
         <H2>Tools</H2>
-        <div className="mt-5 flex flex-wrap gap-3 min-[560px]:flex-nowrap">
+        <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
           {p.tools.map((tool) => (
             <ToolCard key={tool} name={tool} />
           ))}
         </div>
       </section>
 
-      {/* ── MY WORK FLOW ── */}
-      <div className="my-[50px] h-px bg-border" />
-      <section>
-        <H2>My work flow</H2>
-        <div className="mt-[26px]">
-          <WorkflowProcess />
-        </div>
-      </section>
+      {/* ── MY WORK FLOW ── (ซ่อนได้ด้วย hideWorkflow) */}
+      {!p.hideWorkflow && (
+        <>
+          <div className="my-[50px] h-px bg-border" />
+          <section>
+            <H2>My work flow</H2>
+            <div className="mt-[26px]">
+              <WorkflowProcess />
+            </div>
+          </section>
+        </>
+      )}
 
       {/* ── ALL ABOUT WORKS — the designed screens ── */}
       {p.screens && p.screens.length > 0 && (
@@ -392,16 +420,43 @@ export function CaseStudyView({
           <div className="my-[50px] h-px bg-border" />
           <section>
             <H2>All about works</H2>
-            <div className="mt-[26px]">
-              <ScreenGallery screens={p.screens} title={p.title} cols={3} />
-            </div>
+            {/* screensFull = โชว์รูปเต็มยาว (จอน้อย) · ปกติ = browser-frame gallery */}
+            {p.screensFull ? (
+              <div className="mt-[26px] space-y-10">
+                {p.screens.map((s) =>
+                  s.src ? (
+                    <figure key={s.src}>
+                      {s.desc && (
+                        <figcaption className="mb-4 text-[15px] leading-[1.7] text-muted-foreground">
+                          {s.desc}
+                        </figcaption>
+                      )}
+                      <Image
+                        src={s.src}
+                        alt={`${p.title} — ${s.label}`}
+                        width={s.w ?? 1600}
+                        height={s.h ?? 5000}
+                        sizes="(max-width: 900px) 100vw, 860px"
+                        quality={88}
+                        className="block h-auto w-full rounded-[12px] border border-border shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
+                      />
+                    </figure>
+                  ) : null,
+                )}
+              </div>
+            ) : (
+              <div className="mt-[26px]">
+                <ScreenGallery screens={p.screens} title={p.title} cols={3} />
+              </div>
+            )}
           </section>
         </>
       )}
 
+      {/* ── HOW I MEASURED ── (ซ่อนได้ด้วย hideMeasure) */}
+      {!p.hideMeasure && (
+      <>
       <div className="my-[50px] h-px bg-border" />
-
-      {/* ── HOW I MEASURED ── */}
       {p.measure ? (
         <MeasurementStory measure={p.measure} title={p.title} />
       ) : (
@@ -459,6 +514,8 @@ export function CaseStudyView({
           </div>
         </div>
       </section>
+      )}
+      </>
       )}
 
       {/* ── HOW CLAUDE HELPED ── (เส้นคั่นปิดท้าย How I Measured? ก่อนเข้า section นี้) */}

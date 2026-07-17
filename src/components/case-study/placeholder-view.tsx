@@ -4,9 +4,10 @@
 // พอมีข้อมูลจริง ให้ย้าย entry ไปที่ `projects` ใน projects.ts → จะได้หน้าเต็มทันที
 
 import Image from "next/image";
-import { Clock, FileText, Hammer, ImageIcon, Wrench, type LucideIcon } from "lucide-react";
+import { Clock, ExternalLink, FileText, Hammer, ImageIcon, type LucideIcon } from "lucide-react";
 import type { PlaceholderProject, ProjectStatus } from "@/data/projects";
 import { profile } from "@/data/profile";
+import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,26 @@ function H2({ children }: { children: React.ReactNode }) {
     <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
       {children}
     </h2>
+  );
+}
+
+function ToolCard({ name }: { name: string }) {
+  const meta = toolMeta(name);
+  return (
+    <div className="flex min-h-[70px] items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5">
+      {"icon" in meta ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={meta.icon} alt={name} width={30} height={30} className="block h-[30px] w-[30px] shrink-0 object-contain" />
+      ) : (
+        <span
+          className="inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg text-[13px] font-bold"
+          style={{ background: meta.bg, color: meta.fg }}
+        >
+          {meta.mono}
+        </span>
+      )}
+      <span className="min-w-0 flex-1 truncate text-[15px] text-foreground">{name}</span>
+    </div>
   );
 }
 
@@ -48,6 +69,7 @@ function EmptyState({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
 export function PlaceholderView({ project: p }: { project: PlaceholderProject }) {
   const note = NOTE[p.status];
   const HeroIcon = note.icon;
+  const hasPresent = Boolean(p.heroWeb && p.heroPhone);
 
   return (
     <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
@@ -58,9 +80,6 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
         <h1 className="mt-5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
         </h1>
-        <p className="mt-3 text-[16px] leading-[1.7] text-muted-foreground">
-          {p.tagline}
-        </p>
 
         {/* identity bar — avatar + name + role (ตำแหน่งเดียวกับหน้าจริง) */}
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -83,12 +102,48 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
               </div>
             </div>
           </div>
+
+          {/* primary action — ดาวน์โหลดแอป (ถ้ามี App Store link) */}
+          {p.appStoreUrl && (
+            <a
+              href={p.appStoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              ลองโหลดดูสิ
+            </a>
+          )}
         </div>
 
         <div className="mt-6 border-t border-border" />
 
-        {/* hero — ถ้ามีภาพผลงานแล้ว โชว์ mockup, ถ้ายังไม่มี = empty state */}
-        {p.screens && p.screens.length > 0 ? (
+        {/* hero — laptop+phone present > phone screens > empty state */}
+        {hasPresent ? (
+          <div className="mt-[50px]">
+            <div className="relative mx-auto max-w-[860px] pr-[2%]">
+              <Image
+                src={p.heroWeb!}
+                alt={`${p.title} — เว็บไซต์ (laptop mockup)`}
+                width={2174}
+                height={1318}
+                sizes="(max-width: 900px) 100vw, 860px"
+                className="block h-auto w-full"
+                priority
+              />
+              {/* phone overlapping bottom-right — เว็บ + แอป คู่กัน */}
+              <Image
+                src={p.heroPhone!}
+                alt={`${p.title} — แอปมือถือ`}
+                width={660}
+                height={1320}
+                sizes="150px"
+                className="absolute bottom-0 right-0 w-[16%] min-w-[150px] max-w-[200px] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
+              />
+            </div>
+          </div>
+        ) : p.screens && p.screens.length > 0 ? (
           <div className="mt-[50px]">
             <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:gap-6 lg:gap-10">
               {p.screens.map((s) => (
@@ -137,12 +192,20 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
 
       <div className="my-[50px] h-px bg-border" />
 
-      {/* ── TOOLS — empty state ── */}
+      {/* ── TOOLS — การ์ดเครื่องมือ (ถ้ามี) หรือ empty state ── */}
       <section>
         <H2>Tools</H2>
-        <div className="mt-5">
-          <EmptyState icon={Wrench} text="ยังไม่ได้ระบุเครื่องมือที่ใช้ในโปรเจกต์นี้" />
-        </div>
+        {p.tools && p.tools.length > 0 ? (
+          <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
+            {p.tools.map((t) => (
+              <ToolCard key={t} name={t} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5">
+            <EmptyState icon={ImageIcon} text="ยังไม่ได้ระบุเครื่องมือที่ใช้ในโปรเจกต์นี้" />
+          </div>
+        )}
       </section>
     </article>
   );

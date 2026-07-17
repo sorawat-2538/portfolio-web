@@ -41,6 +41,13 @@ export type Project = {
   /** โหมด hero mockup — "product" = fake product-UI, "code" = code editor.
    *  มีค่านี้จะ override heroImage ในหน้า case study (แต่ heroImage ยังใช้เป็น thumbnail ในหน้าแรก) */
   heroMock?: "product" | "code";
+  /** hero แบบ present — laptop (เว็บ) + phone (แอป) วางคู่กัน · ใส่ทั้งคู่ถึงจะแสดง
+   *  heroWeb = รูป laptop mockup · heroPhone = รูป phone mockup (path ใน public/) */
+  heroWeb?: string;
+  heroPhone?: string;
+  /** ซ่อน section (ยังไม่มีเนื้อหา) — true = ไม่แสดง */
+  hideWorkflow?: boolean;
+  hideMeasure?: boolean;
   /** จอเพิ่มเติมที่โชว์ในหน้า case study (Home/Result/Listing ฯลฯ)
    *  แต่ละจอเป็น browser frame ที่เลื่อนดูหน้ายาวได้ในกรอบ + กดขยายเต็มจอ
    *  - label : ชื่อจอ (เช่น "Project detail")
@@ -48,6 +55,9 @@ export type Project = {
    *  - url   : path ที่โชว์ใน address bar ของ browser frame
    *  - src   : path รูปใน public/ (ใส่เมื่อมีรูปจริง) · w/h = ขนาดจริงของรูป (กัน layout shift) */
   screens?: { label: string; src?: string; desc?: string; url?: string; w?: number; h?: number }[];
+  /** โชว์ screens แบบ "รูปเต็มยาว" (inline เต็มความสูง) แทน browser-frame gallery
+   *  เหมาะกับงานที่มีจอน้อย (เช่น 1 หน้า) — ดูทั้งหน้ารวดเดียวไม่ต้องกดขยาย */
+  screensFull?: boolean;
   /** การ์ด stat ลอยบน hero (portpro-style) — ไม่ใส่ก็ได้, โชว์เฉพาะที่มีข้อมูล */
   heroBadges?: { icon: string; value: string; label: string }[];
 
@@ -126,6 +136,8 @@ export const projects = {
     status: "available",
     heroImage: "/uploads/Home.jpg",
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
+    heroWeb: "/uploads/propertyhub-web-laptop.png",
+    heroPhone: "/uploads/propertyhub-app-home.png",
     // 3 จอจริงจาก Propertyhub — เลื่อนดูทั้งหน้าได้ในกรอบ หรือกดขยายเต็มจอ
     screens: [
       {
@@ -337,18 +349,31 @@ export const projects = {
     category: "Digital Product",
     year: "2021 – 2023",
     status: "available",
-    liveUrl: "#",
+    liveUrl: "https://www.renthub.in.th/",
+    heroWeb: "/uploads/renthub-web-laptop.png",
+    heroPhone: "/uploads/renthub-app-home.png",
+    hideWorkflow: true,
+    hideMeasure: true,
+    screensFull: true,
+    screens: [
+      {
+        label: "Home",
+        desc: "หน้าแรกของ Renthub — จุดเริ่มต้นการค้นหาหอพัก/คอนโดให้เช่า รวมทำเลใกล้ BTS/MRT มหาวิทยาลัย และหอแนะนำทั่วประเทศ",
+        url: "renthub.in.th",
+        src: "/uploads/renthub-home-full.jpg",
+        w: 1600,
+        h: 9509,
+      },
+    ],
     tagline:
       "มาร์เก็ตเพลสหอพักและคอนโดให้เช่า — redesign flow เปรียบเทียบและนัดดูห้อง เพื่อให้ผู้เช่าตัดสินใจเร็วขึ้นและเจ้าของได้ lead ที่ตรงกลุ่ม",
     metaRole: "Sole Product Designer",
     metaTimeline: "[ MMM YYYY – MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
-    tools: ["Figma", "Google Analytics", "Microsoft Clarity"],
+    tools: ["Figma"],
     overview: [
-      "Renthub เป็นมาร์เก็ตเพลสสำหรับผู้เช่าที่มองหาหอพัก/คอนโดใกล้ที่ทำงานหรือมหาวิทยาลัย revenue signal คือการที่ผู้เช่านัดดูห้องหรือติดต่อเจ้าของ",
-      "Project นี้โฟกัสที่ flow การเปรียบเทียบห้องและการนัดดูห้อง ซึ่งเป็นจุดที่ผู้เช่าตัดสินใจ",
-      "ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่ requirement, design, prototype จนถึง measure ผลหลัง ship",
+      "Renthub คือมาร์เก็ตเพลสหอพักและคอนโดให้เช่าทั่วประเทศกว่า 20,000+ แห่ง ช่วยให้ผู้เช่าหาห้องใกล้ที่ทำงานหรือมหาวิทยาลัยได้ง่าย โดย revenue signal หลักคือการนัดดูห้องและติดต่อเจ้าของ งานนี้โฟกัสที่ flow การค้นหา เปรียบเทียบห้อง และนัดดูห้อง ซึ่งเป็นจุดที่ผู้เช่าตัดสินใจ ผมรับผิดชอบคนเดียวตั้งแต่ requirement, design, prototype จนถึงวัดผลหลัง ship (เนื้อหานี้เป็น placeholder — รออัปเดตข้อมูลจริง)",
     ],
     ctxBusiness:
       "Renthub ทำเงินจากการเชื่อมผู้เช่ากับเจ้าของห้อง — critical path คือ ค้นหา → เปรียบเทียบ → นัดดูห้อง",
@@ -421,9 +446,7 @@ export const projects = {
     metaScale: "[ __,000+ ] listings created",
     tools: ["Figma", "Claude", "Google Analytics", "Microsoft Clarity"],
     overview: [
-      "AI Listing Assistant เป็นฟีเจอร์ที่ฝังในระบบลงประกาศ ช่วยร่างคำบรรยายทรัพย์ แนะนำช่วงราคา และจัดเรียงรูปอัตโนมัติ",
-      "โจทย์คือทำให้ AI เป็นผู้ช่วยที่โปร่งใส ตรวจสอบได้ และผู้ใช้ยังคุมผลลัพธ์ได้เต็มที่",
-      "ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่ pattern การ suggest/edit/accept จนถึง measure การใช้งานจริง",
+      "AI Listing Assistant เป็นฟีเจอร์ที่ฝังในระบบลงประกาศ ช่วยร่างคำบรรยายทรัพย์ แนะนำช่วงราคา และจัดเรียงรูปอัตโนมัติ โจทย์คือทำให้ AI เป็นผู้ช่วยที่โปร่งใส ตรวจสอบได้ และผู้ใช้ยังคุมผลลัพธ์ได้เต็มที่ ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่ pattern การ suggest/edit/accept จนถึง measure การใช้งานจริง",
     ],
     ctxBusiness:
       "revenue signal คือจำนวนประกาศที่ลงสำเร็จและคุณภาพเนื้อหาที่ทำให้ทรัพย์ถูกค้นเจอ",
@@ -498,9 +521,7 @@ export const projects = {
     metaScale: "[ __+ ] ชิ้นงาน",
     tools: ["Figma", "Illustrator", "Photoshop"],
     overview: [
-      "รวมงาน visual ที่ทำควบคู่กับงาน product ตั้งแต่ key visual แคมเปญ สื่อโซเชียล ไปจนถึง illustration และ guideline เล็ก ๆ",
-      "โจทย์คือทำให้การสื่อสารของแบรนด์ดูเป็นอันหนึ่งอันเดียวกันในทุกช่องทาง และผลิตงานได้เร็วขึ้นด้วยชุด template",
-      "ผมรับผิดชอบตั้งแต่รับ brief จากทีมการตลาด จนถึงส่งมอบไฟล์พร้อมใช้",
+      "รวมงาน visual ที่ทำควบคู่กับงาน product ตั้งแต่ key visual แคมเปญ สื่อโซเชียล ไปจนถึง illustration และ guideline เล็ก ๆ โจทย์คือทำให้การสื่อสารของแบรนด์ดูเป็นอันหนึ่งอันเดียวกันในทุกช่องทาง และผลิตงานได้เร็วขึ้นด้วยชุด template ผมรับผิดชอบตั้งแต่รับ brief จากทีมการตลาด จนถึงส่งมอบไฟล์พร้อมใช้",
     ],
     ctxBusiness:
       "สื่อของแบรนด์ต้องดูสอดคล้องกันในทุกช่องทางเพื่อสร้างการจดจำ และผลิตซ้ำได้เร็ว",
@@ -570,9 +591,7 @@ export const projects = {
     metaScale: "[ __+ ] ผู้ใช้ภายใน",
     tools: ["Figma", "Looker Studio", "Google Analytics"],
     overview: [
-      "Market Insight Dashboard เปลี่ยนข้อมูลตลาดจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ ผู้ใช้หลักคือทีมขายและลูกค้าองค์กร",
-      "โจทย์คือจัดลำดับข้อมูลให้เริ่มจากภาพรวมแล้วเจาะลึกได้ตามทำเลและประเภททรัพย์",
-      "ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่คัด metric สำคัญ จนถึงทดสอบการตีความข้อมูล",
+      "Market Insight Dashboard เปลี่ยนข้อมูลตลาดจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ ผู้ใช้หลักคือทีมขายและลูกค้าองค์กร โจทย์คือจัดลำดับข้อมูลให้เริ่มจากภาพรวมแล้วเจาะลึกได้ตามทำเลและประเภททรัพย์ ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่คัด metric สำคัญ จนถึงทดสอบการตีความข้อมูล",
     ],
     ctxBusiness:
       "ทีมขายและลูกค้าต้องการข้อมูลตลาดที่เชื่อถือได้เพื่อประกอบการตัดสินใจ — value คือความเร็วในการเข้าใจข้อมูล",
@@ -661,6 +680,13 @@ export type PlaceholderProject = {
   category: string;
   status: ProjectStatus;
   tagline: string;
+  /** เครื่องมือที่ใช้ — โชว์เป็นการ์ดใน section Tools (ถ้าไม่ใส่ = empty state) */
+  tools?: string[];
+  /** hero แบบ present — laptop (เว็บ) + phone (แอป) วางคู่กัน · ใส่ทั้งคู่ถึงจะแสดง */
+  heroWeb?: string;
+  heroPhone?: string;
+  /** ลิงก์ App Store — โชว์เป็นปุ่ม "โหลดแอป" บน header ถ้ามี */
+  appStoreUrl?: string;
   /** ภาพผลงาน (mockup มือถือ ฯลฯ มีกรอบเครื่องในตัว) — โชว์ใน section "All about works" ถ้ามี */
   screens?: { label?: string; src: string; w: number; h: number }[];
 };
@@ -683,6 +709,8 @@ export const placeholderProjects = {
     status: "available",
     tagline:
       "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
+    tools: ["Figma"],
+    appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
   },
   "renthub-agency": {
     title: "Renthub Agency",
@@ -690,6 +718,9 @@ export const placeholderProjects = {
     status: "coming",
     tagline:
       "เครื่องมือสำหรับเอเจนซี/เจ้าของห้อง จัดการประกาศและ lead ผู้เช่าในที่เดียว",
+    tools: ["Figma"],
+    heroWeb: "/uploads/renthub-agency-web-laptop.png",
+    heroPhone: "/uploads/renthub-agency-app-home.png",
   },
   "propertyos-chat": {
     title: "PropertyOS Chat",

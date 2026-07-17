@@ -11,7 +11,8 @@
      so text never relies on the visitor's system fonts) */
   --font-sans: var(--font-noto-thai), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  /* heading/title — Inter (อังกฤษ) → fallback Noto Sans Thai (ไทย) */
+  --font-heading: var(--font-inter), var(--font-noto-thai), ui-sans-serif, system-ui, sans-serif;
   /* Original design extras */
   --color-faint: var(--faint);
   --color-hover: var(--hover);
@@ -146,6 +147,10 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+  }
+  /* title/heading ใช้ Inter (อังกฤษ) — ไทยใน heading fallback เป็น Noto Sans Thai */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
   ::selection {
     background: var(--primary);

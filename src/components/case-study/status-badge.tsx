@@ -1,7 +1,7 @@
 // Status badge — โชว์บนหัว case study / หน้า placeholder
 //   available  → เขียว (emerald)  จุดกระพริบ (ping)  "Available"
 //   process    → เหลือง (amber)   จุดเต้น (pulse)    "On Process"
-//   coming     → เทา (slate)      จุดนิ่ง            "Coming Soon"
+//   coming     → เทา (slate)      จุดกระพริบ (ping)  "Coming Soon"
 
 import { STATUS_LABEL, type ProjectStatus } from "@/data/projects";
 
@@ -22,7 +22,7 @@ const STYLES: Record<
   coming: {
     wrap: "bg-slate-500/10 text-slate-600",
     dot: "bg-slate-400",
-    ping: false,
+    ping: true,
   },
 };
 

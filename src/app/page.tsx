@@ -112,10 +112,10 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* EMPLOYMENT */}
+      {/* CAREER JOURNEY */}
       <Reveal>
         <section>
-          <SectionHeading>Employment History</SectionHeading>
+          <SectionHeading>Career Journey</SectionHeading>
           <div className="mt-8 flex flex-col">
             {profile.employment.map((job, i) => (
               <TimelineItem

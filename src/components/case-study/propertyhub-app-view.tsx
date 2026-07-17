@@ -18,6 +18,7 @@ import type { PlaceholderProject } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
+import { AppScreensShowcase } from "./app-screens-showcase";
 
 const APP_STORE_URL = "https://apps.apple.com/th/app/propertyhub/id1574599780?l=th";
 const TOOLS = ["Figma", "Claude"];
@@ -44,9 +45,10 @@ const DESIGN_SYSTEM: { label: string; src: string; w: number; h: number }[] = [
 type Shot = { src: string; label: string };
 const S = (src: string, label: string): Shot => ({ src: `/uploads/${src}`, label });
 
-const TABS: { tab: string; icon: LucideIcon; screens: Shot[] }[] = [
+const TABS: { tab: string; en: string; icon: LucideIcon; screens: Shot[] }[] = [
   {
     tab: "หน้าหลัก",
+    en: "HOME",
     icon: Home,
     screens: [
       S("propertyhub-app-home.png", "หน้าแรก"),
@@ -55,9 +57,10 @@ const TABS: { tab: string; icon: LucideIcon; screens: Shot[] }[] = [
       S("propertyhub-app-agent.png", "โปรไฟล์เอเจนต์"),
     ],
   },
-  { tab: "ประกาศ", icon: LayoutList, screens: [S("propertyhub-app-listings.png", "รายการประกาศ")] },
+  { tab: "ประกาศ", en: "LISTINGS", icon: LayoutList, screens: [S("propertyhub-app-listings.png", "รายการประกาศ")] },
   {
     tab: "กิจกรรม",
+    en: "ACTIVITY",
     icon: LayoutGrid,
     screens: [
       S("propertyhub-app-activity.png", "ประกาศที่สนใจ"),
@@ -65,9 +68,9 @@ const TABS: { tab: string; icon: LucideIcon; screens: Shot[] }[] = [
       S("propertyhub-app-activity-viewed.png", "เคยเข้าชม"),
     ],
   },
-  { tab: "ข้อความ", icon: MessageSquareText, screens: [S("propertyhub-app-messages.png", "ข้อความ")] },
-  { tab: "แจ้งเตือน", icon: Bell, screens: [S("propertyhub-app-notification.png", "การแจ้งเตือน")] },
-  { tab: "เมนู", icon: Menu, screens: [S("propertyhub-app-menu.png", "เมนู")] },
+  { tab: "ข้อความ", en: "MESSAGES", icon: MessageSquareText, screens: [S("propertyhub-app-messages.png", "ข้อความ")] },
+  { tab: "แจ้งเตือน", en: "NOTIFICATIONS", icon: Bell, screens: [S("propertyhub-app-notification.png", "การแจ้งเตือน")] },
+  { tab: "เมนู", en: "MENU", icon: Menu, screens: [S("propertyhub-app-menu.png", "เมนู")] },
 ];
 
 // ── shared bits ──────────────────────────────────────────────────────────────
@@ -138,7 +141,6 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         <h1 className="mt-5 text-[clamp(34px,5.4vw,52px)] font-bold leading-[1.1] tracking-[-0.02em] text-foreground">
           {p.title}
         </h1>
-        <p className="mt-3 text-[16px] leading-[1.7] text-muted-foreground">{p.tagline}</p>
 
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -158,8 +160,8 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
             rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
           >
-            ลองโหลดดูสิ
             <ExternalLink className="h-4 w-4" />
+            ลองโหลดดูสิ
           </a>
         </div>
 
@@ -220,7 +222,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
 
       <div className="my-[50px] h-px bg-border" />
 
-      {/* ── STYLE GUIDE ── (แสดงเป็นรูปเต็ม + shadow เรียงลงมา ไม่ scroll) */}
+      {/* ── STYLE GUIDE ── วางคู่: แบบเดิม (รูปเต็ม) + แบบใหม่ (viewer) เพื่อเทียบ */}
       <section>
         <H2>Style Guide</H2>
         <div className="mt-7 space-y-10">
@@ -242,31 +244,13 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
 
       <div className="my-[50px] h-px bg-border" />
 
-      {/* ── SCREENS (by tab) ── grid สูงสุด 4 ต่อแถว, wrap ลงด้านล่าง (ไม่ scroll) */}
+      {/* ── SCREENS ── แต่ละ tab = พื้นเทา + จอ + ปุ่มเลื่อนเมื่อ >4 */}
       <section>
         <H2>Screens</H2>
-        <div className="mt-8 flex flex-col gap-12">
-          {TABS.map((t) => {
-            const Icon = t.icon;
-            return (
-              <div key={t.tab}>
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
-                    <Icon className="h-5 w-5" strokeWidth={1.8} />
-                  </span>
-                  <h3 className="text-[clamp(18px,2.2vw,22px)] font-bold tracking-[-0.01em] text-foreground">
-                    {t.tab}
-                  </h3>
-                </div>
-                <div className="mt-4 border-t border-border" />
-                <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 lg:grid-cols-4">
-                  {t.screens.map((s) => (
-                    <PhoneShot key={s.src} src={s.src} label={s.label} />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        <div className="mt-8 flex flex-col gap-6">
+          {TABS.map((t) => (
+            <AppScreensShowcase key={t.tab} title={t.en} screens={t.screens} />
+          ))}
         </div>
       </section>
     </article>
