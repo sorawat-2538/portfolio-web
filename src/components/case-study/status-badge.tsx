@@ -2,6 +2,7 @@
 //   available  → เขียว (emerald)  จุดกระพริบ (ping)  "Available"
 //   process    → เหลือง (amber)   จุดเต้น (pulse)    "On Process"
 //   coming     → เทา (slate)      จุดกระพริบ (ping)  "Coming Soon"
+//   archived   → ม่วง (violet)    จุดกระพริบ (ping)  "Old work" (งานเก่าเข้าคลัง)
 
 import { STATUS_LABEL, type ProjectStatus } from "@/data/projects";
 
@@ -22,6 +23,11 @@ const STYLES: Record<
   coming: {
     wrap: "bg-slate-500/10 text-slate-600",
     dot: "bg-slate-400",
+    ping: true,
+  },
+  archived: {
+    wrap: "bg-violet-500/10 text-violet-700",
+    dot: "bg-violet-500",
     ping: true,
   },
 };

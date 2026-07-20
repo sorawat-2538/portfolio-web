@@ -18,7 +18,7 @@ export const navGroups: NavGroup[] = [
       { slug: "propertyhub-app", label: "Propertyhub App" },
       { slug: "renthub", label: "Renthub" },
       { slug: "renthub-app", label: "Renthub App" },
-      { slug: "renthub-agency", label: "Renthub Agency" },
+      { slug: "renthub-agency", label: "Expat" },
     ],
   },
   {
@@ -32,14 +32,14 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    key: "visual",
-    title: "Visual",
-    items: [{ slug: "brand", label: "Brand & Graphic Works" }],
-  },
-  {
     key: "analytics",
     title: "Analytics",
     items: [{ slug: "market-insight", label: "Market Insight Dashboard" }],
+  },
+  {
+    key: "archive",
+    title: "Archive",
+    items: [{ slug: "early-work", label: "Early Work 2018–2020" }],
   },
 ];
 

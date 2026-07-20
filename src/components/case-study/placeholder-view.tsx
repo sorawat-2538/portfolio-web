@@ -4,11 +4,13 @@
 // พอมีข้อมูลจริง ให้ย้าย entry ไปที่ `projects` ใน projects.ts → จะได้หน้าเต็มทันที
 
 import Image from "next/image";
-import { Clock, ExternalLink, FileText, Hammer, ImageIcon, type LucideIcon } from "lucide-react";
+import { Clock, ExternalLink, FileText, Hammer, ImageIcon, Rocket, type LucideIcon } from "lucide-react";
 import type { PlaceholderProject, ProjectStatus } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
+import { ScreenGallery } from "./screen-gallery";
+import { ScreensStack, ScreensViewer } from "./screen-showcase-variants";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -51,6 +53,10 @@ const NOTE: Record<ProjectStatus, { icon: LucideIcon; text: string }> = {
   coming: {
     icon: Clock,
     text: "โปรเจกต์นี้ยังไม่เปิดให้ชม — เร็ว ๆ นี้จะมี case study มาให้ดูแบบเต็ม ๆ",
+  },
+  archived: {
+    icon: FileText,
+    text: "งานเก่าที่เก็บเข้าคลัง — ดูผลงานได้ในหน้า Early Work",
   },
 };
 
@@ -103,17 +109,32 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
             </div>
           </div>
 
-          {/* primary action — ดาวน์โหลดแอป (ถ้ามี App Store link) */}
-          {p.appStoreUrl && (
-            <a
-              href={p.appStoreUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              ลองโหลดดูสิ
-            </a>
+          {/* primary action — เปิดเว็บ / ดาวน์โหลดแอป (ถ้ามีลิงก์) */}
+          {(p.liveUrl || p.appStoreUrl) && (
+            <div className="flex shrink-0 flex-wrap gap-2.5">
+              {p.liveUrl && (
+                <a
+                  href={p.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  <Rocket className="h-4 w-4" />
+                  เปิดดูเว็บไซต์
+                </a>
+              )}
+              {p.appStoreUrl && (
+                <a
+                  href={p.appStoreUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  ลองโหลดดูสิ
+                </a>
+              )}
+            </div>
           )}
         </div>
 
@@ -182,12 +203,22 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
 
       <div className="h-[50px]" />
 
-      {/* ── OVERVIEW — empty state ── */}
+      {/* ── OVERVIEW — เนื้อหาจริง (ถ้ามี) หรือ empty state ── */}
       <section>
         <H2>Overview</H2>
-        <div className="mt-[22px]">
-          <EmptyState icon={ImageIcon} text="ยังไม่มีเนื้อหา overview สำหรับโปรเจกต์นี้ — จะเพิ่มเมื่อ case study พร้อม" />
-        </div>
+        {p.overview && p.overview.length > 0 ? (
+          <div className="mt-[22px] space-y-[18px]">
+            {p.overview.map((para, i) => (
+              <p key={i} className="text-[17px] leading-[1.8] text-muted-foreground">
+                {para}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-[22px]">
+            <EmptyState icon={ImageIcon} text="ยังไม่มีเนื้อหา overview สำหรับโปรเจกต์นี้ — จะเพิ่มเมื่อ case study พร้อม" />
+          </div>
+        )}
       </section>
 
       <div className="my-[50px] h-px bg-border" />
@@ -207,6 +238,43 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
           </div>
         )}
       </section>
+
+      {/* ── SCREENS — 3 ตัวอย่างการวาง (ให้เลือกแบบที่ชอบ) ── */}
+      {p.works && p.works.length > 0 && (
+        <>
+          <div className="my-[50px] h-px bg-border" />
+          <section>
+            <H2>Screens</H2>
+            <p className="mt-[18px] max-w-[70ch] text-[17px] leading-[1.8] text-muted-foreground">
+              3 ตัวอย่างการวางหน้าจอ — ลองเทียบแล้วเลือกแบบที่ชอบ เดี๋ยวเก็บให้เหลือแบบเดียว
+            </p>
+
+            {/* ตัวอย่าง 1 — browser-frame gallery + คลิกดูเต็มจอ */}
+            <ExampleLabel n={1} caption="Browser-frame gallery — คลิกเปิดดูเต็มหน้า (lightbox)" />
+            <ScreenGallery screens={p.works} title={p.title} cols={2} />
+
+            {/* ตัวอย่าง 2 — รูปเต็ม crop + กดดูทั้งหมด (ทีละหน้า) */}
+            <ExampleLabel n={2} caption="รูปเต็มความกว้าง (crop) — กด “ดูทั้งหมด” ขยายในหน้า" />
+            <ScreensStack screens={p.works} title={p.title} />
+
+            {/* ตัวอย่าง 3 — thumbnail เลือกหน้า + กดดูทั้งหมด */}
+            <ExampleLabel n={3} caption="Thumbnail เลือกหน้า — กด “ดูทั้งหมด” ขยายในกรอบ" />
+            <ScreensViewer screens={p.works} title={p.title} />
+          </section>
+        </>
+      )}
     </article>
+  );
+}
+
+/** ป้ายกำกับตัวอย่างแต่ละแบบ (ใช้เฉพาะช่วงเลือกดีไซน์) */
+function ExampleLabel({ n, caption }: { n: number; caption: string }) {
+  return (
+    <div className="mb-5 mt-12 flex flex-wrap items-center gap-2.5">
+      <span className="inline-flex h-7 items-center rounded-full bg-foreground px-3 text-[12px] font-semibold tracking-[0.04em] text-background">
+        ตัวอย่าง {n}
+      </span>
+      <span className="text-[14px] text-muted-foreground">{caption}</span>
+    </div>
   );
 }

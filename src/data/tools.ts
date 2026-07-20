@@ -14,6 +14,7 @@ export const TOOL_META: Record<string, ToolMeta> = {
   Claude: { icon: "/uploads/tool-claude.svg" },
   Illustrator: { mono: "Ai", bg: "#2a0e00", fg: "#FF9A00" },
   Photoshop: { mono: "Ps", bg: "#001E36", fg: "#31A8FF" },
+  "Adobe XD": { mono: "Xd", bg: "#2b0a3d", fg: "#FF61F6" },
   "Looker Studio": { mono: "Lo", bg: "#4285F4", fg: "#ffffff" },
 };
 

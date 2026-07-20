@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CaseStudyView } from "@/components/case-study/case-study-view";
 import { PlaceholderView } from "@/components/case-study/placeholder-view";
 import { PropertyhubAppView } from "@/components/case-study/propertyhub-app-view";
+import { EarlyWorkView } from "@/components/case-study/early-work-view";
 import {
   getPlaceholder,
   getProject,
@@ -48,6 +49,10 @@ export default async function WorkPage({
     // Propertyhub App มี case study เต็มแบบเฉพาะ (โครง app + design system + screens by tab)
     if (slug === "propertyhub-app") {
       return <PropertyhubAppView project={placeholder} />;
+    }
+    // Early Work — คลังงานเก่า render เป็น gallery แบ่งหมวด
+    if (slug === "early-work") {
+      return <EarlyWorkView />;
     }
     return <PlaceholderView project={placeholder} />;
   }

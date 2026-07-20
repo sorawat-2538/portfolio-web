@@ -25,8 +25,9 @@ export type DeviceRow = {
 };
 
 /** สถานะโปรเจกต์ — โชว์เป็น badge บนหน้า project detail
- *  available = พร้อมดู/ใช้งานจริง · process = กำลังทำ · coming = ยังไม่เปิด (เร็ว ๆ นี้) */
-export type ProjectStatus = "available" | "process" | "coming";
+ *  available = พร้อมดู/ใช้งานจริง · process = กำลังทำ · coming = ยังไม่เปิด (เร็ว ๆ นี้)
+ *  archived = งานเก่าเก็บเข้าคลัง (ไม่ได้ active แล้ว) */
+export type ProjectStatus = "available" | "process" | "coming" | "archived";
 
 export type Project = {
   title: string;
@@ -680,6 +681,10 @@ export type PlaceholderProject = {
   category: string;
   status: ProjectStatus;
   tagline: string;
+  /** ลิงก์เว็บจริง/เดโม — โชว์เป็นปุ่ม "เปิดดูเว็บไซต์" บน header ถ้ามี */
+  liveUrl?: string;
+  /** เนื้อหา Overview (ย่อหน้าเดียวต่อ project) — ถ้าไม่ใส่ = empty state */
+  overview?: string[];
   /** เครื่องมือที่ใช้ — โชว์เป็นการ์ดใน section Tools (ถ้าไม่ใส่ = empty state) */
   tools?: string[];
   /** hero แบบ present — laptop (เว็บ) + phone (แอป) วางคู่กัน · ใส่ทั้งคู่ถึงจะแสดง */
@@ -689,6 +694,9 @@ export type PlaceholderProject = {
   appStoreUrl?: string;
   /** ภาพผลงาน (mockup มือถือ ฯลฯ มีกรอบเครื่องในตัว) — โชว์ใน section "All about works" ถ้ามี */
   screens?: { label?: string; src: string; w: number; h: number }[];
+  /** หน้าเว็บที่ออกแบบ — โชว์เป็น browser-frame gallery ("All about works") กดดูเต็มหน้าได้
+   *  (เหมือน screens ของ project จริง) */
+  works?: { label: string; src?: string; desc?: string; url?: string; w?: number; h?: number }[];
 };
 
 export const placeholderProjects = {
@@ -713,14 +721,60 @@ export const placeholderProjects = {
     appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
   },
   "renthub-agency": {
-    title: "Renthub Agency",
+    title: "Expat",
     category: "Digital Product",
-    status: "coming",
+    status: "process",
     tagline:
-      "เครื่องมือสำหรับเอเจนซี/เจ้าของห้อง จัดการประกาศและ lead ผู้เช่าในที่เดียว",
+      "เว็บแพลตฟอร์มหาที่พักให้เช่าสำหรับชาวต่างชาติในกรุงเทพฯ — ค้นหา เปรียบเทียบ และติดต่อเอเจนต์ได้ในที่เดียว",
+    liveUrl: "https://expathome.dev/",
+    overview: [
+      "Expat คือเว็บแพลตฟอร์มหาที่พักให้เช่าสำหรับชาวต่างชาติในกรุงเทพฯ ช่วยให้ผู้เช่าค้นหาอพาร์ตเมนต์ตามทำเล/รถไฟฟ้า เปรียบเทียบห้อง บันทึก shortlist และติดต่อเอเจนต์ได้ในที่เดียว งานนี้ผมออกแบบตั้งแต่ flow การค้นหา หน้ารายละเอียดทรัพย์ มุมมองแผนที่ ไปจนถึงหน้า shortlist (เนื้อหานี้เป็น draft — รออัปเดตข้อมูลจริง)",
+    ],
     tools: ["Figma"],
     heroWeb: "/uploads/renthub-agency-web-laptop.png",
     heroPhone: "/uploads/renthub-agency-app-home.png",
+    works: [
+      {
+        label: "Home",
+        desc: "หน้าแรกของ Renthub Agency — จุดค้นหาอพาร์ตเมนต์ให้เช่า รวมทำเลยอดนิยมและทรัพย์แนะนำ",
+        url: "renthub.in.th",
+        src: "/uploads/renthub-agency-home.jpg",
+        w: 1600,
+        h: 6807,
+      },
+      {
+        label: "Property detail",
+        desc: "หน้ารายละเอียดอพาร์ตเมนต์ — รูป ห้อง ค่าเช่า สิ่งอำนวยความสะดวก รีวิว และฟอร์มติดต่อเจ้าของ",
+        url: "renthub.in.th/th/en",
+        src: "/uploads/renthub-agency-detail.jpg",
+        w: 1600,
+        h: 5904,
+      },
+      {
+        label: "Search results",
+        desc: "หน้ารายการค้นหา — filter ราคา/ประเภทห้อง/สิ่งอำนวยความสะดวก พร้อมการ์ดประกาศแบบเลื่อนดูรูป",
+        url: "renthub.in.th/th/en",
+        src: "/uploads/renthub-agency-list.jpg",
+        w: 1600,
+        h: 4014,
+      },
+      {
+        label: "Map view",
+        desc: "มุมมองแผนที่ — ดูตำแหน่งอพาร์ตเมนต์บนแผนที่คู่กับรายการ ค้นหาตามพื้นที่ได้",
+        url: "renthub.in.th/th/en",
+        src: "/uploads/renthub-agency-map.jpg",
+        w: 1600,
+        h: 1137,
+      },
+      {
+        label: "Shortlist",
+        desc: "หน้ารายการที่บันทึกไว้ — รวมห้องที่สนใจไว้เปรียบเทียบ และแชร์ shortlist ให้คนอื่นดูได้",
+        url: "renthub.in.th/th/en",
+        src: "/uploads/renthub-agency-shortlist.jpg",
+        w: 1600,
+        h: 2020,
+      },
+    ],
   },
   "propertyos-chat": {
     title: "PropertyOS Chat",
@@ -742,6 +796,14 @@ export const placeholderProjects = {
     tagline:
       "เครื่องมือสร้างเว็บไซต์ประกาศอสังหาฯ สำหรับเอเจนต์ — ตั้งค่าและปล่อยเว็บได้เอง",
   },
+  // คลังงานเก่า 2018–2020 — render ด้วย EarlyWorkView (special-case ใน work/[slug])
+  "early-work": {
+    title: "Early Work",
+    category: "Archive",
+    status: "archived",
+    tagline:
+      "คลังงานออกแบบช่วงปี 2018–2020 — แอป เว็บ/หลังบ้าน design system และงานกราฟิก จาก portfolio เล่มเดิม",
+  },
 } satisfies Record<string, PlaceholderProject>;
 
 export type PlaceholderSlug = keyof typeof placeholderProjects;
@@ -756,4 +818,5 @@ export const STATUS_LABEL: Record<ProjectStatus, string> = {
   available: "Available",
   process: "On Process",
   coming: "Coming Soon",
+  archived: "Old work",
 };

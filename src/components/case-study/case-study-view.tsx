@@ -419,7 +419,7 @@ export function CaseStudyView({
         <>
           <div className="my-[50px] h-px bg-border" />
           <section>
-            <H2>All about works</H2>
+            <H2>Screens</H2>
             {/* screensFull = โชว์รูปเต็มยาว (จอน้อย) · ปกติ = browser-frame gallery */}
             {p.screensFull ? (
               <div className="mt-[26px] space-y-10">
@@ -438,7 +438,7 @@ export function CaseStudyView({
                         height={s.h ?? 5000}
                         sizes="(max-width: 900px) 100vw, 860px"
                         quality={88}
-                        className="block h-auto w-full rounded-[12px] border border-border shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
+                        className="block h-auto w-full shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
                       />
                     </figure>
                   ) : null,
