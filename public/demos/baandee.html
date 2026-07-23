@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>บ้านดี · BaanDee — ค้นหาบ้าน คอนโด ที่ใช่</title>
+    <meta
+      name="description"
+      content="BaanDee — แพลตฟอร์มอสังหาริมทรัพย์ในประเทศไทย ค้นหาบ้าน คอนโด ทาวน์โฮม และที่ดิน ทั่วประเทศ"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#378ED0",
+                50: "#eef6fc",
+                100: "#d6e9f6",
+                600: "#2b7cbb",
+                700: "#21649a",
+                foreground: "#ffffff",
+              },
+              foreground: "#0b1320",
+              background: "#ffffff",
+              card: "#ffffff",
+              muted: {
+                DEFAULT: "#f4f7fb",
+                foreground: "#5a6577",
+              },
+              border: "#e6ecf2",
+              ring: "#378ED0",
+              destructive: "#d9534f",
+            },
+            fontFamily: {
+              sans: [
+                "Inter",
+                '"Noto Sans Thai"',
+                "ui-sans-serif",
+                "system-ui",
+                "sans-serif",
+              ],
+            },
+            borderRadius: {
+              "2xl": "1.25rem",
+              "3xl": "1.5rem",
+            },
+            boxShadow: {
+              soft: "0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.08)",
+              card: "0 1px 2px rgba(15,23,42,.04), 0 12px 32px -16px rgba(15,23,42,.12)",
+              lift: "0 2px 4px rgba(15,23,42,.06), 0 24px 48px -20px rgba(15,23,42,.18)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html,
+      body {
+        background: #ffffff;
+        color: #0b1320;
+      }
+      body {
+        font-family: "Inter", "Noto Sans Thai", ui-sans-serif, system-ui,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .bg-grid-soft {
+        background-image: linear-gradient(
+            to right,
+            rgba(55, 142, 208, 0.06) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(55, 142, 208, 0.06) 1px,
+            transparent 1px
+          );
+        background-size: 56px 56px;
+      }
+      .bg-hero-glow {
+        background: radial-gradient(
+            60% 60% at 50% 0%,
+            rgba(55, 142, 208, 0.16),
+            transparent 70%
+          ),
+          radial-gradient(
+            40% 40% at 90% 30%,
+            rgba(55, 142, 208, 0.08),
+            transparent 70%
+          ),
+          linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+      }
+      .bg-photo-1 {
+        background: linear-gradient(135deg, #c9e0f4 0%, #7fb4dc 100%);
+      }
+      .bg-photo-2 {
+        background: linear-gradient(135deg, #d5e6f3 0%, #6ea7d2 100%);
+      }
+      .bg-photo-3 {
+        background: linear-gradient(135deg, #b9d5ec 0%, #4a8fc5 100%);
+      }
+      .bg-photo-4 {
+        background: linear-gradient(135deg, #e4eef7 0%, #8cbbe0 100%);
+      }
+      .bg-photo-5 {
+        background: linear-gradient(135deg, #c2dcf2 0%, #5b9bcd 100%);
+      }
+      .bg-photo-6 {
+        background: linear-gradient(135deg, #d8eaf6 0%, #78aed7 100%);
+      }
+      .bg-photo-7 {
+        background: linear-gradient(135deg, #aecbe3 0%, #3f82bd 100%);
+      }
+      .bg-photo-8 {
+        background: linear-gradient(135deg, #cee2f1 0%, #6ba2cb 100%);
+      }
+
+      /* Lucide icons default sizing */
+      [data-lucide] {
+        width: 1em;
+        height: 1em;
+        stroke-width: 2;
+      }
+
+      /* Native select chevron replacement */
+      select.appearance-none {
+        background-image: none;
+      }
+
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-full flex flex-col bg-background text-foreground">
+    <!-- Navbar -->
+    <header
+      id="site-navbar"
+      class="sticky top-0 z-50 transition-all duration-300 bg-transparent"
+    >
+      <div
+        class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+      >
+        <a href="#" class="flex items-center gap-2" aria-label="BaanDee — หน้าแรก">
+          <span
+            class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-primary text-white shadow-soft"
+          >
+            <i data-lucide="home" class="text-base"></i>
+          </span>
+          <span class="text-base font-semibold tracking-tight">
+            บ้านดี
+            <span class="ml-1 text-muted-foreground font-normal"
+              >· BaanDee</span
+            >
+          </span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="#" class="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">หน้าแรก</a>
+          <a href="#" class="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">ซื้อ</a>
+          <a href="#" class="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">เช่า</a>
+          <a href="#projects" class="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">โครงการ</a>
+          <a href="#articles" class="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">บทความ</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="lang-toggle"
+            type="button"
+            class="hidden sm:inline-flex items-center rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Toggle language"
+          >
+            TH
+          </button>
+          <button
+            type="button"
+            class="hidden sm:inline-flex h-11 w-11 items-center justify-center rounded-2xl text-foreground transition-colors hover:bg-muted"
+            aria-label="Search"
+          >
+            <i data-lucide="search" class="text-base"></i>
+          </button>
+          <button
+            type="button"
+            class="hidden sm:inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 h-11 text-sm font-medium text-white shadow-soft transition-all duration-200 hover:bg-primary-600 hover:shadow-card active:scale-[.98]"
+          >
+            ลงประกาศฟรี
+          </button>
+          <button
+            id="mobile-toggle"
+            type="button"
+            class="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-2xl text-foreground transition-colors hover:bg-muted"
+            aria-label="เปิดเมนู"
+            aria-expanded="false"
+          >
+            <i data-lucide="menu" class="text-base" id="mobile-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden border-t border-border bg-background"
+      >
+        <nav
+          class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6"
+        >
+          <a href="#" class="rounded-2xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-muted">หน้าแรก</a>
+          <a href="#" class="rounded-2xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-muted">ซื้อ</a>
+          <a href="#" class="rounded-2xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-muted">เช่า</a>
+          <a href="#projects" class="rounded-2xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-muted">โครงการ</a>
+          <a href="#articles" class="rounded-2xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-muted">บทความ</a>
+          <button
+            type="button"
+            class="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 h-11 text-sm font-medium text-white shadow-soft transition-all duration-200 hover:bg-primary-600 hover:shadow-card"
+          >
+            ลงประกาศฟรี
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <!-- Hero + Search -->
+      <section class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-hero-glow" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-grid-soft" aria-hidden="true"></div>
+        <div
+          class="absolute -top-20 -right-20 h-[420px] w-[420px] rounded-full bg-primary/10 blur-3xl"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-20 sm:pt-16 sm:pb-28 lg:pt-24 lg:pb-32"
+        >
+          <div class="mx-auto max-w-3xl text-center">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700"
+            >
+              <i data-lucide="sparkles" class="text-sm"></i>
+              แพลตฟอร์มอสังหาฯ อันดับ 1 ในไทย
+            </span>
+            <h1
+              class="mt-5 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+            >
+              ค้นหาบ้านที่ใช่ <span class="text-primary">ในทำเลที่ชอบ</span>
+            </h1>
+            <p
+              class="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
+              รวมประกาศบ้าน คอนโด ทาวน์โฮม และที่ดินทั่วประเทศ
+              จากเจ้าของจริงและตัวแทนคุณภาพ — เลือกได้ในที่เดียว
+            </p>
+          </div>
+
+          <div class="relative mx-auto mt-10 max-w-5xl">
+            <div
+              class="rounded-3xl border border-border bg-card p-3 shadow-card sm:p-4"
+            >
+              <div
+                id="hero-tabs"
+                class="inline-flex items-center gap-1 rounded-full bg-muted/70 p-1 text-muted-foreground"
+                role="tablist"
+              >
+                <button
+                  type="button"
+                  data-tab="buy"
+                  class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-all bg-white text-foreground shadow-soft"
+                  role="tab"
+                  aria-selected="true"
+                >
+                  <i data-lucide="home" class="mr-1.5 text-sm"></i>
+                  ซื้อ
+                </button>
+                <button
+                  type="button"
+                  data-tab="rent"
+                  class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-all hover:text-foreground"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <i data-lucide="key-round" class="mr-1.5 text-sm"></i>
+                  เช่า
+                </button>
+                <button
+                  type="button"
+                  data-tab="project"
+                  class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-all hover:text-foreground"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <i data-lucide="building-2" class="mr-1.5 text-sm"></i>
+                  โครงการ
+                </button>
+              </div>
+
+              <form
+                id="hero-search"
+                class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-12"
+                novalidate
+              >
+                <div class="relative md:col-span-5">
+                  <i
+                    data-lucide="map-pin"
+                    class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
+                  ></i>
+                  <input
+                    id="hero-query"
+                    type="text"
+                    placeholder="ค้นหาตามทำเล หรือ ชื่อโครงการ"
+                    class="flex h-11 w-full rounded-2xl border border-border bg-background pl-10 pr-4 py-2 text-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  />
+                </div>
+
+                <div class="relative md:col-span-3">
+                  <select
+                    class="appearance-none flex h-11 w-full rounded-2xl border border-border bg-background px-4 pr-10 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  >
+                    <option value="all">ทุกประเภทอสังหาฯ</option>
+                    <option value="condo">คอนโด</option>
+                    <option value="house">บ้านเดี่ยว</option>
+                    <option value="townhome">ทาวน์โฮม</option>
+                    <option value="land">ที่ดิน</option>
+                  </select>
+                  <i
+                    data-lucide="chevron-down"
+                    class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
+                  ></i>
+                </div>
+
+                <div class="relative md:col-span-2">
+                  <select
+                    class="appearance-none flex h-11 w-full rounded-2xl border border-border bg-background px-4 pr-10 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+                  >
+                    <option value="any">ทุกราคา</option>
+                    <option value="0-3">ต่ำกว่า 3 ล้าน</option>
+                    <option value="3-7">3 – 7 ล้าน</option>
+                    <option value="7-15">7 – 15 ล้าน</option>
+                    <option value="15+">15 ล้าน ขึ้นไป</option>
+                  </select>
+                  <i
+                    data-lucide="chevron-down"
+                    class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
+                  ></i>
+                </div>
+
+                <button
+                  type="submit"
+                  class="md:col-span-2 inline-flex h-11 items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-primary px-5 text-sm font-medium text-white shadow-soft transition-all duration-200 hover:bg-primary-600 hover:shadow-card active:scale-[.98]"
+                >
+                  <i data-lucide="search" class="text-sm"></i>
+                  ค้นหา
+                </button>
+              </form>
+
+              <div
+                id="hero-error"
+                class="hidden mt-3 relative w-full rounded-2xl border border-red-200 bg-red-50 p-4 text-red-800"
+              >
+                <i
+                  data-lucide="triangle-alert"
+                  class="absolute left-4 top-4 text-red-600 text-base"
+                ></i>
+                <div class="pl-7">
+                  <h5 class="mb-1 text-sm font-medium leading-none">
+                    ไม่สามารถค้นหาได้
+                  </h5>
+                  <div class="text-sm">
+                    กรุณาระบุทำเลหรือคำค้นหาอย่างน้อย 2 ตัวอักษร
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <dl
+            class="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-4 text-center sm:gap-8"
+          >
+            <div class="flex flex-col items-center">
+              <dt class="text-xs text-muted-foreground sm:text-sm">
+                ประกาศทั่วประเทศ
+              </dt>
+              <dd class="mt-1 text-xl font-semibold sm:text-2xl">120,000+</dd>
+            </div>
+            <div class="flex flex-col items-center">
+              <dt class="text-xs text-muted-foreground sm:text-sm">
+                โครงการคุณภาพ
+              </dt>
+              <dd class="mt-1 text-xl font-semibold sm:text-2xl">3,200+</dd>
+            </div>
+            <div class="flex flex-col items-center">
+              <dt class="text-xs text-muted-foreground sm:text-sm">
+                ผู้ใช้งานต่อเดือน
+              </dt>
+              <dd class="mt-1 text-xl font-semibold sm:text-2xl">850K+</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- Popular Projects -->
+      <section id="projects" class="py-16 sm:py-20 lg:py-24">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+          >
+            <div class="max-w-2xl">
+              <p
+                class="text-xs font-medium uppercase tracking-widest text-primary"
+              >
+                โครงการคุณภาพ
+              </p>
+              <h2
+                class="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                โครงการยอดนิยมในประเทศไทย
+              </h2>
+              <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                คัดสรรโครงการคุณภาพจากผู้พัฒนาชั้นนำ
+                ทั้งคอนโดและบ้านเดี่ยวที่กำลังเป็นที่สนใจ
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                id="projects-toggle"
+                type="button"
+                class="hidden sm:inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-background px-4 h-9 text-sm font-medium transition-colors hover:bg-muted"
+              >
+                ดูสถานะโหลด
+              </button>
+              <a
+                href="#"
+                class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-50"
+              >
+                ดูทั้งหมด <i data-lucide="arrow-right" class="text-sm"></i>
+              </a>
+            </div>
+          </div>
+
+          <div
+            id="projects-grid"
+            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Popular Locations -->
+      <section class="bg-muted/40 py-16 sm:py-20 lg:py-24">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+          >
+            <div class="max-w-2xl">
+              <p
+                class="text-xs font-medium uppercase tracking-widest text-primary"
+              >
+                ทำเลทอง
+              </p>
+              <h2
+                class="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                ทำเลยอดนิยมในกรุงเทพฯ
+              </h2>
+              <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                สำรวจประกาศจากทำเลที่ผู้คนค้นหามากที่สุดในกรุงเทพมหานคร
+              </p>
+            </div>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-50"
+            >
+              ดูทั้งหมด <i data-lucide="arrow-right" class="text-sm"></i>
+            </a>
+          </div>
+
+          <div
+            id="locations-grid"
+            class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Latest Announcements -->
+      <section class="py-16 sm:py-20 lg:py-24">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+          >
+            <div class="max-w-2xl">
+              <p
+                class="text-xs font-medium uppercase tracking-widest text-primary"
+              >
+                ประกาศล่าสุด
+              </p>
+              <h2
+                class="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                ประกาศใหม่จากทั่วประเทศ
+              </h2>
+              <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                อัปเดตประกาศซื้อ-เช่า ล่าสุดที่เพิ่งลงในแพลตฟอร์ม
+              </p>
+            </div>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-50"
+            >
+              ดูทั้งหมด <i data-lucide="arrow-right" class="text-sm"></i>
+            </a>
+          </div>
+
+          <div
+            id="latest-filters"
+            class="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 hide-scrollbar"
+          ></div>
+
+          <div id="latest-grid"></div>
+        </div>
+      </section>
+
+      <!-- Featured Announcements -->
+      <section class="bg-muted/40 py-16 sm:py-20 lg:py-24">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+          >
+            <div class="max-w-2xl">
+              <p
+                class="text-xs font-medium uppercase tracking-widest text-primary"
+              >
+                คัดเลือกพิเศษ
+              </p>
+              <h2
+                class="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                ประกาศแนะนำสำหรับคุณ
+              </h2>
+              <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                ประกาศคุณภาพระดับพรีเมียมที่ทีมงานคัดเลือกให้คุณโดยเฉพาะ
+              </p>
+            </div>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-50"
+            >
+              ดูทั้งหมด <i data-lucide="arrow-right" class="text-sm"></i>
+            </a>
+          </div>
+
+          <div
+            id="featured-grid"
+            class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Articles -->
+      <section id="articles" class="py-16 sm:py-20 lg:py-24">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+          >
+            <div class="max-w-2xl">
+              <p
+                class="text-xs font-medium uppercase tracking-widest text-primary"
+              >
+                ความรู้คู่บ้าน
+              </p>
+              <h2
+                class="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                บทความอสังหาฯ
+              </h2>
+              <p class="mt-2 text-sm text-muted-foreground sm:text-base">
+                บทความ คู่มือ และเทรนด์เกี่ยวกับอสังหาริมทรัพย์ในประเทศไทย
+              </p>
+            </div>
+            <a
+              href="#"
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-50"
+            >
+              ดูทั้งหมด <i data-lucide="arrow-right" class="text-sm"></i>
+            </a>
+          </div>
+
+          <div
+            id="articles-grid"
+            class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-border bg-card">
+      <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          <div class="lg:col-span-4">
+            <a href="#" class="inline-flex items-center gap-2">
+              <span
+                class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-primary text-white shadow-soft"
+              >
+                <i data-lucide="home" class="text-base"></i>
+              </span>
+              <span class="text-base font-semibold tracking-tight">
+                บ้านดี
+                <span class="ml-1 font-normal text-muted-foreground"
+                  >· BaanDee</span
+                >
+              </span>
+            </a>
+            <p class="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              แพลตฟอร์มอสังหาริมทรัพย์ที่ช่วยให้คุณค้นหาบ้านในฝัน ในทำเลที่ใช่
+              ได้อย่างมั่นใจ
+            </p>
+            <ul class="mt-6 space-y-2 text-sm text-muted-foreground">
+              <li class="inline-flex items-center gap-2">
+                <i data-lucide="phone" class="text-primary text-sm"></i>
+                02-123-4567
+              </li>
+              <li class="inline-flex items-center gap-2">
+                <i data-lucide="mail" class="text-primary text-sm"></i>
+                hello@baandee.co.th
+              </li>
+              <li class="inline-flex items-center gap-2">
+                <i data-lucide="map-pin" class="text-primary text-sm"></i>
+                สีลม, กรุงเทพมหานคร
+              </li>
+            </ul>
+            <form
+              class="mt-6 flex flex-col gap-2 sm:flex-row"
+              onsubmit="event.preventDefault()"
+            >
+              <input
+                type="email"
+                placeholder="อีเมลของคุณ"
+                aria-label="อีเมลรับข่าวสาร"
+                class="sm:max-w-xs flex h-11 w-full rounded-2xl border border-border bg-background px-4 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+              />
+              <button
+                type="submit"
+                class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-medium text-white shadow-soft transition-all duration-200 hover:bg-primary-600 hover:shadow-card"
+              >
+                รับข่าวสาร
+              </button>
+            </form>
+          </div>
+
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:col-span-8">
+            <div>
+              <h4 class="text-sm font-semibold tracking-tight">
+                เกี่ยวกับ BaanDee
+              </h4>
+              <ul class="mt-4 space-y-3 text-sm">
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">เกี่ยวกับเรา</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ร่วมงานกับเรา</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ห้องข่าว</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">นโยบายความเป็นส่วนตัว</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ข้อตกลงการใช้งาน</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold tracking-tight">บริการ</h4>
+              <ul class="mt-4 space-y-3 text-sm">
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ซื้อบ้าน-คอนโด</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">เช่าบ้าน-คอนโด</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ลงประกาศฟรี</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">บริการสินเชื่อ</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">เครื่องมือคำนวณ</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold tracking-tight">ช่วยเหลือ</h4>
+              <ul class="mt-4 space-y-3 text-sm">
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ศูนย์ช่วยเหลือ</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">คำถามที่พบบ่อย</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">ติดต่อทีมงาน</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">แจ้งปัญหาประกาศ</a></li>
+                <li><a href="#" class="text-muted-foreground transition-colors hover:text-primary">พันธมิตรธุรกิจ</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p class="text-xs text-muted-foreground">
+            © 2026 BaanDee Co., Ltd. — สงวนลิขสิทธิ์
+          </p>
+          <div class="flex items-center gap-1">
+            <a href="#" aria-label="Facebook" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary">
+              <i data-lucide="facebook" class="text-sm"></i>
+            </a>
+            <a href="#" aria-label="Instagram" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary">
+              <i data-lucide="instagram" class="text-sm"></i>
+            </a>
+            <a href="#" aria-label="YouTube" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary">
+              <i data-lucide="youtube" class="text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Data + interactivity -->
+    <script>
+      const popularProjects = [
+        { name: "ไอดีโอ โมบิ สุขุมวิท 66", developer: "Ananda", location: "สุขุมวิท, กรุงเทพฯ", priceFrom: 3290000, beds: "1–2", baths: "1", area: "26–48 ตร.ม.", badge: "ใหม่", photo: 1 },
+        { name: "เดอะ ไลน์ พหลฯ–ประดิพัทธ์", developer: "Sansiri", location: "อารีย์, กรุงเทพฯ", priceFrom: 4590000, beds: "1–3", baths: "1–2", area: "28–96 ตร.ม.", badge: "พร้อมอยู่", photo: 2 },
+        { name: "ศุภาลัย ไอคอน สาทร", developer: "Supalai", location: "สาทร, กรุงเทพฯ", priceFrom: 5990000, beds: "1–3", baths: "1–2", area: "32–112 ตร.ม.", badge: "แนะนำ", photo: 3 },
+        { name: "นิว โนเบิล ราชดำริ", developer: "Noble", location: "ราชดำริ, กรุงเทพฯ", priceFrom: 8900000, beds: "1–2", baths: "1–2", area: "30–86 ตร.ม.", badge: "ใหม่", photo: 4 },
+      ];
+
+      const popularLocations = [
+        { name: "สุขุมวิท", nameEn: "Sukhumvit", listings: 1284, photo: 1 },
+        { name: "สาทร", nameEn: "Sathorn", listings: 642, photo: 2 },
+        { name: "อโศก", nameEn: "Asok", listings: 511, photo: 3 },
+        { name: "อารีย์", nameEn: "Ari", listings: 318, photo: 4 },
+        { name: "ทองหล่อ", nameEn: "Thonglor", listings: 437, photo: 5 },
+        { name: "รัชดา", nameEn: "Ratchada", listings: 522, photo: 6 },
+        { name: "พระราม 9", nameEn: "Rama 9", listings: 389, photo: 7 },
+        { name: "บางนา", nameEn: "Bang Na", listings: 296, photo: 8 },
+      ];
+
+      const latestListings = [
+        { type: "คอนโด", status: "ขาย", title: "ไอดีโอ Q สุขุมวิท 36 — ห้องมุม วิวเปิด", location: "สุขุมวิท, กรุงเทพฯ", price: 7890000, beds: 1, baths: 1, area: 35, photo: 1 },
+        { type: "บ้านเดี่ยว", status: "ขาย", title: "บ้านเดี่ยวสไตล์มินิมอล โครงการเอกชน", location: "บางนา, กรุงเทพฯ", price: 12500000, beds: 3, baths: 3, area: 220, photo: 2 },
+        { type: "คอนโด", status: "เช่า", title: "Park 24 — ติด BTS พร้อมพี่", location: "พร้อมพงษ์, กรุงเทพฯ", price: 38000, beds: 1, baths: 1, area: 32, photo: 3 },
+        { type: "ทาวน์โฮม", status: "ขาย", title: "ทาวน์โฮม 3 ชั้น Modern Loft", location: "ลาดพร้าว, กรุงเทพฯ", price: 6490000, beds: 3, baths: 3, area: 168, photo: 4 },
+        { type: "คอนโด", status: "ขาย", title: "The Lofts อโศก — ห้องสูง 4.2 ม.", location: "อโศก, กรุงเทพฯ", price: 9700000, beds: 1, baths: 1, area: 42, photo: 5 },
+        { type: "คอนโด", status: "เช่า", title: "Ashton อโศก — ห้องตกแต่งครบ", location: "อโศก, กรุงเทพฯ", price: 45000, beds: 1, baths: 1, area: 36, photo: 6 },
+        { type: "บ้านเดี่ยว", status: "ขาย", title: "บ้านสวนสไตล์ทรอปิคอล หลังมุม", location: "นนทบุรี", price: 8950000, beds: 4, baths: 3, area: 320, photo: 7 },
+        { type: "ทาวน์โฮม", status: "เช่า", title: "ทาวน์โฮม 2 ชั้น ใกล้ MRT", location: "พระราม 9, กรุงเทพฯ", price: 28000, beds: 3, baths: 2, area: 140, photo: 8 },
+      ];
+
+      const featuredListings = [
+        { type: "คอนโด", status: "ขาย", title: "เพนต์เฮ้าส์ 4 ห้องนอน ใจกลางทองหล่อ", location: "ทองหล่อ, กรุงเทพฯ", price: 42900000, beds: 4, baths: 4, area: 220, photo: 3, featured: true },
+        { type: "บ้านเดี่ยว", status: "ขาย", title: "บ้านเดี่ยวระดับลักชัวรี่ พร้อมสระว่ายน้ำ", location: "ราชพฤกษ์, นนทบุรี", price: 36500000, beds: 5, baths: 5, area: 520, photo: 7, featured: true },
+        { type: "คอนโด", status: "เช่า", title: "ดูเพล็กซ์วิวแม่น้ำเจ้าพระยา", location: "เจริญนคร, กรุงเทพฯ", price: 120000, beds: 3, baths: 3, area: 180, photo: 5, featured: true },
+      ];
+
+      const articles = [
+        { category: "คู่มือผู้ซื้อ", title: "5 ขั้นตอนกู้ซื้อบ้านให้ผ่านง่ายในปี 2026", excerpt: "เตรียมเอกสาร เช็คเครดิตบูโร และรู้เทคนิคต่อรองธนาคาร เพื่อให้กระบวนการกู้ราบรื่นที่สุด", date: "12 พ.ค. 2026", readMinutes: 6, photo: 1 },
+        { category: "ทำเลน่าลงทุน", title: "ทำเลรอบสถานี MRT สายสีส้ม น่าลงทุนแค่ไหน", excerpt: "สำรวจราคาคอนโด ผลตอบแทนค่าเช่า และอนาคตการเดินทางบนสายสีส้มฝั่งตะวันออก", date: "5 พ.ค. 2026", readMinutes: 8, photo: 5 },
+        { category: "ออกแบบ", title: "แต่งคอนโด 30 ตร.ม. ให้รู้สึกกว้างขึ้นเท่าตัว", excerpt: "เทคนิคจัดเลย์เอาต์ เลือกเฟอร์นิเจอร์ Built-in และใช้สีโทนสว่าง เพื่อขยายพื้นที่", date: "29 เม.ย. 2026", readMinutes: 5, photo: 4 },
+      ];
+
+      function formatTHB(v) {
+        if (v >= 1_000_000) {
+          const m = v / 1_000_000;
+          return "฿" + (m % 1 === 0 ? m.toFixed(0) : m.toFixed(2)) + " ล้าน";
+        }
+        if (v >= 1_000) {
+          return "฿" + Math.round(v / 1_000).toLocaleString("en-US") + ",000";
+        }
+        return "฿" + v.toLocaleString("th-TH");
+      }
+
+      /* ---------- Popular Projects (with loading) ---------- */
+      function projectSkeleton() {
+        return `
+          <div class="flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+            <div class="aspect-[4/3] w-full bg-muted animate-pulse"></div>
+            <div class="flex flex-col gap-3 p-5">
+              <div class="h-4 w-1/3 rounded bg-muted animate-pulse"></div>
+              <div class="h-5 w-3/4 rounded bg-muted animate-pulse"></div>
+              <div class="h-4 w-2/3 rounded bg-muted animate-pulse"></div>
+              <div class="mt-2 flex items-center justify-between border-t border-border pt-3">
+                <div class="space-y-2">
+                  <div class="h-3 w-16 rounded bg-muted animate-pulse"></div>
+                  <div class="h-5 w-24 rounded bg-muted animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      function projectCard(p) {
+        return `
+          <a href="#" class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
+            <div class="relative aspect-[4/3] w-full overflow-hidden bg-photo-${p.photo}">
+              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/25 to-transparent"></div>
+              ${p.badge ? `<span class="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-white">${p.badge}</span>` : ""}
+              <div class="absolute bottom-4 left-4 right-4 text-white">
+                <p class="text-xs opacity-90">${p.developer}</p>
+                <h3 class="mt-1 line-clamp-1 text-lg font-semibold">${p.name}</h3>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 p-5">
+              <p class="inline-flex items-center gap-1 text-sm text-muted-foreground">
+                <i data-lucide="map-pin" class="text-sm"></i>${p.location}
+              </p>
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="bed-double" class="text-primary/70 text-sm"></i>${p.beds}</span>
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="bath" class="text-primary/70 text-sm"></i>${p.baths}</span>
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="ruler" class="text-primary/70 text-sm"></i>${p.area}</span>
+              </div>
+              <div class="mt-auto flex items-end justify-between border-t border-border pt-3">
+                <div>
+                  <p class="text-xs text-muted-foreground">ราคาเริ่มต้น</p>
+                  <p class="text-base font-semibold">${formatTHB(p.priceFrom)}</p>
+                </div>
+                <span class="text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">ดูโครงการ →</span>
+              </div>
+            </div>
+          </a>`;
+      }
+
+      let projectsLoading = true;
+      function renderProjects() {
+        const grid = document.getElementById("projects-grid");
+        if (projectsLoading) {
+          grid.innerHTML = Array.from({ length: 4 }).map(projectSkeleton).join("");
+        } else {
+          grid.innerHTML = popularProjects.map(projectCard).join("");
+        }
+        lucide.createIcons();
+        const btn = document.getElementById("projects-toggle");
+        if (btn) btn.textContent = projectsLoading ? "หยุดโหลด" : "ดูสถานะโหลด";
+      }
+
+      /* ---------- Popular Locations ---------- */
+      function renderLocations() {
+        const grid = document.getElementById("locations-grid");
+        grid.innerHTML = popularLocations
+          .map(
+            (loc) => `
+          <a href="#" class="group relative aspect-[4/5] overflow-hidden rounded-2xl shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card bg-photo-${loc.photo}">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <span class="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-foreground opacity-0 backdrop-blur transition-all duration-300 group-hover:opacity-100">
+              <i data-lucide="arrow-up-right" class="text-sm"></i>
+            </span>
+            <div class="absolute inset-x-0 bottom-0 p-5 text-white">
+              <p class="text-xs uppercase tracking-widest opacity-80">${loc.nameEn}</p>
+              <h3 class="mt-1 text-xl font-semibold">${loc.name}</h3>
+              <p class="mt-1.5 text-xs opacity-90">${loc.listings.toLocaleString("th-TH")} ประกาศ</p>
+            </div>
+          </a>`,
+          )
+          .join("");
+      }
+
+      /* ---------- Listing Card (shared latest + featured) ---------- */
+      function listingCard(listing, size) {
+        const isRent = listing.status === "เช่า";
+        const price = isRent
+          ? formatTHB(listing.price) + " /เดือน"
+          : formatTHB(listing.price);
+        const aspect = size === "lg" ? "aspect-[4/3]" : "aspect-[5/4]";
+        const statusBadge = isRent
+          ? `<span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-700">เช่า</span>`
+          : `<span class="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-white">ขาย</span>`;
+        const featuredBadge = listing.featured
+          ? `<span class="inline-flex items-center rounded-full border border-border bg-white/90 backdrop-blur px-2.5 py-0.5 text-xs font-medium">แนะนำ</span>`
+          : "";
+
+        return `
+          <a href="#" class="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
+            <div class="relative w-full overflow-hidden ${aspect} bg-photo-${listing.photo}">
+              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+              <div class="absolute left-4 top-4 flex gap-2">${statusBadge}${featuredBadge}</div>
+              <span class="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground opacity-0 backdrop-blur transition-all duration-300 group-hover:opacity-100">
+                <i data-lucide="arrow-up-right" class="text-sm"></i>
+              </span>
+              <span class="absolute left-4 bottom-4 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-medium backdrop-blur">${listing.type}</span>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 p-5">
+              <div>
+                <h3 class="line-clamp-2 text-base font-semibold leading-snug transition-colors group-hover:text-primary">${listing.title}</h3>
+                <p class="mt-1 inline-flex items-center gap-1 text-sm text-muted-foreground">
+                  <i data-lucide="map-pin" class="text-sm"></i>${listing.location}
+                </p>
+              </div>
+              <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="bed-double" class="text-primary/70 text-sm"></i>${listing.beds} ห้องนอน</span>
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="bath" class="text-primary/70 text-sm"></i>${listing.baths}</span>
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="ruler" class="text-primary/70 text-sm"></i>${listing.area} ตร.ม.</span>
+              </div>
+              <div class="mt-auto flex items-end justify-between border-t border-border pt-3">
+                <div>
+                  <p class="text-xs text-muted-foreground">ราคา</p>
+                  <p class="text-lg font-semibold">${price}</p>
+                </div>
+                <span class="text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">ดูรายละเอียด →</span>
+              </div>
+            </div>
+          </a>`;
+      }
+
+      /* ---------- Latest Announcements (filters + empty state) ---------- */
+      const FILTERS = ["ทั้งหมด", "คอนโด", "บ้านเดี่ยว", "ทาวน์โฮม", "ที่ดิน"];
+      let activeFilter = "ทั้งหมด";
+
+      function renderLatestFilters() {
+        const el = document.getElementById("latest-filters");
+        el.innerHTML = FILTERS.map(
+          (f) => `
+          <button type="button" data-filter="${f}" class="filter-chip shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
+            f === activeFilter
+              ? "border-primary bg-primary text-white shadow-soft"
+              : "border-border bg-card text-muted-foreground hover:border-primary-100 hover:text-foreground"
+          }">${f}</button>
+        `,
+        ).join("");
+        el.querySelectorAll(".filter-chip").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            activeFilter = btn.dataset.filter;
+            renderLatestFilters();
+            renderLatestGrid();
+          });
+        });
+      }
+
+      function emptyState() {
+        return `
+          <div class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-muted/30 px-6 py-16 text-center">
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary">
+              <i data-lucide="inbox" class="text-2xl"></i>
+            </span>
+            <h3 class="mt-4 text-lg font-semibold">ยังไม่มีประกาศในหมวดนี้</h3>
+            <p class="mt-1 max-w-sm text-sm text-muted-foreground">
+              ลองเลือกหมวดอื่น หรือตั้งค่าแจ้งเตือนเพื่อรับประกาศใหม่เมื่อมีเข้ามา
+            </p>
+            <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+              <button type="button" id="empty-reset" class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-border bg-background px-5 text-sm font-medium transition-colors hover:bg-muted">ดูประกาศทั้งหมด</button>
+              <button type="button" class="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-primary-50 px-5 text-sm font-medium text-primary-700 hover:bg-primary-100">ตั้งค่าแจ้งเตือน</button>
+            </div>
+          </div>`;
+      }
+
+      function renderLatestGrid() {
+        const grid = document.getElementById("latest-grid");
+        const filtered =
+          activeFilter === "ทั้งหมด"
+            ? latestListings
+            : latestListings.filter((l) => l.type === activeFilter);
+        if (filtered.length === 0) {
+          grid.className = "";
+          grid.innerHTML = emptyState();
+          const reset = document.getElementById("empty-reset");
+          if (reset)
+            reset.addEventListener("click", () => {
+              activeFilter = "ทั้งหมด";
+              renderLatestFilters();
+              renderLatestGrid();
+            });
+        } else {
+          grid.className =
+            "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4";
+          grid.innerHTML = filtered.map((l) => listingCard(l)).join("");
+        }
+        lucide.createIcons();
+      }
+
+      /* ---------- Featured ---------- */
+      function renderFeatured() {
+        document.getElementById("featured-grid").innerHTML = featuredListings
+          .map((l) => listingCard(l, "lg"))
+          .join("");
+      }
+
+      /* ---------- Articles ---------- */
+      function renderArticles() {
+        document.getElementById("articles-grid").innerHTML = articles
+          .map(
+            (a) => `
+          <a href="#" class="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
+            <div class="relative aspect-[16/10] w-full overflow-hidden bg-photo-${a.photo}">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+              <span class="absolute left-4 top-4 inline-flex items-center rounded-full border border-border bg-white/95 px-2.5 py-0.5 text-xs font-medium backdrop-blur">${a.category}</span>
+            </div>
+            <div class="flex flex-1 flex-col gap-3 p-6">
+              <h3 class="line-clamp-2 text-lg font-semibold leading-snug transition-colors group-hover:text-primary">${a.title}</h3>
+              <p class="line-clamp-2 text-sm text-muted-foreground">${a.excerpt}</p>
+              <div class="mt-auto flex items-center gap-4 border-t border-border pt-4 text-xs text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="calendar" class="text-sm"></i>${a.date}</span>
+                <span class="inline-flex items-center gap-1.5"><i data-lucide="clock" class="text-sm"></i>อ่าน ${a.readMinutes} นาที</span>
+              </div>
+            </div>
+          </a>`,
+          )
+          .join("");
+      }
+
+      /* ---------- Interactivity ---------- */
+      function initNavbar() {
+        const nav = document.getElementById("site-navbar");
+        const onScroll = () => {
+          if (window.scrollY > 8) {
+            nav.className =
+              "sticky top-0 z-50 transition-all duration-300 bg-background/85 backdrop-blur-md border-b border-border shadow-soft";
+          } else {
+            nav.className =
+              "sticky top-0 z-50 transition-all duration-300 bg-transparent";
+          }
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        const toggle = document.getElementById("mobile-toggle");
+        const menu = document.getElementById("mobile-menu");
+        const icon = document.getElementById("mobile-icon");
+        toggle.addEventListener("click", () => {
+          const open = !menu.classList.contains("hidden");
+          menu.classList.toggle("hidden", open);
+          toggle.setAttribute("aria-expanded", String(!open));
+          icon.setAttribute("data-lucide", open ? "menu" : "x");
+          lucide.createIcons();
+        });
+
+        const lang = document.getElementById("lang-toggle");
+        lang.addEventListener("click", () => {
+          lang.textContent = lang.textContent === "TH" ? "EN" : "TH";
+        });
+      }
+
+      function initTabs() {
+        const tabs = document.querySelectorAll(".tab-trigger");
+        tabs.forEach((t) => {
+          t.addEventListener("click", () => {
+            tabs.forEach((x) => {
+              x.className =
+                "tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-all hover:text-foreground";
+              x.setAttribute("aria-selected", "false");
+            });
+            t.className =
+              "tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-all bg-white text-foreground shadow-soft";
+            t.setAttribute("aria-selected", "true");
+            lucide.createIcons();
+          });
+        });
+      }
+
+      function initHeroSearch() {
+        const form = document.getElementById("hero-search");
+        const input = document.getElementById("hero-query");
+        const err = document.getElementById("hero-error");
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (input.value.trim().length < 2) {
+            err.classList.remove("hidden");
+            input.setAttribute("aria-invalid", "true");
+          } else {
+            err.classList.add("hidden");
+            input.removeAttribute("aria-invalid");
+          }
+        });
+        input.addEventListener("input", () => {
+          err.classList.add("hidden");
+          input.removeAttribute("aria-invalid");
+        });
+      }
+
+      function initProjectsToggle() {
+        const btn = document.getElementById("projects-toggle");
+        btn.addEventListener("click", () => {
+          projectsLoading = !projectsLoading;
+          renderProjects();
+        });
+        // Auto-clear the initial loading state after 900ms
+        setTimeout(() => {
+          projectsLoading = false;
+          renderProjects();
+        }, 900);
+      }
+
+      /* ---------- Boot ---------- */
+      document.addEventListener("DOMContentLoaded", () => {
+        renderProjects();
+        renderLocations();
+        renderLatestFilters();
+        renderLatestGrid();
+        renderFeatured();
+        renderArticles();
+
+        initNavbar();
+        initTabs();
+        initHeroSearch();
+        initProjectsToggle();
+
+        lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>

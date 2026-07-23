@@ -137,15 +137,15 @@ export const projects = {
     status: "available",
     heroImage: "/uploads/Home.jpg",
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
-    heroWeb: "/uploads/propertyhub-web-laptop.png",
-    heroPhone: "/uploads/propertyhub-app-home.png",
+    heroWeb: "/uploads/propertyhub-hero-web.png",
+    heroPhone: "/uploads/propertyhub-hero-phone-v2.png",
     // 3 จอจริงจาก Propertyhub — เลื่อนดูทั้งหน้าได้ในกรอบ หรือกดขยายเต็มจอ
     screens: [
       {
         label: "Home",
         desc: "หน้าแรกของ Propertyhub — จุดเริ่มต้นการค้นหา รวมทางเข้าไปยังเช่า/ขาย โครงการใหม่ และทรัพย์แนะนำ",
         url: "propertyhub.in.th",
-        src: "/uploads/propertyhub-home-full.jpg",
+        src: "/uploads/propertyhub-home-full-v2.jpg",
         w: 1600,
         h: 7403,
       },
@@ -697,6 +697,19 @@ export type PlaceholderProject = {
   /** หน้าเว็บที่ออกแบบ — โชว์เป็น browser-frame gallery ("All about works") กดดูเต็มหน้าได้
    *  (เหมือน screens ของ project จริง) */
   works?: { label: string; src?: string; desc?: string; url?: string; w?: number; h?: number }[];
+  /** เดโมเว็บ HTML (path ใน public/ เช่น "/demos/baandee.html")
+   *  ถ้ามี → โชว์รูปปกในกรอบ browser กดแล้วเปิดเดโมเต็มในแท็บใหม่ (ไม่ฝัง iframe เพราะขนาดเพี้ยน) */
+  demoUrl?: string;
+  /** รูปปกของเดโม (screenshot หน้าเว็บ) — โชว์ในกรอบ browser ให้กดเปิด demoUrl */
+  demoCover?: string;
+  /** จอแอปแยกตาม section (โชว์แบบ Propertyhub App — phone บนพื้นเทา, เลื่อนแนวนอน)
+   *  section ที่ยังไม่มีรูป = ปล่อย screens: [] ไว้ → โชว์ป้าย "เร็ว ๆ นี้" */
+  appScreens?: { title: string; screens: { src: string; label: string }[] }[];
+  /** หน้าเว็บแยกตาม category (โชว์แบบเดียวกับ App — พื้นเทา + header + จอเรียง scroll แนวนอน)
+   *  category ที่ยังไม่มีรูป = ปล่อย screens: [] → โชว์ป้าย "เร็ว ๆ นี้" */
+  webScreens?: { category: string; screens: { src?: string; label?: string; w?: number; h?: number }[] }[];
+  /** Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มความกว้างเรียงลงมา) */
+  styleGuide?: { label: string; src?: string; w?: number; h?: number }[];
 };
 
 export const placeholderProjects = {
@@ -717,8 +730,74 @@ export const placeholderProjects = {
     status: "available",
     tagline:
       "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
+    overview: [
+      "Renthub App คือแอปมือถือของ Renthub ที่ยกประสบการณ์หาหอพัก/คอนโดให้เช่ามาไว้บนมือถือ — ผู้ใช้ค้นหาห้องตามทำเล/รถไฟฟ้า/สถานศึกษา ดูบนแผนที่ กดถูกใจเก็บห้องที่สนใจ และแชทกับเจ้าของได้โดยตรง (เนื้อหานี้เป็น draft — รออัปเดตข้อมูลจริง)",
+    ],
     tools: ["Figma"],
     appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
+    // hero — splash → onboarding → home
+    screens: [
+      { label: "Splash", src: "/uploads/renthub-app-splash.png", w: 660, h: 1320 },
+      { label: "Onboarding", src: "/uploads/renthub-app-onboarding.png", w: 660, h: 1320 },
+      { label: "Home", src: "/uploads/renthub-app-home-main.png", w: 660, h: 1320 },
+    ],
+    // Screens แยกตาม section (Wireframe / Home / Favorite / Chat / Profile)
+    // section ที่ยังไม่มีรูป = screens: [] → โชว์ "เร็ว ๆ นี้"
+    appScreens: [
+      {
+        title: "Wireframe",
+        screens: [
+          { src: "/uploads/renthub-app-wireframe.png", label: "หน้าแรก (wireframe)" },
+          { src: "/uploads/renthub-app-wireframe-2.png", label: "รายละเอียดที่พัก (wireframe)" },
+          { src: "/uploads/renthub-app-wireframe-3.png", label: "ค้นหาบนแผนที่ (wireframe)" },
+          { src: "/uploads/renthub-app-wireframe-4.png", label: "รายการที่พัก (wireframe)" },
+        ],
+      },
+      {
+        title: "Onboarding",
+        screens: [
+          { src: "/uploads/renthub-app-onboarding.png", label: "แหล่งรวมหอพัก" },
+          { src: "/uploads/renthub-app-onboarding-2.png", label: "ค้นหาห้องได้ง่ายขึ้น" },
+          { src: "/uploads/renthub-app-onboarding-3.png", label: "Virtual Tour 360°" },
+          { src: "/uploads/renthub-app-onboarding-4.png", label: "Verified" },
+          { src: "/uploads/renthub-app-onboarding-5.png", label: "Chat กับเจ้าของหอ" },
+        ],
+      },
+      {
+        title: "Home",
+        screens: [
+          { src: "/uploads/renthub-app-home-main.png", label: "หน้าแรก" },
+          { src: "/uploads/renthub-app-search.png", label: "ค้นหาตามสถานี" },
+          { src: "/uploads/renthub-app-map.png", label: "ค้นหาบนแผนที่" },
+          { src: "/uploads/renthub-app-detail.png", label: "รายละเอียดที่พัก" },
+          { src: "/uploads/renthub-app-review.png", label: "รีวิวทั้งหมด" },
+        ],
+      },
+      {
+        title: "Favorite",
+        screens: [
+          { src: "/uploads/renthub-app-favorite.png", label: "หอพักที่คุณสนใจ" },
+          { src: "/uploads/renthub-app-viewed.png", label: "หอพักที่เคยเข้าชม" },
+        ],
+      },
+      {
+        title: "Chat",
+        screens: [
+          { src: "/uploads/renthub-app-chat-list.png", label: "กล่องข้อความ" },
+          { src: "/uploads/renthub-app-chat-1.png", label: "แชทกับเจ้าของ" },
+          { src: "/uploads/renthub-app-chat-2.png", label: "ส่งรูปในแชท" },
+        ],
+      },
+      {
+        title: "Profile",
+        screens: [
+          { src: "/uploads/renthub-app-profile.png", label: "โปรไฟล์ (ยังไม่เข้าสู่ระบบ)" },
+          { src: "/uploads/renthub-app-login.png", label: "เข้าสู่ระบบ" },
+          { src: "/uploads/renthub-app-profile-loggedin.png", label: "โปรไฟล์ (เข้าสู่ระบบแล้ว)" },
+          { src: "/uploads/renthub-app-profile-edit.png", label: "แก้ไขข้อมูลส่วนตัว" },
+        ],
+      },
+    ],
   },
   "renthub-agency": {
     title: "Expat",
@@ -733,48 +812,54 @@ export const placeholderProjects = {
     tools: ["Figma"],
     heroWeb: "/uploads/renthub-agency-web-laptop.png",
     heroPhone: "/uploads/renthub-agency-app-home.png",
-    works: [
-      {
-        label: "Home",
-        desc: "หน้าแรกของ Renthub Agency — จุดค้นหาอพาร์ตเมนต์ให้เช่า รวมทำเลยอดนิยมและทรัพย์แนะนำ",
-        url: "renthub.in.th",
-        src: "/uploads/renthub-agency-home.jpg",
-        w: 1600,
-        h: 6807,
-      },
-      {
-        label: "Property detail",
-        desc: "หน้ารายละเอียดอพาร์ตเมนต์ — รูป ห้อง ค่าเช่า สิ่งอำนวยความสะดวก รีวิว และฟอร์มติดต่อเจ้าของ",
-        url: "renthub.in.th/th/en",
-        src: "/uploads/renthub-agency-detail.jpg",
-        w: 1600,
-        h: 5904,
-      },
-      {
-        label: "Search results",
-        desc: "หน้ารายการค้นหา — filter ราคา/ประเภทห้อง/สิ่งอำนวยความสะดวก พร้อมการ์ดประกาศแบบเลื่อนดูรูป",
-        url: "renthub.in.th/th/en",
-        src: "/uploads/renthub-agency-list.jpg",
-        w: 1600,
-        h: 4014,
-      },
-      {
-        label: "Map view",
-        desc: "มุมมองแผนที่ — ดูตำแหน่งอพาร์ตเมนต์บนแผนที่คู่กับรายการ ค้นหาตามพื้นที่ได้",
-        url: "renthub.in.th/th/en",
-        src: "/uploads/renthub-agency-map.jpg",
-        w: 1600,
-        h: 1137,
-      },
-      {
-        label: "Shortlist",
-        desc: "หน้ารายการที่บันทึกไว้ — รวมห้องที่สนใจไว้เปรียบเทียบ และแชร์ shortlist ให้คนอื่นดูได้",
-        url: "renthub.in.th/th/en",
-        src: "/uploads/renthub-agency-shortlist.jpg",
-        w: 1600,
-        h: 2020,
-      },
+    // Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มเรียงลงมา)
+    styleGuide: [
+      { label: "Color", src: "/uploads/renthub-agency-ds-color.jpg", w: 6000, h: 6000 },
+      { label: "Font", src: "/uploads/renthub-agency-ds-font.jpg", w: 6000, h: 6000 },
+      { label: "Icon", src: "/uploads/renthub-agency-ds-icon.jpg", w: 6000, h: 6000 },
     ],
+    // Screens ของ Expat — แยกตาม category (โชว์แบบ App) · Wireframe = category ย่อยหนึ่ง
+    webScreens: [
+      {
+        category: "Wireframe",
+        screens: [
+          { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 4320, h: 12396 },
+          { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result.jpg", w: 4320, h: 7665 },
+          { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 4320, h: 15072 },
+        ],
+      },
+      {
+        category: "Sign Up / Sign In",
+        screens: [
+          { label: "Sign in", src: "/uploads/renthub-agency-signin.jpg", w: 4320, h: 3072 },
+          { label: "Sign up", src: "/uploads/renthub-agency-signup.jpg", w: 4320, h: 3072 },
+        ],
+      },
+      {
+        // หน้าแรก + flow "Set up for find the best apartment" (4 steps + well done) + dropdown ค้นหา
+        category: "Home",
+        screens: [
+          { label: "Home", src: "/uploads/renthub-agency-home.jpg", w: 1600, h: 6807 },
+          { label: "Search destination", src: "/uploads/renthub-agency-home-search.jpg", w: 4320, h: 3072 },
+          { label: "Search room type", src: "/uploads/renthub-agency-home-roomtype.jpg", w: 4320, h: 3072 },
+          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact.jpg", w: 4320, h: 3072 },
+          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget.jpg", w: 4320, h: 3072 },
+          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities.jpg", w: 4320, h: 3072 },
+          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location.jpg", w: 4320, h: 3072 },
+          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", w: 4320, h: 3072 },
+        ],
+      },
+      { category: "Listing Result", screens: [{ src: "/uploads/renthub-agency-list.jpg", w: 1600, h: 4014 }] },
+      { category: "Listing Detail", screens: [{ src: "/uploads/renthub-agency-detail.jpg", w: 1600, h: 5904 }] },
+      { category: "Shortlist", screens: [{ src: "/uploads/renthub-agency-shortlist.jpg", w: 1600, h: 2020 }] },
+      { category: "Mobile (Responsive)", screens: [] },
+    ],
+  },
+  rentos: {
+    title: "RentOS",
+    category: "Digital Product",
+    status: "process",
+    tagline: "รายละเอียดเร็ว ๆ นี้",
   },
   "propertyos-chat": {
     title: "PropertyOS Chat",
@@ -786,8 +871,10 @@ export const placeholderProjects = {
   baandee: {
     title: "Baandee",
     category: "AI Product",
-    status: "coming",
-    tagline: "แพลตฟอร์มผู้ช่วยด้านที่อยู่อาศัย — รายละเอียดเร็ว ๆ นี้",
+    status: "process",
+    tagline: "แพลตฟอร์มผู้ช่วยด้านที่อยู่อาศัย — เดโมหน้าเว็บที่สร้างด้วย AI (กดเปิดเล่นได้จริง)",
+    demoUrl: "/demos/baandee.html",
+    demoCover: "/uploads/baandee-cover.jpg",
   },
   "website-builder": {
     title: "Website Builder",

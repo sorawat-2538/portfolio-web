@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, ChevronRight, GraduationCap } from "lucide-react";
+import { Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
 import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
 import { SkillsConstellation } from "@/components/home/skills-constellation";
@@ -128,6 +128,30 @@ export default function HomePage() {
               >
                 <p className="mt-3 text-[15.5px] leading-[1.7] text-muted-foreground">
                   {job.description}
+                </p>
+              </TimelineItem>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      <Divider />
+
+      {/* ACHIEVEMENTS */}
+      <Reveal>
+        <section>
+          <SectionHeading>Achievements</SectionHeading>
+          <div className="mt-8 flex flex-col">
+            {profile.achievements.map((a) => (
+              <TimelineItem
+                key={a.title}
+                icon={<Trophy className="h-[18px] w-[18px]" strokeWidth={1.6} />}
+                period={a.period}
+                title={a.title}
+                first
+              >
+                <p className="mt-3 text-[15.5px] leading-[1.7] text-muted-foreground">
+                  {a.detail}
                 </p>
               </TimelineItem>
             ))}

@@ -8,7 +8,7 @@ import { profile } from "@/data/profile";
 import { earlyWork, SLIDE_W, SLIDE_H } from "@/data/early-work";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
-import { SlideGallery } from "./slide-gallery";
+import { ArchiveGallery, SlideGrid } from "./slide-gallery";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -77,7 +77,7 @@ export function EarlyWorkView() {
               width={SLIDE_W}
               height={SLIDE_H}
               sizes="(max-width: 640px) 100vw, 33vw"
-              className="block h-auto w-full rounded-[12px] border border-border shadow-[0_14px_36px_-20px_rgba(30,50,90,0.28)]"
+              className="block h-auto w-full rounded-[12px] shadow-[0_14px_36px_-20px_rgba(30,50,90,0.28)]"
               priority
             />
           ))}
@@ -106,18 +106,27 @@ export function EarlyWorkView() {
         </div>
       </section>
 
-      {/* ── WORKS — gallery แบ่งหมวด ── */}
-      {earlyWork.groups.map((g) => (
-        <React.Fragment key={g.title}>
-          <div className="my-[50px] h-px bg-border" />
-          <section>
-            <H2>{g.title}</H2>
-            <div className="mt-[26px]">
-              <SlideGallery items={g.items} />
-            </div>
-          </section>
-        </React.Fragment>
-      ))}
+      {/* ── WORKS — gallery แบ่งหมวด (แต่ sheet ตัวเดียว นำทางต่อเนื่องข้ามหมวด) ── */}
+      <ArchiveGallery items={earlyWork.groups.flatMap((g) => g.items)}>
+        {(() => {
+          let offset = 0;
+          return earlyWork.groups.map((g) => {
+            const groupOffset = offset;
+            offset += g.items.length;
+            return (
+              <React.Fragment key={g.title}>
+                <div className="my-[50px] h-px bg-border" />
+                <section>
+                  <H2>{g.title}</H2>
+                  <div className="mt-[26px]">
+                    <SlideGrid items={g.items} offset={groupOffset} />
+                  </div>
+                </section>
+              </React.Fragment>
+            );
+          });
+        })()}
+      </ArchiveGallery>
     </article>
   );
 }

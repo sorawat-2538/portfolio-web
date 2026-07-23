@@ -19,6 +19,7 @@ export const navGroups: NavGroup[] = [
       { slug: "renthub", label: "Renthub" },
       { slug: "renthub-app", label: "Renthub App" },
       { slug: "renthub-agency", label: "Expat" },
+      { slug: "rentos", label: "RentOS" },
     ],
   },
   {

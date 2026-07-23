@@ -79,6 +79,16 @@ export const profile = {
     },
   ],
 
+  // รางวัล/ความสำเร็จ — แสดงเป็น timeline ใต้ Career Journey
+  achievements: [
+    {
+      period: "2019",
+      title: "ชนะเลิศ Builk x AWS Hackathon",
+      detail:
+        "คว้ารางวัลชนะเลิศการแข่งขัน Hackathon ร่วมระหว่าง Builk One Group และ AWS — ออกแบบและพัฒนาโซลูชันสำหรับงานก่อสร้าง/อสังหาฯ ภายในเวลาจำกัดร่วมกับทีม",
+    },
+  ],
+
   // Technical Skills แบ่ง 3 กลุ่ม — icon แต่ละอันอ้างชื่อจาก lucide-react
   skillGroups: [
     {

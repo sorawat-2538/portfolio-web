@@ -9,8 +9,8 @@ import type { PlaceholderProject, ProjectStatus } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
-import { ScreenGallery } from "./screen-gallery";
-import { ScreensStack, ScreensViewer } from "./screen-showcase-variants";
+import { AppScreensShowcase } from "./app-screens-showcase";
+import { WebScreensPanel } from "./web-screens-panel";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -165,27 +165,24 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
             </div>
           </div>
         ) : p.screens && p.screens.length > 0 ? (
+          // hero — จอมือถือเรียงเป็นแถว (เหมือน Propertyhub App เป๊ะ: flex-wrap, ไม่มี caption)
+          <div className="mt-[50px] flex flex-wrap items-start justify-center gap-x-6 gap-y-8">
+            {p.screens.map((s, i) => (
+              <Image
+                key={s.src}
+                src={s.src}
+                alt={s.label ? `${p.title} — ${s.label}` : p.title}
+                width={s.w}
+                height={s.h}
+                sizes="(max-width: 640px) 45vw, 240px"
+                className="block h-auto w-[45%] max-w-[240px] drop-shadow-[0_24px_48px_-24px_rgba(30,50,90,0.45)]"
+                priority={i < 3}
+              />
+            ))}
+          </div>
+        ) : p.demoUrl ? (
           <div className="mt-[50px]">
-            <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:gap-6 lg:gap-10">
-              {p.screens.map((s) => (
-                <figure key={s.src} className="flex w-full flex-col items-center">
-                  <Image
-                    src={s.src}
-                    alt={s.label ? `${p.title} — ${s.label}` : p.title}
-                    width={s.w}
-                    height={s.h}
-                    sizes="(max-width: 640px) 78vw, 320px"
-                    className="block h-auto w-full max-w-[300px] drop-shadow-[0_24px_48px_-24px_rgba(30,50,90,0.45)]"
-                    priority
-                  />
-                  {s.label && (
-                    <figcaption className="mt-5 text-[13px] font-medium tracking-[0.01em] text-muted-foreground">
-                      {s.label}
-                    </figcaption>
-                  )}
-                </figure>
-              ))}
-            </div>
+            <DemoFrame url={p.demoUrl} title={p.title} cover={p.demoCover} />
           </div>
         ) : (
           <div className="mt-[50px]">
@@ -239,27 +236,60 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
         )}
       </section>
 
-      {/* ── SCREENS — 3 ตัวอย่างการวาง (ให้เลือกแบบที่ชอบ) ── */}
-      {p.works && p.works.length > 0 && (
+      {/* ── SCREENS — จอแอปแยกตาม section (แบบ Propertyhub App) ── */}
+      {p.appScreens && p.appScreens.length > 0 && (
         <>
           <div className="my-[50px] h-px bg-border" />
           <section>
             <H2>Screens</H2>
-            <p className="mt-[18px] max-w-[70ch] text-[17px] leading-[1.8] text-muted-foreground">
-              3 ตัวอย่างการวางหน้าจอ — ลองเทียบแล้วเลือกแบบที่ชอบ เดี๋ยวเก็บให้เหลือแบบเดียว
-            </p>
+            <div className="mt-8 flex flex-col gap-6">
+              {p.appScreens.map((s) => (
+                <AppScreensShowcase key={s.title} title={s.title} screens={s.screens} />
+              ))}
+            </div>
+          </section>
+        </>
+      )}
 
-            {/* ตัวอย่าง 1 — browser-frame gallery + คลิกดูเต็มจอ */}
-            <ExampleLabel n={1} caption="Browser-frame gallery — คลิกเปิดดูเต็มหน้า (lightbox)" />
-            <ScreenGallery screens={p.works} title={p.title} cols={2} />
+      {/* ── STYLE GUIDE — บอร์ด Color/Font/Icon (รูปเต็มความกว้างเรียงลงมา · treatment เดียวกับ Propertyhub) ── */}
+      {p.styleGuide && p.styleGuide.length > 0 && (
+        <>
+          <div className="my-[50px] h-px bg-border" />
+          <section>
+            <H2>Style Guide</H2>
+            <div className="mt-7 space-y-10">
+              {p.styleGuide.map((b) =>
+                b.src ? (
+                  <Image
+                    key={b.label}
+                    src={b.src}
+                    alt={`${p.title} style guide — ${b.label}`}
+                    width={b.w ?? 4320}
+                    height={b.h ?? 4320}
+                    sizes="(max-width: 900px) 100vw, 860px"
+                    quality={88}
+                    className="block h-auto w-full shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
+                  />
+                ) : (
+                  <EmptyState key={b.label} icon={ImageIcon} text={`${b.label} — รูปกำลังจะมา เร็ว ๆ นี้`} />
+                ),
+              )}
+            </div>
+          </section>
+        </>
+      )}
 
-            {/* ตัวอย่าง 2 — รูปเต็ม crop + กดดูทั้งหมด (ทีละหน้า) */}
-            <ExampleLabel n={2} caption="รูปเต็มความกว้าง (crop) — กด “ดูทั้งหมด” ขยายในหน้า" />
-            <ScreensStack screens={p.works} title={p.title} />
-
-            {/* ตัวอย่าง 3 — thumbnail เลือกหน้า + กดดูทั้งหมด */}
-            <ExampleLabel n={3} caption="Thumbnail เลือกหน้า — กด “ดูทั้งหมด” ขยายในกรอบ" />
-            <ScreensViewer screens={p.works} title={p.title} />
+      {/* ── SCREENS — หน้าเว็บแยกตาม category (พื้นเทา + header + จอเรียง scroll แนวนอน · แบบ App) ── */}
+      {p.webScreens && p.webScreens.length > 0 && (
+        <>
+          <div className="my-[50px] h-px bg-border" />
+          <section>
+            <H2>Screens</H2>
+            <div className="mt-8 flex flex-col gap-6">
+              {p.webScreens.map((c) => (
+                <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
+              ))}
+            </div>
           </section>
         </>
       )}
@@ -267,14 +297,60 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
   );
 }
 
-/** ป้ายกำกับตัวอย่างแต่ละแบบ (ใช้เฉพาะช่วงเลือกดีไซน์) */
-function ExampleLabel({ n, caption }: { n: number; caption: string }) {
+
+/** DemoFrame — รูปปกเดโมในกรอบ browser · กดแล้วเปิดเดโมเต็มในแท็บใหม่ (ไม่ฝัง iframe) */
+function DemoFrame({ url, title, cover }: { url: string; title: string; cover?: string }) {
   return (
-    <div className="mb-5 mt-12 flex flex-wrap items-center gap-2.5">
-      <span className="inline-flex h-7 items-center rounded-full bg-foreground px-3 text-[12px] font-semibold tracking-[0.04em] text-background">
-        ตัวอย่าง {n}
-      </span>
-      <span className="text-[14px] text-muted-foreground">{caption}</span>
-    </div>
+    <figure>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)] outline-none transition-shadow duration-200 hover:shadow-[0_30px_72px_-30px_rgba(30,50,90,0.5)] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+      >
+        {/* browser chrome */}
+        <div className="flex items-center gap-2 border-b border-border bg-hover/60 px-4 py-2.5">
+          <span className="flex shrink-0 gap-1.5">
+            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          </span>
+          <span className="ml-2 hidden flex-1 truncate rounded-md bg-background px-3 py-1 text-center text-[12px] text-muted-foreground sm:block">
+            {title} — live preview
+          </span>
+          <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[12px] font-medium text-brand">
+            <ExternalLink className="h-3.5 w-3.5" /> เปิดเต็มจอ
+          </span>
+        </div>
+
+        {cover ? (
+          <div className="relative">
+            <Image
+              src={cover}
+              alt={`${title} — เดโม`}
+              width={2000}
+              height={1250}
+              sizes="(max-width: 900px) 100vw, 860px"
+              className="block h-auto w-full"
+            />
+            {/* hover overlay — บอกว่ากดแล้วเปิดแท็บใหม่ */}
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-foreground/0 opacity-0 transition-all duration-200 group-hover:bg-foreground/10 group-hover:opacity-100">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-[14px] font-medium text-foreground shadow-lg">
+                <ExternalLink className="h-4 w-4" /> เปิดเดโมในแท็บใหม่
+              </span>
+            </span>
+          </div>
+        ) : (
+          <div className="flex h-[clamp(260px,38vw,400px)] items-center justify-center bg-hover/40">
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white">
+              <ExternalLink className="h-4 w-4" /> เปิดเดโม {title}
+            </span>
+          </div>
+        )}
+      </a>
+      <figcaption className="mt-4 text-center text-[13px] text-muted-foreground">
+        กดที่ภาพเพื่อเปิดเดโมเต็มในแท็บใหม่
+      </figcaption>
+    </figure>
   );
 }

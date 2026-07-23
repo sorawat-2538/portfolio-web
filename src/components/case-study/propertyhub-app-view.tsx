@@ -1,12 +1,14 @@
 // PropertyhubAppView — case study เต็มของ "Propertyhub App"
 // โครง: Header (+ปุ่มดาวน์โหลดแอป) → Overview → Tools → Design Thinking
-// → Design System (Color/Typography/Icon) → Screens (แยกตาม tab menu ในแอป)
+// → Design System (Color/Typography/Icon) → Screens (แยกตามเมนูแอป 6 เมนู + Detail:
+//   Home / Detail / Listings / Activity / Messages / Notifications / Menu)
 // เนื้อหา Overview / Design Thinking เป็น draft — แก้ข้อความได้ที่ไฟล์นี้ตรง ๆ
 
 import Image from "next/image";
 import {
   Bell,
   ExternalLink,
+  FileText,
   Home,
   LayoutGrid,
   LayoutList,
@@ -48,29 +50,79 @@ const S = (src: string, label: string): Shot => ({ src: `/uploads/${src}`, label
 const TABS: { tab: string; en: string; icon: LucideIcon; screens: Shot[] }[] = [
   {
     tab: "หน้าหลัก",
-    en: "HOME",
+    en: "Home",
     icon: Home,
     screens: [
       S("propertyhub-app-home.png", "หน้าแรก"),
+      S("propertyhub-app-home-2.png", "ประกาศที่ดูล่าสุด · โครงการยอดนิยม"),
+      S("propertyhub-app-home-3.png", "โครงการใหม่ · ผู้พัฒนาแนะนำ"),
+      S("propertyhub-app-home-4.png", "ทรัพย์ธนาคาร · ประกาศเช่าล่าสุด"),
+      S("propertyhub-app-province.png", "ค้นหาตามจังหวัด"),
+    ],
+  },
+  {
+    tab: "รายละเอียด",
+    en: "Detail",
+    icon: FileText,
+    screens: [
       S("propertyhub-app-detail.png", "รายละเอียดประกาศ"),
+      S("propertyhub-app-search-results.png", "ผลการค้นหา"),
+      S("propertyhub-app-search-map.png", "มุมมองแผนที่"),
+      S("propertyhub-app-detail-contact.png", "ติดต่อเจ้าของประกาศ"),
       S("propertyhub-app-project.png", "รายละเอียดโครงการ"),
+      S("propertyhub-app-new-projects.png", "รวมโครงการใหม่"),
+      S("propertyhub-app-developers.png", "ผู้พัฒนาอสังหาฯ"),
+      S("propertyhub-app-developer-detail.png", "รายละเอียดผู้พัฒนา"),
       S("propertyhub-app-agent.png", "โปรไฟล์เอเจนต์"),
     ],
   },
-  { tab: "ประกาศ", en: "LISTINGS", icon: LayoutList, screens: [S("propertyhub-app-listings.png", "รายการประกาศ")] },
+  {
+    tab: "ประกาศ",
+    en: "Listings",
+    icon: LayoutList,
+    screens: [
+      S("propertyhub-app-listings.png", "รายการประกาศ"),
+      S("propertyhub-app-listings-rejected.png", "ประกาศไม่ผ่านการตรวจสอบ"),
+      S("propertyhub-app-listings-bulk.png", "เลือกหลายประกาศ"),
+      S("propertyhub-app-listings-tags.png", "จัดการแท็ก"),
+      S("propertyhub-app-package.png", "รายละเอียดแพ็กเกจ"),
+      S("propertyhub-app-post-step1.png", "ลงประกาศ · ข้อมูลทั่วไป"),
+      S("propertyhub-app-post-step4.png", "ลงประกาศ · จัดการรูปภาพ"),
+    ],
+  },
   {
     tab: "กิจกรรม",
-    en: "ACTIVITY",
+    en: "Activity",
     icon: LayoutGrid,
     screens: [
       S("propertyhub-app-activity.png", "ประกาศที่สนใจ"),
       S("propertyhub-app-activity-savesearch.png", "บันทึกการค้นหา"),
+      S("propertyhub-app-save-search.png", "บันทึกการค้นหาใหม่"),
       S("propertyhub-app-activity-viewed.png", "เคยเข้าชม"),
     ],
   },
-  { tab: "ข้อความ", en: "MESSAGES", icon: MessageSquareText, screens: [S("propertyhub-app-messages.png", "ข้อความ")] },
-  { tab: "แจ้งเตือน", en: "NOTIFICATIONS", icon: Bell, screens: [S("propertyhub-app-notification.png", "การแจ้งเตือน")] },
-  { tab: "เมนู", en: "MENU", icon: Menu, screens: [S("propertyhub-app-menu.png", "เมนู")] },
+  {
+    tab: "ข้อความ",
+    en: "Messages",
+    icon: MessageSquareText,
+    screens: [
+      S("propertyhub-app-messages.png", "ข้อความ"),
+      S("propertyhub-app-messages-chat.png", "แชทกับเอเจนต์"),
+      S("propertyhub-app-messages-photos.png", "ส่งรูปในแชท"),
+    ],
+  },
+  { tab: "แจ้งเตือน", en: "Notifications", icon: Bell, screens: [S("propertyhub-app-notification.png", "การแจ้งเตือน")] },
+  {
+    tab: "เมนู",
+    en: "Menu",
+    icon: Menu,
+    screens: [
+      S("propertyhub-app-menu.png", "เมนู"),
+      S("propertyhub-app-menu-register.png", "สมัครสมาชิก"),
+      S("propertyhub-app-menu-signin.png", "เข้าสู่ระบบ"),
+      S("propertyhub-app-menu-editprofile.png", "แก้ไขข้อมูลส่วนตัว"),
+    ],
+  },
 ];
 
 // ── shared bits ──────────────────────────────────────────────────────────────

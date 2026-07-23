@@ -10,13 +10,15 @@ export type ArchiveItem = {
   sub?: string;
   /** รูปทั้งหมดของ project นี้ (รูปแรก = thumbnail การ์ด) */
   srcs: string[];
+  /** ลิงก์ดาวน์โหลดแอป (App Store) — โชว์ปุ่ม download ใน sheet ถ้ามี */
+  appStore?: string;
 };
 
 export type ArchiveGroup = { title: string; items: ArchiveItem[] };
 
 /** สไลด์ทุกใบขนาดเท่ากัน (จาก PDF เล่มเดิม) */
-export const SLIDE_W = 1500;
-export const SLIDE_H = 1060;
+export const SLIDE_W = 2400;
+export const SLIDE_H = 1697;
 
 const A = (label: string, sub: string, ...names: string[]): ArchiveItem => ({
   label,
@@ -40,10 +42,10 @@ export const earlyWork = {
     {
       title: "App design",
       items: [
-        A("Kwanjai Next", "แอปหาห้อง/อสังหาฯ", "kwanjai-next", "kwanjai-next-2", "kwanjai-next-3", "kwanjai-next-4", "kwanjai-next-5"),
-        A("INSITE for Construction", "แอปจัดการงานก่อสร้าง", "insite-construction", "insite-construction-2", "insite-construction-3"),
-        A("Site Report Inspection", "แอปตรวจงานหน้าไซต์", "site-report-app", "site-report-app-2"),
-        A("Pojjaman Approve", "แอปอนุมัติเอกสาร", "pojjaman-approve"),
+        { ...A("Kwanjai Next", "แอปหาห้อง/อสังหาฯ", "kwanjai-next", "kwanjai-next-2", "kwanjai-next-3", "kwanjai-next-4", "kwanjai-next-5"), appStore: "https://apps.apple.com/th/app/kwanjai-next/id1476012866?l=th" },
+        { ...A("INSITE for Construction", "แอปจัดการงานก่อสร้าง", "insite-construction", "insite-construction-2", "insite-construction-3"), appStore: "https://apps.apple.com/th/app/builk-insite/id1544700237?l=th" },
+        { ...A("Site Report Inspection", "แอปตรวจงานหน้าไซต์", "site-report-app", "site-report-app-2"), appStore: "https://apps.apple.com/th/app/site-report-toc/id6748724060?l=th" },
+        { ...A("Pojjaman Approve", "แอปอนุมัติเอกสาร", "pojjaman-approve"), appStore: "https://apps.apple.com/th/app/pjm-app-approve/id1531276061?l=th" },
         A("WoiceNote", "แอปบันทึกเสียงประชุม", "woicenote"),
         A("Riviera Hotel", "UI จองโรงแรม", "riviera-hotel"),
       ],
