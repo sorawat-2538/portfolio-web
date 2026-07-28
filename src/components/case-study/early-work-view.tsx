@@ -40,7 +40,7 @@ function ToolCard({ name }: { name: string }) {
 
 export function EarlyWorkView() {
   return (
-    <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status="archived" />
@@ -68,7 +68,7 @@ export function EarlyWorkView() {
         <div className="mt-6 border-t border-border" />
 
         {/* preview — 3 ชิ้นเด่น (แทน hero mockup ของหน้า project ปกติ) */}
-        <div className="mt-[50px] grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 min-[900px]:mt-[50px]">
           {earlyWork.featured.map((src) => (
             <Image
               key={src}
@@ -84,7 +84,7 @@ export function EarlyWorkView() {
         </div>
       </section>
 
-      <div className="h-[50px]" />
+      <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW ── */}
       <section>
@@ -94,7 +94,7 @@ export function EarlyWorkView() {
         </p>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── */}
       <section>
@@ -115,7 +115,7 @@ export function EarlyWorkView() {
             offset += g.items.length;
             return (
               <React.Fragment key={g.title}>
-                <div className="my-[50px] h-px bg-border" />
+                <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
                 <section>
                   <H2>{g.title}</H2>
                   <div className="mt-[26px]">

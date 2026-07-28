@@ -8,7 +8,7 @@ import { Reveal } from "@/components/reveal";
 import { profile } from "@/data/profile";
 
 function Divider() {
-  return <div className="my-[50px] h-px bg-border" />;
+  return <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />;
 }
 
 // Standard section title — English, bold, consistent everywhere.

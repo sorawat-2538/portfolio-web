@@ -185,7 +185,7 @@ function PhoneShot({
 // ── page ─────────────────────────────────────────────────────────────────────
 export function PropertyhubAppView({ project: p }: { project: PlaceholderProject }) {
   return (
-    <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -205,29 +205,39 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
             </div>
           </div>
 
-          {/* primary action — ดาวน์โหลดแอป */}
-          <a
-            href={APP_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-          >
-            <ExternalLink className="h-4 w-4" />
-            ลองโหลดดูสิ
-          </a>
+          {/* primary action — ดาวน์โหลดแอป (full-width บนมือถือ / auto บน desktop) */}
+          <div className="flex w-full shrink-0 flex-wrap gap-2.5 sm:w-auto">
+            <a
+              href={APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
+            >
+              <ExternalLink className="h-4 w-4" />
+              ลองโหลดดูสิ
+            </a>
+          </div>
         </div>
 
         <div className="mt-6 border-t border-border" />
 
-        {/* hero — splash → onboarding → home */}
-        <div className="mt-[50px] flex flex-wrap items-start justify-center gap-x-6 gap-y-8">
-          <PhoneShot src="/uploads/propertyhub-app-splash.png" label="Splash screen" priority className="w-[45%] max-w-[240px]" />
-          <PhoneShot src="/uploads/propertyhub-app-onboarding.png" label="Onboarding" priority className="w-[45%] max-w-[240px]" />
-          <PhoneShot src="/uploads/propertyhub-app-home.png" label="หน้าแรก" className="w-[45%] max-w-[240px]" />
+        {/* hero — splash → onboarding → home · มือถือ = rail เลื่อนซ้ายขวา (bleed ผ่าน padding) · desktop = จัดกลาง */}
+        <div className="mt-8 min-[900px]:mt-[50px]">
+          <div className="-mx-5 flex snap-x items-start gap-5 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [scroll-padding-inline:1.25rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-8 sm:px-8 min-[900px]:mx-0 min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-6 min-[900px]:gap-y-8 min-[900px]:overflow-visible min-[900px]:px-0">
+            <div className="w-[58%] max-w-[240px] shrink-0 snap-start min-[900px]:w-[45%]">
+              <PhoneShot src="/uploads/propertyhub-app-splash.png" label="Splash screen" priority />
+            </div>
+            <div className="w-[58%] max-w-[240px] shrink-0 snap-start min-[900px]:w-[45%]">
+              <PhoneShot src="/uploads/propertyhub-app-onboarding.png" label="Onboarding" priority />
+            </div>
+            <div className="w-[58%] max-w-[240px] shrink-0 snap-start min-[900px]:w-[45%]">
+              <PhoneShot src="/uploads/propertyhub-app-home.png" label="หน้าแรก" />
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="h-[50px]" />
+      <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW ── */}
       <section>
@@ -239,7 +249,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         </div>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── (กว้างเท่า layout 4 กล่อง → grid 4 คอลัมน์) */}
       <section>
@@ -251,7 +261,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         </div>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── DESIGN THINKING ── */}
       <section>
@@ -272,7 +282,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         </ol>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── STYLE GUIDE ── วางคู่: แบบเดิม (รูปเต็ม) + แบบใหม่ (viewer) เพื่อเทียบ */}
       <section>
@@ -294,7 +304,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         </div>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── SCREENS ── แต่ละ tab = พื้นเทา + จอ + ปุ่มเลื่อนเมื่อ >4 */}
       <section>

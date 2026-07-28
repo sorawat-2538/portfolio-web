@@ -78,7 +78,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
   const hasPresent = Boolean(p.heroWeb && p.heroPhone);
 
   return (
-    <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER — เหมือนหน้า project จริงทุกอย่าง ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -117,7 +117,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
                   href={p.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
                 >
                   <Rocket className="h-4 w-4" />
                   เปิดดูเว็บไซต์
@@ -128,7 +128,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
                   href={p.appStoreUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
                 >
                   <ExternalLink className="h-4 w-4" />
                   ลองโหลดดูสิ
@@ -142,7 +142,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
 
         {/* hero — laptop+phone present > phone screens > empty state */}
         {hasPresent ? (
-          <div className="mt-[50px]">
+          <div className="mt-8 min-[900px]:mt-[50px]">
             <div className="relative mx-auto max-w-[860px] pr-[2%]">
               <Image
                 src={p.heroWeb!}
@@ -153,39 +153,45 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
                 className="block h-auto w-full"
                 priority
               />
-              {/* phone overlapping bottom-right — เว็บ + แอป คู่กัน */}
+              {/* phone overlapping bottom-right — สัดส่วนคงที่ทุกจอ (ไม่ใช้ min-width) */}
               <Image
                 src={p.heroPhone!}
                 alt={`${p.title} — แอปมือถือ`}
                 width={660}
                 height={1320}
-                sizes="150px"
-                className="absolute bottom-0 right-0 w-[16%] min-w-[150px] max-w-[200px] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
+                sizes="(max-width: 900px) 22vw, 190px"
+                className="absolute bottom-0 right-0 w-[22%] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
               />
             </div>
           </div>
         ) : p.screens && p.screens.length > 0 ? (
-          // hero — จอมือถือเรียงเป็นแถว (เหมือน Propertyhub App เป๊ะ: flex-wrap, ไม่มี caption)
-          <div className="mt-[50px] flex flex-wrap items-start justify-center gap-x-6 gap-y-8">
-            {p.screens.map((s, i) => (
-              <Image
-                key={s.src}
-                src={s.src}
-                alt={s.label ? `${p.title} — ${s.label}` : p.title}
-                width={s.w}
-                height={s.h}
-                sizes="(max-width: 640px) 45vw, 240px"
-                className="block h-auto w-[45%] max-w-[240px] drop-shadow-[0_24px_48px_-24px_rgba(30,50,90,0.45)]"
-                priority={i < 3}
-              />
-            ))}
+          // hero — มือถือ = rail เลื่อนซ้ายขวา (bleed ผ่าน padding) · desktop = จัดกลาง
+          <div className="mt-8 min-[900px]:mt-[50px]">
+            <div className="-mx-5 flex snap-x items-start gap-5 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [scroll-padding-inline:1.25rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-8 sm:px-8 min-[900px]:mx-0 min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-6 min-[900px]:gap-y-8 min-[900px]:overflow-visible min-[900px]:px-0">
+              {p.screens.map((s, i) => (
+                <div
+                  key={s.src}
+                  className="w-[58%] max-w-[240px] shrink-0 snap-start min-[900px]:w-[45%]"
+                >
+                  <Image
+                    src={s.src}
+                    alt={s.label ? `${p.title} — ${s.label}` : p.title}
+                    width={s.w}
+                    height={s.h}
+                    sizes="(max-width: 640px) 58vw, 220px"
+                    className="block h-auto w-full drop-shadow-[0_24px_48px_-24px_rgba(30,50,90,0.45)]"
+                    priority={i < 3}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         ) : p.demoUrl ? (
-          <div className="mt-[50px]">
+          <div className="mt-8 min-[900px]:mt-[50px]">
             <DemoFrame url={p.demoUrl} title={p.title} cover={p.demoCover} />
           </div>
         ) : (
-          <div className="mt-[50px]">
+          <div className="mt-8 min-[900px]:mt-[50px]">
             <div className="flex min-h-[clamp(280px,40vw,380px)] flex-col items-center justify-center gap-4 rounded-[14px] border border-dashed border-border bg-hover/40 px-6 py-14 text-center">
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-hover text-faint">
                 <HeroIcon className="h-6 w-6" strokeWidth={1.7} />
@@ -198,7 +204,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
         )}
       </section>
 
-      <div className="h-[50px]" />
+      <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW — เนื้อหาจริง (ถ้ามี) หรือ empty state ── */}
       <section>
@@ -218,7 +224,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
         )}
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS — การ์ดเครื่องมือ (ถ้ามี) หรือ empty state ── */}
       <section>
@@ -239,7 +245,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
       {/* ── SCREENS — จอแอปแยกตาม section (แบบ Propertyhub App) ── */}
       {p.appScreens && p.appScreens.length > 0 && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>Screens</H2>
             <div className="mt-8 flex flex-col gap-6">
@@ -254,7 +260,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
       {/* ── STYLE GUIDE — บอร์ด Color/Font/Icon (รูปเต็มความกว้างเรียงลงมา · treatment เดียวกับ Propertyhub) ── */}
       {p.styleGuide && p.styleGuide.length > 0 && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>Style Guide</H2>
             <div className="mt-7 space-y-10">
@@ -282,7 +288,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
       {/* ── SCREENS — หน้าเว็บแยกตาม category (พื้นเทา + header + จอเรียง scroll แนวนอน · แบบ App) ── */}
       {p.webScreens && p.webScreens.length > 0 && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>Screens</H2>
             <div className="mt-8 flex flex-col gap-6">

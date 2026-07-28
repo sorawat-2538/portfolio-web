@@ -33,6 +33,7 @@ type Row = {
   value: string;
   href?: string;
   external?: boolean;
+  link?: boolean; // โชว์ value เป็นลิงก์น้ำเงินมี underline (เช่น LINE ID)
   icon: IconType;
 };
 
@@ -55,6 +56,7 @@ const rows: Row[] = [
     value: profile.lineId,
     href: `https://line.me/ti/p/~${profile.lineId}`,
     external: true,
+    link: true,
     icon: LineIcon,
   },
   {
@@ -97,7 +99,13 @@ export function ContactMe() {
                 <span className="block text-[13px] text-muted-foreground">
                   {row.label}
                 </span>
-                <span className="mt-0.5 block break-words text-[16px] font-semibold text-foreground">
+                <span
+                  className={
+                    row.link
+                      ? "mt-0.5 block break-words text-[16px] font-semibold text-[#2d68ff] underline underline-offset-2"
+                      : "mt-0.5 block break-words text-[16px] font-semibold text-foreground"
+                  }
+                >
                   {row.value}
                 </span>
               </span>

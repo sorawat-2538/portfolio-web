@@ -262,7 +262,7 @@ export const projects = {
           title: "ใช้ Zimple Analytics เพื่อยืนยันและหา Goal ต่อไป",
           body: "ใช้ Dashboard Navigation Summary ของ Zimple Analytics ยืนยันผลและวิเคราะห์ว่าจะทำอะไรต่อได้ — จากรูป เมื่อเลือก Current Selection เป็น project_detail จะเห็นว่า Next Page เกือบ 50% ของ session ไปหน้า “ประกาศเช่า” ซึ่งตรงกับ goal ของหน้านี้พอดี ยืนยันว่าหน้า Project ใหม่ยังทำงานได้ดี และชี้ทางว่าจะไป optimize ต่อตรงไหน",
           images: [
-            { src: "/uploads/ph-zimple-projectdetail.png", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 3840, h: 1866 },
+            { src: "/uploads/ph-zimple-projectdetail.jpg", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 2400, h: 1168 },
           ],
         },
       ],

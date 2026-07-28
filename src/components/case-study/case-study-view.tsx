@@ -31,7 +31,7 @@ import { StatusBadge } from "./status-badge";
 // ── shared building blocks ──────────────────────────────────────────────────
 
 function Spacer() {
-  return <div className="h-[50px]" />;
+  return <div className="h-8 min-[900px]:h-[50px]" />;
 }
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -228,7 +228,7 @@ export function CaseStudyView({
   };
 
   return (
-    <article className="py-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
         {/* availability status — badge ตาม p.status (Available / On Process / Coming Soon) */}
@@ -261,17 +261,19 @@ export function CaseStudyView({
             </div>
           </div>
 
-          {/* primary action */}
+          {/* primary action — full-width บนมือถือ / auto บน desktop */}
           {p.liveUrl && p.liveUrl !== "#" && (
-            <a
-              href={p.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-            >
-              <Rocket className="h-4 w-4" />
-              เปิดดูเว็บไซต์
-            </a>
+            <div className="flex w-full shrink-0 flex-wrap gap-2.5 sm:w-auto">
+              <a
+                href={p.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90 sm:w-auto"
+              >
+                <Rocket className="h-4 w-4" />
+                เปิดดูเว็บไซต์
+              </a>
+            </div>
           )}
         </div>
 
@@ -352,7 +354,7 @@ export function CaseStudyView({
 
         {/* ── HERO — Laptop (เว็บ) + App (มือถือ) วางคู่แบบ present ── */}
         {p.heroWeb && p.heroPhone && (
-          <div className="mt-[50px]">
+          <div className="mt-8 min-[900px]:mt-[50px]">
             <div className="relative mx-auto max-w-[860px] pr-[2%]">
               <Image
                 src={p.heroWeb}
@@ -363,14 +365,14 @@ export function CaseStudyView({
                 className="block h-auto w-full"
                 priority
               />
-              {/* phone overlapping bottom-right — เว็บ + แอป คู่กัน */}
+              {/* phone overlapping bottom-right — สัดส่วนคงที่ทุกจอ (ไม่ใช้ min-width) */}
               <Image
                 src={p.heroPhone}
                 alt={`${p.title} — แอปมือถือ`}
                 width={660}
                 height={1320}
-                sizes="150px"
-                className="absolute bottom-0 right-0 w-[16%] min-w-[150px] max-w-[200px] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
+                sizes="(max-width: 900px) 22vw, 190px"
+                className="absolute bottom-0 right-0 w-[22%] drop-shadow-[0_22px_44px_-16px_rgba(15,25,45,0.5)]"
               />
             </div>
           </div>
@@ -389,7 +391,7 @@ export function CaseStudyView({
         </div>
       </section>
 
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── (grid 4 คอลัมน์ → กล่องเดียวก็กว้างเท่าเดิม ไม่ยืดเต็ม) */}
       <section>
@@ -404,7 +406,7 @@ export function CaseStudyView({
       {/* ── MY WORK FLOW ── (ซ่อนได้ด้วย hideWorkflow) */}
       {!p.hideWorkflow && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>How do I work?</H2>
             <div className="mt-[26px]">
@@ -417,7 +419,7 @@ export function CaseStudyView({
       {/* ── ALL ABOUT WORKS — the designed screens ── */}
       {p.screens && p.screens.length > 0 && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>Screens</H2>
             {/* screensFull = โชว์รูปเต็มยาว (จอน้อย) · ปกติ = browser-frame gallery */}
@@ -457,7 +459,7 @@ export function CaseStudyView({
       {/* ── HOW I MEASURED ── (ซ่อนได้ด้วย hideMeasure) */}
       {!p.hideMeasure && (
       <>
-      <div className="my-[50px] h-px bg-border" />
+      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
       {p.measure ? (
         <MeasurementStory measure={p.measure} title={p.title} />
       ) : (
@@ -522,7 +524,7 @@ export function CaseStudyView({
       {/* ── HOW CLAUDE HELPED ── (เส้นคั่นปิดท้าย How I Measured? ก่อนเข้า section นี้) */}
       {p.claude && (
         <>
-          <div className="my-[50px] h-px bg-border" />
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <ClaudeSection claude={p.claude} title={p.title} />
         </>
       )}
