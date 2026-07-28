@@ -33,11 +33,6 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    key: "analytics",
-    title: "Analytics",
-    items: [{ slug: "market-insight", label: "Market Insight Dashboard" }],
-  },
-  {
     key: "archive",
     title: "Archive",
     items: [{ slug: "early-work", label: "Early Work 2018–2020" }],

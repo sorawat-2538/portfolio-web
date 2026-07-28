@@ -206,6 +206,21 @@
   }
 }
 
+/* Gentle slow float — used by the contact code-editor mockup */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+.float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .float-slow {
+    animation: none;
+  }
+}
+
 /* Scroll reveal — fade + rise when a section enters the viewport */
 .reveal {
   opacity: 0;

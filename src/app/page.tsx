@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
 import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
-import { SkillsConstellation } from "@/components/home/skills-constellation";
 import { AboutMe } from "@/components/home/about-me";
 import { ContactMe } from "@/components/home/contact-me";
 import { Reveal } from "@/components/reveal";
@@ -171,13 +170,6 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* SKILLS — constellation variant */}
-      <Reveal>
-        <SkillsConstellation />
-      </Reveal>
-
-      <Divider />
-
       {/* CONTACT */}
       <Reveal>
         <ContactMe />
@@ -193,9 +185,6 @@ export default function HomePage() {
             className="group inline-flex items-center gap-5 text-right"
           >
             <span className="flex flex-col items-end gap-1 leading-none">
-              <span className="text-[13px] uppercase tracking-[0.22em] text-faint">
-                Selected work
-              </span>
               <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
                 View my work
               </span>

@@ -50,8 +50,11 @@ export function ScreenGallery({
   React.useEffect(() => {
     if (active === null) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActive(null);
-      else if (e.key === "ArrowRight")
+      if (e.key === "Escape") {
+        setActive(null);
+        // เลิกโฟกัสปุ่ม thumbnail ที่เปิด lightbox ไว้ ไม่งั้น focus-ring น้ำเงินจะค้างหลังกด ESC
+        (document.activeElement as HTMLElement | null)?.blur();
+      } else if (e.key === "ArrowRight")
         setActive((a) => (a === null ? a : Math.min(screens.length - 1, a + 1)));
       else if (e.key === "ArrowLeft")
         setActive((a) => (a === null ? a : Math.max(0, a - 1)));

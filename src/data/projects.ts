@@ -707,7 +707,8 @@ export type PlaceholderProject = {
   appScreens?: { title: string; screens: { src: string; label: string }[] }[];
   /** หน้าเว็บแยกตาม category (โชว์แบบเดียวกับ App — พื้นเทา + header + จอเรียง scroll แนวนอน)
    *  category ที่ยังไม่มีรูป = ปล่อย screens: [] → โชว์ป้าย "เร็ว ๆ นี้" */
-  webScreens?: { category: string; screens: { src?: string; label?: string; w?: number; h?: number }[] }[];
+  /** phone: true = เรนเดอร์ด้วย AppScreensShowcase (จอมือถือขนาดเท่า App projects · ไม่มี lightbox) แทน rail เว็บ */
+  webScreens?: { category: string; phone?: boolean; screens: { src?: string; label?: string; group?: string; w?: number; h?: number }[] }[];
   /** Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มความกว้างเรียงลงมา) */
   styleGuide?: { label: string; src?: string; w?: number; h?: number }[];
 };
@@ -824,35 +825,71 @@ export const placeholderProjects = {
         category: "Wireframe",
         screens: [
           { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 4320, h: 12396 },
-          { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result.jpg", w: 4320, h: 7665 },
+          { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 4320, h: 10824 },
           { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 4320, h: 15072 },
         ],
       },
       {
         category: "Sign Up / Sign In",
         screens: [
-          { label: "Sign in", src: "/uploads/renthub-agency-signin.jpg", w: 4320, h: 3072 },
-          { label: "Sign up", src: "/uploads/renthub-agency-signup.jpg", w: 4320, h: 3072 },
+          { label: "Sign in", src: "/uploads/renthub-agency-signin-v2.jpg", w: 4320, h: 3072 },
+          { label: "Sign up", src: "/uploads/renthub-agency-signup-v2.jpg", w: 4320, h: 3072 },
         ],
       },
       {
-        // หน้าแรก + flow "Set up for find the best apartment" (4 steps + well done) + dropdown ค้นหา
+        // section Home จัดเป็น 3 สล็อต: [Home ยาว] | [dropdown ซ้อนลงมา] | [step ซ้อนลงมา]
+        // จอที่ group เดียวกันจะถูกซ้อนลงมาในสล็อตเดียว (ดู WebScreensPanel) — Home ไม่มี group = สล็อตเดี่ยว
         category: "Home",
         screens: [
           { label: "Home", src: "/uploads/renthub-agency-home.jpg", w: 1600, h: 6807 },
-          { label: "Search destination", src: "/uploads/renthub-agency-home-search.jpg", w: 4320, h: 3072 },
-          { label: "Search room type", src: "/uploads/renthub-agency-home-roomtype.jpg", w: 4320, h: 3072 },
-          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact.jpg", w: 4320, h: 3072 },
-          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget.jpg", w: 4320, h: 3072 },
-          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities.jpg", w: 4320, h: 3072 },
-          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location.jpg", w: 4320, h: 3072 },
-          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", w: 4320, h: 3072 },
+          { label: "Search destination", src: "/uploads/renthub-agency-home-search-v2.jpg", group: "dropdown", w: 4320, h: 3072 },
+          { label: "Price range", src: "/uploads/renthub-agency-home-price.jpg", group: "dropdown", w: 4320, h: 3072 },
+          { label: "Search room type", src: "/uploads/renthub-agency-home-roomtype.jpg", group: "dropdown", w: 4320, h: 3072 },
+          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact-v2.jpg", group: "step", w: 4320, h: 3072 },
+          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget-v2.jpg", group: "step", w: 4320, h: 3072 },
+          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg", group: "step", w: 4320, h: 3072 },
+          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location-v2.jpg", group: "step", w: 4320, h: 3072 },
+          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", group: "step", w: 4320, h: 3072 },
         ],
       },
-      { category: "Listing Result", screens: [{ src: "/uploads/renthub-agency-list.jpg", w: 1600, h: 4014 }] },
-      { category: "Listing Detail", screens: [{ src: "/uploads/renthub-agency-detail.jpg", w: 1600, h: 5904 }] },
-      { category: "Shortlist", screens: [{ src: "/uploads/renthub-agency-shortlist.jpg", w: 1600, h: 2020 }] },
-      { category: "Mobile (Responsive)", screens: [] },
+      {
+        category: "Listing Result",
+        screens: [
+          { label: "Listing result", src: "/uploads/renthub-agency-listing-result.jpg", w: 4320, h: 10839 },
+          { label: "Empty state", src: "/uploads/renthub-agency-listing-empty.jpg", w: 4320, h: 7599 },
+          { label: "Map view", src: "/uploads/renthub-agency-listing-map.jpg", w: 4320, h: 3072 },
+        ],
+      },
+      {
+        category: "Listing Detail",
+        screens: [
+          { label: "Listing detail", src: "/uploads/renthub-agency-detail-renthub.jpg", w: 4320, h: 15942 },
+          { label: "Serviced apartment", src: "/uploads/renthub-agency-detail-serviced.jpg", w: 4320, h: 16185 },
+          { label: "Contact host — sent", src: "/uploads/renthub-agency-detail-contact.jpg", w: 4320, h: 16608 },
+        ],
+      },
+      {
+        category: "Shortlist",
+        screens: [
+          { label: "Shortlist", src: "/uploads/renthub-agency-shortlist-main.jpg", w: 4320, h: 5454 },
+          { label: "Unsave", src: "/uploads/renthub-agency-shortlist-filled.jpg", w: 4320, h: 5454 },
+          { label: "Empty state", src: "/uploads/renthub-agency-shortlist-empty.jpg", w: 4320, h: 5454 },
+        ],
+      },
+      {
+        // จอแอปมือถือ — เรียงตาม flow การใช้งาน (ไม่ตามชื่อไฟล์)
+        // phone: true → โชว์ขนาดจอเท่า App projects (AppScreensShowcase) · ไม่มี lightbox
+        category: "Mobile (Responsive)",
+        phone: true,
+        screens: [
+          { label: "Home", src: "/uploads/renthub-agency-mobile-home.png", w: 864, h: 1726 },
+          { label: "Search results", src: "/uploads/renthub-agency-mobile-result.png", w: 864, h: 1726 },
+          { label: "Apartment detail", src: "/uploads/renthub-agency-mobile-detail.png", w: 864, h: 1726 },
+          { label: "Room detail", src: "/uploads/renthub-agency-mobile-room.png", w: 864, h: 1726 },
+          { label: "Shortlist", src: "/uploads/renthub-agency-mobile-shortlist.png", w: 864, h: 1726 },
+          { label: "Sign in", src: "/uploads/renthub-agency-mobile-signin.png", w: 864, h: 1726 },
+        ],
+      },
     ],
   },
   rentos: {

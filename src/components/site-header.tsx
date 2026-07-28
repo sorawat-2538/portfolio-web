@@ -65,13 +65,13 @@ export function SiteHeader() {
 
         {/* desktop controls */}
         <nav className="hidden items-center gap-5 min-[900px]:flex">
-          <a
-            href={`mailto:${profile.email}`}
+          <Link
+            href="/#contact"
             className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-[13.5px] font-medium text-foreground transition-colors hover:bg-hover"
           >
             <Mail className="h-[15px] w-[15px]" />
-            {profile.email}
-          </a>
+            Contact Me
+          </Link>
           <span className="h-5 w-px bg-border" />
           <Avatar />
           <a

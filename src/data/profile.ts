@@ -12,7 +12,7 @@ export const profile = {
   phone: "095 575 1594",
   lineId: "sorawat2538",
   location: "Bangkok, Thailand",
-  linkedin: "#", // TODO: ใส่ลิงก์ LinkedIn จริง
+  linkedin: "https://www.linkedin.com/in/sorawat-tunaram-497091207/",
   resumeUrl: "#", // TODO: ลิงก์ resume แยกจาก portfolio (เช่น PDF / Google Drive)
 
   hero: {
@@ -36,20 +36,20 @@ export const profile = {
 
   // สั้นๆ ใต้ตำแหน่งในการ์ด About — โทนภาษาพูด บอกความเป็นตัวเองผ่านมุมมองการทำงาน
   aboutSummary:
-    "ผมเป็น UX/UI & Product Designer ที่ชอบลุยงานเองตั้งแต่ต้นจนจบ — รับโจทย์มาก็คิด flow เอง ออกแบบเอง แล้วทำจนออกมาเป็นของจริงที่ใช้งานได้ ผมสนุกกับการแก้ปัญหาให้คนใช้ และเชื่อว่ารายละเอียดเล็กๆ นี่แหละที่ทำให้งานออกมาต่างกัน",
+    "ประสบการณ์กว่า 7+ ปีในวงการออกแบบ ผ่านโปรเจกต์มากกว่า 10+ projects ทั้งบริษัทสตาร์ทอัพด้านวงการก่อสร้างและบริษัทแพลตฟอร์มสื่อดิจิทัล ดูแลงานออกแบบทั้งหมดตั้งแต่ต้นจนจบ และสามารถผสมผสานความเข้าใจด้าน Design, AI หรือ Technology เข้าด้วยกัน",
 
   // stat 2 ช่องในการ์ด About
   stats: [
     { value: "7+", label: "Years Exp." },
-    { value: "5", label: "Projects" },
+    { value: "10+", label: "Projects" },
   ],
 
-  // ใบรับรอง (แสดงเป็น pills ในการ์ด About) — ใส่ของจริงได้เลย
+  // จุดแข็ง/แนวทางการทำงาน (แสดงเป็น pills ในการ์ด About)
   certifications: [
-    "Google UX Design Certificate",
-    "Google AI Essentials",
-    "Claude Code Certified",
-    "Figma Professional Certificate",
+    "End-to-End Design Ownership",
+    "Design–Dev Collaboration",
+    "Pixel-Perfect Execution",
+    "AI-Assisted Workflow",
   ],
 
   education: [
@@ -62,12 +62,12 @@ export const profile = {
 
   employment: [
     {
-      period: "2021 - ปัจจุบัน",
+      period: "2021 - 2026",
       title: "UX/UI Designer",
       company: "Zimple Media",
       tag: "Real estate",
       description:
-        "ดูแลงานออกแบบ UX/UI ของผลิตภัณฑ์ด้านอสังหาริมทรัพย์ทั้งหมดในฐานะดีไซเนอร์คนเดียว ตั้งแต่รับ requirement, research, design, prototype จนถึง hand-off ให้ทีม dev และวัดผลหลัง ship",
+        "บริษัทแพลตฟอร์มสื่อดิจิทัล ผู้ให้บริการเว็บไซต์ Renthub เว็บหาหอพักอันดับ 1 ในประเทศไทย",
     },
     {
       period: "2018 - 2021",
@@ -75,7 +75,7 @@ export const profile = {
       company: "Builk One Group",
       tag: "Construction",
       description:
-        "ออกแบบ UX/UI ให้ผลิตภัณฑ์สายก่อสร้าง ดูแล flow การใช้งานและ design system ทำงานใกล้ชิดกับทีม developer เพื่อส่งมอบงานที่ implement ได้จริง",
+        "บริษัทสตาร์ทเทคโนโลยีเพื่ออุตสาหกรรมก่อสร้างและอสังหาริมทรัพย์",
     },
   ],
 
@@ -85,7 +85,7 @@ export const profile = {
       period: "2019",
       title: "ชนะเลิศ Builk x AWS Hackathon",
       detail:
-        "คว้ารางวัลชนะเลิศการแข่งขัน Hackathon ร่วมระหว่าง Builk One Group และ AWS — ออกแบบและพัฒนาโซลูชันสำหรับงานก่อสร้าง/อสังหาฯ ภายในเวลาจำกัดร่วมกับทีม",
+        "คว้ารางวัลชนะเลิศการแข่งขัน Hackathon ออกแบบและพัฒนาโซลูชันสำหรับงานก่อสร้าง/อสังหาฯ",
     },
   ],
 
@@ -94,35 +94,35 @@ export const profile = {
     {
       title: "Design Skills",
       items: [
-        { label: "User research", icon: "Search" },
-        { label: "User interface design", icon: "AppWindow" },
-        { label: "Visual design", icon: "Palette" },
+        { label: "User Research", icon: "Search" },
+        { label: "User Interface Design", icon: "AppWindow" },
+        { label: "Visual Design", icon: "Palette" },
         { label: "Prototyping", icon: "MousePointerClick" },
-        { label: "Usability testing", icon: "ClipboardCheck" },
-        { label: "Design system", icon: "Boxes" },
-        { label: "User flow", icon: "Workflow" },
+        { label: "Usability Testing", icon: "ClipboardCheck" },
+        { label: "Design System", icon: "Boxes" },
+        { label: "User Flow", icon: "Workflow" },
       ],
     },
     {
       title: "Computer Skills",
       items: [
         { label: "Figma", icon: "Frame" },
-        { label: "Adobe xd", icon: "PenTool" },
-        { label: "Adobe photoshop", icon: "Image" },
-        { label: "Adobe illustrator", icon: "Brush" },
-        { label: "VS code", icon: "Code2" },
+        { label: "Adobe XD", icon: "PenTool" },
+        { label: "Adobe Photoshop", icon: "Image" },
+        { label: "Adobe Illustrator", icon: "Brush" },
+        { label: "VS Code", icon: "Code2" },
         { label: "HTML", icon: "FileCode2" },
       ],
     },
     {
       title: "AI Skills",
       items: [
-        { label: "Claude design", icon: "Sparkles" },
+        { label: "Claude Design", icon: "Sparkles" },
         { label: "Claude Code", icon: "Bot" },
         { label: "Claude → MCP → Figma", icon: "Workflow" },
-        { label: "AI design workflow", icon: "GitBranch" },
-        { label: "AI agents", icon: "BrainCircuit" },
-        { label: "Design tokens", icon: "Braces" },
+        { label: "AI Design Workflow", icon: "GitBranch" },
+        { label: "AI Agents", icon: "BrainCircuit" },
+        { label: "Design Tokens", icon: "Braces" },
       ],
     },
   ],

@@ -22,7 +22,7 @@ import { ProductMock } from "./product-mock";
 import { ScrollWindow } from "./scroll-window";
 import { CropWindow } from "./crop-window";
 import { LaptopMock } from "./laptop-mock";
-import { ScreenGallery } from "./screen-gallery";
+import { WebScreensPanel } from "./web-screens-panel";
 import { MeasurementStory } from "./measurement-story";
 import { ClaudeSection } from "./claude-section";
 import { WorkflowProcess } from "./workflow-process";
@@ -406,7 +406,7 @@ export function CaseStudyView({
         <>
           <div className="my-[50px] h-px bg-border" />
           <section>
-            <H2>My work flow</H2>
+            <H2>How do I work?</H2>
             <div className="mt-[26px]">
               <WorkflowProcess />
             </div>
@@ -446,7 +446,8 @@ export function CaseStudyView({
               </div>
             ) : (
               <div className="mt-[26px]">
-                <ScreenGallery screens={p.screens} title={p.title} cols={3} />
+                {/* Screens แบบ Expat — panel เทา + rail (ยังไม่แยก category → ไม่ใส่ title) */}
+                <WebScreensPanel screens={p.screens} />
               </div>
             )}
           </section>
@@ -534,7 +535,6 @@ export function CaseStudyView({
               <ArrowLeft className="h-[22px] w-[22px]" strokeWidth={1.8} />
             </span>
             <span className="flex flex-col items-start gap-1 leading-none">
-              <span className="text-[13px] uppercase tracking-[0.22em] text-faint">Previous</span>
               <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
                 {projects[prevSlug].title}
               </span>
@@ -545,7 +545,6 @@ export function CaseStudyView({
         )}
         <Link href={`/work/${nextSlug}`} className="group inline-flex items-center justify-end gap-[22px] text-right">
           <span className="flex flex-col items-end gap-1 leading-none">
-            <span className="text-[13px] uppercase tracking-[0.22em] text-faint">Next</span>
             <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
               {projects[nextSlug].title}
             </span>

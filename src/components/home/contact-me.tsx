@@ -1,14 +1,43 @@
-import { Mail, Phone, MessageCircle, type LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { profile } from "@/data/profile";
+import { ContactForm } from "@/components/home/contact-form";
 
-type Contact = {
+type IconType = ComponentType<{ className?: string; strokeWidth?: number }>;
+
+// lucide เอา brand icon ออกแล้ว จึงใช้ inline SVG (fill = currentColor)
+function LinkedinIcon({ className }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
+    </svg>
+  );
+}
+
+// LINE brand icon (badge + "LINE" wordmark) — ทุก path เป็น currentColor:
+// badge เขียว, bubble เว้าเห็นพื้นขาวกล่อง, ตัวอักษรเขียวในช่อง bubble
+function LineIcon({ className }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="M8.27688 10.1589C8.30711 10.1885 8.33105 10.2238 8.34726 10.2629C8.36347 10.3019 8.37161 10.3439 8.3712 10.3861C8.37135 10.4282 8.3632 10.4698 8.34722 10.5087C8.33124 10.5476 8.30774 10.5829 8.27808 10.6127C8.24841 10.6424 8.21316 10.666 8.17435 10.6822C8.13554 10.6983 8.09392 10.7066 8.0519 10.7066H6.77357C6.68867 10.7063 6.60734 10.6724 6.54732 10.6124C6.48729 10.5524 6.45343 10.471 6.45313 10.3861V7.97152C6.45285 7.92926 6.46105 7.88737 6.47725 7.84833C6.49345 7.80929 6.51732 7.77391 6.54744 7.74426C6.59217 7.6994 6.64923 7.66885 6.71137 7.65651C6.7735 7.64417 6.8379 7.65059 6.89638 7.67495C6.95486 7.69932 7.00476 7.74053 7.03975 7.79334C7.07474 7.84615 7.09323 7.90817 7.09287 7.97152V10.0657H8.0519C8.09373 10.0654 8.13519 10.0735 8.17384 10.0895C8.21249 10.1055 8.24753 10.1291 8.27688 10.1589Z" />
+      <path d="M9.06553 7.65137H8.92577C8.7877 7.65137 8.67578 7.76329 8.67578 7.90135V10.4546C8.67578 10.5927 8.7877 10.7046 8.92577 10.7046H9.06553C9.20359 10.7046 9.31552 10.5927 9.31552 10.4546V7.90135C9.31552 7.76329 9.20359 7.65137 9.06553 7.65137Z" />
+      <path d="M12.286 7.97071V10.3717C12.2861 10.4581 12.2526 10.5411 12.1926 10.6032C12.1326 10.6653 12.0508 10.7017 11.9645 10.7046C11.8836 10.7033 11.8061 10.6717 11.7474 10.616C11.7361 10.6069 11.3065 10.0479 10.9418 9.57743C10.6691 9.22631 10.4327 8.91951 10.4327 8.91951V10.3842C10.4329 10.4463 10.4151 10.5071 10.3813 10.5591C10.3475 10.6112 10.2992 10.6523 10.2424 10.6774C10.1856 10.7025 10.1228 10.7104 10.0615 10.7004C10.0003 10.6903 9.94327 10.6625 9.89753 10.6205C9.86454 10.5907 9.83819 10.5542 9.82019 10.5135C9.80218 10.4728 9.79291 10.4287 9.79299 10.3842V7.98434C9.79194 7.89998 9.82329 7.81842 9.88058 7.75648C9.93787 7.69454 10.0167 7.65693 10.1009 7.65141C10.1486 7.65063 10.1958 7.66042 10.2392 7.68006C10.2827 7.69971 10.3212 7.72873 10.3521 7.76504C10.3657 7.78095 11.0259 8.63999 11.3974 9.12859C11.5452 9.31949 11.6474 9.45357 11.6474 9.45357V7.97639C11.648 7.89189 11.6819 7.81102 11.7416 7.75127C11.8014 7.69152 11.8822 7.65769 11.9667 7.65709C12.0504 7.65708 12.1308 7.68994 12.1905 7.74859C12.2502 7.80725 12.2845 7.88701 12.286 7.97071Z" />
+      <path d="M13.4088 8.29524V8.86338H14.3667C14.4513 8.86338 14.5326 8.89702 14.5924 8.9569C14.6523 9.01678 14.686 9.098 14.686 9.18268C14.686 9.26737 14.6523 9.34858 14.5924 9.40846C14.5326 9.46834 14.4513 9.50198 14.3667 9.50198H13.4088V10.0701H14.3667C14.4103 10.0675 14.454 10.0739 14.495 10.0888C14.5361 10.1037 14.5737 10.1268 14.6055 10.1568C14.6373 10.1867 14.6626 10.2229 14.6799 10.263C14.6972 10.3031 14.7062 10.3463 14.7062 10.39C14.7062 10.4337 14.6972 10.4769 14.6799 10.517C14.6626 10.5571 14.6373 10.5933 14.6055 10.6232C14.5737 10.6532 14.5361 10.6763 14.495 10.6912C14.454 10.7061 14.4103 10.7125 14.3667 10.7099H13.0849C13.0001 10.7096 12.9189 10.6757 12.8591 10.6156C12.7992 10.5555 12.7656 10.4742 12.7656 10.3894V7.97026C12.7659 7.88567 12.7997 7.80463 12.8595 7.74481C12.9193 7.68499 13.0003 7.65126 13.0849 7.65096H14.3633C14.4069 7.64836 14.4505 7.6547 14.4916 7.6696C14.5327 7.6845 14.5703 7.70764 14.6021 7.7376C14.6339 7.76755 14.6592 7.8037 14.6765 7.84381C14.6938 7.88391 14.7028 7.92714 14.7028 7.97082C14.7028 8.01451 14.6938 8.05774 14.6765 8.09784C14.6592 8.13795 14.6339 8.17409 14.6021 8.20405C14.5703 8.23401 14.5327 8.25715 14.4916 8.27205C14.4505 8.28695 14.4069 8.29329 14.3633 8.29069L13.4088 8.29524Z" />
+      <path d="M19.6585 3.57767C19.5702 2.74961 19.2009 1.9768 18.612 1.38796C18.0232 0.799122 17.2504 0.429796 16.4223 0.341501C12.1544 -0.113834 7.85014 -0.113834 3.58221 0.341501C2.75334 0.428819 1.97948 0.797715 1.38972 1.38664C0.799964 1.97557 0.429983 2.74892 0.341501 3.57767C-0.113834 7.8456 -0.113834 12.1499 0.341501 16.4178C0.429022 17.2466 0.797984 18.0203 1.38687 18.6101C1.97576 19.1998 2.749 19.5698 3.57767 19.6585C7.8456 20.1138 12.1499 20.1138 16.4178 19.6585C17.2466 19.571 18.0203 19.202 18.6101 18.6131C19.1998 18.0242 19.5698 17.251 19.6585 16.4223C20.1142 12.1529 20.1142 7.8471 19.6585 3.57767ZM16.2496 9.31822C16.2407 9.4452 16.2244 9.57154 16.2008 9.69661C16.1217 10.1755 15.9598 10.6369 15.7224 11.0602C15.6087 11.2624 15.0622 12.0306 14.8952 12.2328C13.9713 13.3453 12.4237 14.6293 9.83751 15.878C9.78295 15.9044 9.72235 15.9157 9.66195 15.9109C9.60155 15.906 9.54354 15.8852 9.49388 15.8505C9.44422 15.8157 9.40472 15.7684 9.37944 15.7133C9.35416 15.6583 9.34401 15.5975 9.35004 15.5372L9.48071 14.3634C9.4906 14.2736 9.46445 14.1835 9.40799 14.113C9.35153 14.0425 9.26938 13.9973 9.1796 13.9873C8.31923 13.9012 7.48114 13.6622 6.70475 13.2816C4.93213 12.4055 3.75038 10.8409 3.75038 9.05801C3.75038 6.31273 6.54794 4.09127 10 4.09127C11.734 4.09127 13.3021 4.65942 14.4315 5.5605C15.4894 6.40704 16.1667 7.55583 16.2394 8.83075C16.2515 8.99294 16.2549 9.15567 16.2496 9.31822Z" />
+    </svg>
+  );
+}
+
+type Row = {
   label: string;
   value: string;
-  href: string;
-  icon: LucideIcon;
+  href?: string;
+  external?: boolean;
+  icon: IconType;
 };
 
-const contacts: Contact[] = [
+// แถวติดต่อ — แก้ค่าได้ที่ data/profile.ts (Location/Response Time เป็นข้อความคงที่)
+const rows: Row[] = [
   {
     label: "Email",
     value: profile.email,
@@ -25,37 +54,78 @@ const contacts: Contact[] = [
     label: "LINE ID",
     value: profile.lineId,
     href: `https://line.me/ti/p/~${profile.lineId}`,
-    icon: MessageCircle,
+    external: true,
+    icon: LineIcon,
+  },
+  {
+    label: "LinkedIn",
+    value: "Sorawat Tunaram",
+    href: profile.linkedin,
+    external: true,
+    icon: LinkedinIcon,
+  },
+  {
+    label: "Location",
+    value: "Sutthisan, Bangkok",
+    icon: MapPin,
+  },
+  {
+    label: "Response Time",
+    value: "Almost instantly",
+    icon: Clock,
   },
 ];
 
 export function ContactMe() {
   return (
-    <section>
+    <section id="contact" className="scroll-mt-24">
       <h2 className="text-[clamp(24px,3vw,32px)] font-bold leading-tight tracking-[-0.02em] text-foreground">
-        Let&apos;s work together
+        Contact Me
       </h2>
 
-      <div className="mt-7 grid gap-4 sm:grid-cols-3">
-        {contacts.map(({ label, value, href, icon: Icon }) => (
-          <a
-            key={label}
-            href={href}
-            target={label === "Email" ? undefined : "_blank"}
-            rel="noreferrer"
-            className="flex flex-col items-center gap-3 rounded-xl border border-border bg-white px-5 py-7 text-center"
-          >
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2d68ff]/10 text-[#2d68ff]">
-              <Icon className="h-[22px] w-[22px]" strokeWidth={2} />
-            </span>
-            <span>
-              <span className="block text-[13px] text-[#434E62]">{label}</span>
-              <span className="mt-0.5 block text-[15px] font-medium text-[#1A1A1A]">
-                {value}
+      <div className="mt-7 grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center">
+      <div className="max-w-lg">
+      <ul className="flex flex-col gap-5">
+        {rows.map((row) => {
+          const Icon = row.icon;
+          const inner = (
+            <>
+              <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-[#2d68ff]">
+                <Icon className="h-[20px] w-[20px]" strokeWidth={1.8} />
               </span>
-            </span>
-          </a>
-        ))}
+              <span className="min-w-0">
+                <span className="block text-[13px] text-muted-foreground">
+                  {row.label}
+                </span>
+                <span className="mt-0.5 block break-words text-[16px] font-semibold text-foreground">
+                  {row.value}
+                </span>
+              </span>
+            </>
+          );
+
+          return (
+            <li key={row.label}>
+              {row.href ? (
+                <a
+                  href={row.href}
+                  target={row.external ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="flex items-center gap-4"
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div className="flex items-center gap-4">{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      </div>
+
+        {/* code-editor mockup (gimmick) — natural contact ที่กดได้จริงอยู่ซ้าย */}
+        <ContactForm />
       </div>
     </section>
   );

@@ -1,7 +1,10 @@
 "use client";
 
-// WebScreensPanel — 1 category = พื้นเทา + header(ชื่อ category) + จอเรียง scroll แนวนอน
-// (treatment เดียวกับ AppScreensShowcase แต่เป็นสกรีนช็อตหน้าเว็บ · เอาแค่รูป ไม่มี shadow/กรอบ)
+// WebScreensPanel — 1 category = พื้นเทา + header(ชื่อ category) + จอเรียง scroll แนวนอนเป็นราง
+// (treatment เดียวกับ AppScreensShowcase · เอาแค่รูป ไม่มี caption/กรอบ)
+// ปกติ 1 จอ = 1 สล็อตในราง · แต่ถ้าจอไหนมี `group` เดียวกัน จะถูกซ้อนลงมาในสล็อตเดียว
+//   → ใช้กับ section Home ที่มีจอ Home ยาว ๆ + จอย่อย (dropdown / step) ให้จอย่อยเรียงลงมา
+//     เป็น 3 สล็อต (Home | dropdown | step) แทนที่จะกางเป็นรางยาว
 // กดที่จอ → เปิดดูรูปใหญ่เต็มจอ (lightbox + เลื่อน prev/next ในหมวดนั้น) เหมือน ScreenGallery เดิม
 // category ที่ยังไม่มีรูป (screens: []) → โชว์ป้าย "เร็ว ๆ นี้"
 
@@ -9,7 +12,25 @@ import * as React from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
-type WebScreen = { src?: string; label?: string; w?: number; h?: number };
+type WebScreen = { src?: string; label?: string; group?: string; w?: number; h?: number };
+type Shot = WebScreen & { src: string };
+
+/** จัดจอเป็นคอลัมน์: จอที่ไม่มี group = 1 สล็อตของตัวเอง · จอที่ group เดียวกัน = ซ้อนลงมาในสล็อตเดียว
+ *  (คง index เดิมของ shots ไว้เพื่อให้ lightbox prev/next ต่อเนื่อง) */
+function buildColumns(shots: Shot[]): { s: Shot; i: number }[][] {
+  const cols: { s: Shot; i: number }[][] = [];
+  const groupCol = new Map<string, number>();
+  shots.forEach((s, i) => {
+    const g = s.group;
+    if (g && groupCol.has(g)) {
+      cols[groupCol.get(g)!].push({ s, i });
+    } else {
+      if (g) groupCol.set(g, cols.length);
+      cols.push([{ s, i }]);
+    }
+  });
+  return cols;
+}
 
 export function WebScreensPanel({
   title,
@@ -18,16 +39,17 @@ export function WebScreensPanel({
   title?: string;
   screens: WebScreen[];
 }) {
-  const shots = screens.filter((s): s is Required<Pick<WebScreen, "src">> & WebScreen =>
-    Boolean(s.src),
-  );
+  const shots = screens.filter((s): s is Shot => Boolean(s.src));
   const [active, setActive] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     if (active === null) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActive(null);
-      else if (e.key === "ArrowRight")
+      if (e.key === "Escape") {
+        setActive(null);
+        // เลิกโฟกัสปุ่ม thumbnail ที่เปิด lightbox ไว้ ไม่งั้น focus-ring น้ำเงินจะค้างหลังกด ESC
+        (document.activeElement as HTMLElement | null)?.blur();
+      } else if (e.key === "ArrowRight")
         setActive((a) => (a === null ? a : Math.min(shots.length - 1, a + 1)));
       else if (e.key === "ArrowLeft")
         setActive((a) => (a === null ? a : Math.max(0, a - 1)));
@@ -42,6 +64,8 @@ export function WebScreensPanel({
 
   const open = active !== null ? shots[active] : null;
   const idx = active ?? 0;
+
+  const columns = buildColumns(shots);
 
   return (
     <div className="overflow-hidden bg-[#f3f3f1] py-[clamp(18px,3vw,30px)]">
@@ -59,26 +83,34 @@ export function WebScreensPanel({
           รูปกำลังจะมา — เร็ว ๆ นี้
         </div>
       ) : (
-        /* rail — จอเรียง scroll แนวนอน · top-align · กดเปิดดูรูปใหญ่ */
+        /* rail — จอเรียง scroll แนวนอน · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา */
         <div className="flex snap-x snap-mandatory items-start gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scroll-padding-inline:clamp(18px,3vw,30px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6">
-          {shots.map((s, i) => (
-            <button
-              key={s.src}
-              type="button"
-              onClick={() => setActive(i)}
-              aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มจอ`}
-              className="block w-[78%] shrink-0 cursor-pointer snap-start outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-[320px]"
+          {columns.map((col, ci) => (
+            <div
+              key={ci}
+              className="flex w-[78%] shrink-0 snap-start flex-col gap-4 sm:w-[320px]"
             >
-              <Image
-                src={s.src}
-                alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
-                width={s.w ?? 1600}
-                height={s.h ?? 5000}
-                sizes="(max-width: 640px) 78vw, 320px"
-                quality={88}
-                className="block h-auto w-full"
-              />
-            </button>
+              {col.map(({ s, i }) => (
+                <button
+                  key={s.src}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มจอ`}
+                  className="block w-full cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                >
+                  <Image
+                    src={s.src}
+                    alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
+                    width={s.w ?? 1600}
+                    height={s.h ?? 5000}
+                    sizes="(max-width: 640px) 78vw, 320px"
+                    quality={88}
+                    unoptimized
+                    className="block h-auto w-full"
+                  />
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       )}

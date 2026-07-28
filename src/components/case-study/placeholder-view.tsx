@@ -286,9 +286,18 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
           <section>
             <H2>Screens</H2>
             <div className="mt-8 flex flex-col gap-6">
-              {p.webScreens.map((c) => (
-                <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
-              ))}
+              {p.webScreens.map((c) =>
+                c.phone ? (
+                  // Mobile section — จอมือถือขนาดเท่า App projects · ไม่มี lightbox
+                  <AppScreensShowcase
+                    key={c.category}
+                    title={c.category}
+                    screens={c.screens.flatMap((s) => (s.src ? [{ src: s.src, label: s.label ?? "" }] : []))}
+                  />
+                ) : (
+                  <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
+                ),
+              )}
             </div>
           </section>
         </>
