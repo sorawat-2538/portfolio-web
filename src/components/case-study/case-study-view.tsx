@@ -23,6 +23,7 @@ import { ScrollWindow } from "./scroll-window";
 import { CropWindow } from "./crop-window";
 import { LaptopMock } from "./laptop-mock";
 import { WebScreensPanel } from "./web-screens-panel";
+import { AppScreensShowcase } from "./app-screens-showcase";
 import { MeasurementStory } from "./measurement-story";
 import { ClaudeSection } from "./claude-section";
 import { WorkflowProcess } from "./workflow-process";
@@ -417,15 +418,31 @@ export function CaseStudyView({
       )}
 
       {/* ── ALL ABOUT WORKS — the designed screens ── */}
-      {p.screens && p.screens.length > 0 && (
+      {((p.webScreens && p.webScreens.length > 0) ||
+        (p.screens && p.screens.length > 0)) && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
             <H2>Screens</H2>
-            {/* screensFull = โชว์รูปเต็มยาว (จอน้อย) · ปกติ = browser-frame gallery */}
-            {p.screensFull ? (
+            {p.webScreens && p.webScreens.length > 0 ? (
+              // แยกตาม category (grid) — phone category = จอมือถือ (AppScreensShowcase) · ที่เหลือ = grid เว็บ
+              <div className="mt-8 flex flex-col gap-6">
+                {p.webScreens.map((c) =>
+                  c.phone ? (
+                    <AppScreensShowcase
+                      key={c.category}
+                      title={c.category}
+                      screens={c.screens.flatMap((s) => (s.src ? [{ src: s.src, label: s.label ?? "" }] : []))}
+                    />
+                  ) : (
+                    <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" />
+                  ),
+                )}
+              </div>
+            ) : p.screensFull ? (
+              // screensFull = โชว์รูปเต็มยาว (จอน้อย)
               <div className="mt-[26px] space-y-10">
-                {p.screens.map((s) =>
+                {p.screens!.map((s) =>
                   s.src ? (
                     <figure key={s.src}>
                       {s.desc && (
@@ -448,8 +465,10 @@ export function CaseStudyView({
               </div>
             ) : (
               <div className="mt-[26px]">
-                {/* Screens แบบ Expat — panel เทา + rail (ยังไม่แยก category → ไม่ใส่ title) */}
-                <WebScreensPanel screens={p.screens} />
+                {/* Screens — panel เทา (ยังไม่แยก category → ไม่ใส่ title) */}
+                {/* แบบเดิม (rail — จอเต็มสูง เลื่อนแนวนอน) · เก็บไว้เผื่อกลับมาใช้ */}
+                {/* <WebScreensPanel screens={p.screens!} /> */}
+                <WebScreensPanel screens={p.screens!} variant="grid" />
               </div>
             )}
           </section>

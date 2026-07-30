@@ -35,9 +35,12 @@ function buildColumns(shots: Shot[]): { s: Shot; i: number }[][] {
 export function WebScreensPanel({
   title,
   screens,
+  variant = "rail",
 }: {
   title?: string;
   screens: WebScreen[];
+  /** "rail" = จอเต็มความสูงเลื่อนแนวนอน (default) · "grid" = จอในกรอบ browser crop หัวเท่ากัน 2 ต่อแถว */
+  variant?: "rail" | "grid";
 }) {
   const shots = screens.filter((s): s is Shot => Boolean(s.src));
   const [active, setActive] = React.useState<number | null>(null);
@@ -81,6 +84,49 @@ export function WebScreensPanel({
         /* category ที่ยังไม่มีรูป — ป้าย "เร็ว ๆ นี้" */
         <div className="mx-[clamp(18px,3vw,30px)] flex items-center justify-center rounded-xl border border-dashed border-border/70 py-10 text-[14px] text-muted-foreground">
           รูปกำลังจะมา — เร็ว ๆ นี้
+        </div>
+      ) : variant === "grid" ? (
+        /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */
+        <div className="grid grid-cols-1 items-start gap-4 px-[clamp(18px,3vw,30px)] min-[560px]:grid-cols-2 min-[560px]:gap-6">
+          {shots.map((s, i) => {
+            // จอยาว (h/w > 1) → crop + ป้าย "full page" · จอเตี้ย → โชว์เต็มจอในกรอบ (กรอบ border ปิดครบ) ไม่มีป้าย
+            const tall = (s.h ?? 5000) / (s.w ?? 1600) > 1;
+            return (
+              <button
+                key={s.src}
+                type="button"
+                onClick={() => setActive(i)}
+                aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มหน้า`}
+                className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              >
+                {/* chrome — traffic lights */}
+                <div className="flex items-center gap-2 border-b border-border bg-white px-3.5 py-2.5">
+                  <span className="flex shrink-0 gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#ff5f57" }} />
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#febc2e" }} />
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#28c840" }} />
+                  </span>
+                </div>
+
+                {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ */}
+                <div className={"relative bg-white" + (tall ? " h-[clamp(240px,30vw,340px)] overflow-hidden" : "")}>
+                  <Image
+                    src={s.src}
+                    alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
+                    width={s.w ?? 1600}
+                    height={s.h ?? 5000}
+                    sizes="(max-width: 560px) 100vw, 420px"
+                    quality={88}
+                    unoptimized
+                    className="block h-auto w-full"
+                  />
+                  {tall && (
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/70 to-transparent" />
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       ) : (
         /* rail — จอเรียง scroll แนวนอน · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา */

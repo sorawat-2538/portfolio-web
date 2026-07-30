@@ -14,6 +14,7 @@ import {
   LayoutList,
   Menu,
   MessageSquareText,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import type { PlaceholderProject } from "@/data/projects";
@@ -49,6 +50,19 @@ const S = (src: string, label: string): Shot => ({ src: `/uploads/${src}`, label
 
 const TABS: { tab: string; en: string; icon: LucideIcon; screens: Shot[] }[] = [
   {
+    // 5 จอ onboarding — step 1–4 + step 5 (propertyhub-app-onboarding.png เดิม = จอ "มาเริ่มกันเลย")
+    tab: "เริ่มต้นใช้งาน",
+    en: "Onboarding",
+    icon: Sparkles,
+    screens: [
+      S("propertyhub-app-onboarding-1.png", "สวัสดี"),
+      S("propertyhub-app-onboarding-2.png", "ค้นหาด้วยแผนที่"),
+      S("propertyhub-app-onboarding-3.png", "ค้นหาแบบพื้นที่"),
+      S("propertyhub-app-onboarding-4.png", "สัญลักษณ์ยืนยันตัวตน"),
+      S("propertyhub-app-onboarding.png", "มาเริ่มกันเลย"),
+    ],
+  },
+  {
     tab: "หน้าหลัก",
     en: "Home",
     icon: Home,
@@ -74,6 +88,8 @@ const TABS: { tab: string; en: string; icon: LucideIcon; screens: Shot[] }[] = [
       S("propertyhub-app-developers.png", "ผู้พัฒนาอสังหาฯ"),
       S("propertyhub-app-developer-detail.png", "รายละเอียดผู้พัฒนา"),
       S("propertyhub-app-agent.png", "โปรไฟล์เอเจนต์"),
+      S("propertyhub-app-assetbank.png", "ทรัพย์ธนาคาร (Asset Bank)"),
+      S("propertyhub-app-assetbank-kbank.png", "ทรัพย์ธนาคารกสิกร (KBANK)"),
     ],
   },
   {

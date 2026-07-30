@@ -301,7 +301,9 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
                     screens={c.screens.flatMap((s) => (s.src ? [{ src: s.src, label: s.label ?? "" }] : []))}
                   />
                 ) : (
-                  <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
+                  // แบบเดิม (rail — จอเต็มสูง เลื่อนแนวนอน) · เก็บไว้เผื่อกลับมาใช้
+                  // <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
+                  <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" />
                 ),
               )}
             </div>

@@ -59,6 +59,10 @@ export type Project = {
   /** โชว์ screens แบบ "รูปเต็มยาว" (inline เต็มความสูง) แทน browser-frame gallery
    *  เหมาะกับงานที่มีจอน้อย (เช่น 1 หน้า) — ดูทั้งหน้ารวดเดียวไม่ต้องกดขยาย */
   screensFull?: boolean;
+  /** Screens แยกตาม category (โครงเดียวกับ placeholder webScreens) — ถ้ามี จะ render แทน flat `screens`
+   *  แต่ละ category = panel เทา + header(ชื่อ) + grid จอในกรอบ browser (กดดูเต็ม)
+   *  phone:true → AppScreensShowcase (จอมือถือ) · category ที่ screens:[] → ป้าย "เร็ว ๆ นี้" */
+  webScreens?: { category: string; phone?: boolean; screens: { src?: string; label?: string; group?: string; w?: number; h?: number }[] }[];
   /** การ์ด stat ลอยบน hero (portpro-style) — ไม่ใส่ก็ได้, โชว์เฉพาะที่มีข้อมูล */
   heroBadges?: { icon: string; value: string; label: string }[];
 
@@ -139,39 +143,59 @@ export const projects = {
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
     heroWeb: "/uploads/propertyhub-hero-web.png",
     heroPhone: "/uploads/propertyhub-hero-phone-v2.png",
-    // 3 จอจริงจาก Propertyhub — เลื่อนดูทั้งหน้าได้ในกรอบ หรือกดขยายเต็มจอ
-    screens: [
+    // Screens แยกตาม category (grid) — category ที่ยังไม่มีรูป = screens:[] → โชว์ "เร็ว ๆ นี้"
+    webScreens: [
       {
-        label: "Home",
-        desc: "หน้าแรกของ Propertyhub — จุดเริ่มต้นการค้นหา รวมทางเข้าไปยังเช่า/ขาย โครงการใหม่ และทรัพย์แนะนำ",
-        url: "propertyhub.in.th",
-        src: "/uploads/propertyhub-home-full-v2.jpg",
-        w: 1600,
-        h: 7403,
+        category: "Sign Up / Sign In",
+        screens: [
+          { label: "Sign in", src: "/uploads/propertyhub-signin.jpg", w: 4320, h: 3072 },
+          { label: "Sign up", src: "/uploads/propertyhub-signup.jpg", w: 4320, h: 3072 },
+        ],
       },
       {
-        label: "Project detail",
-        desc: "หน้ารายละเอียดโครงการ — รวมข้อมูล ทำเล และประกาศเช่า/ขายในโครงการเดียวกัน เป็นจุดที่ traffic เข้าสูงสุด",
-        url: "propertyhub.in.th/project",
-        src: "/uploads/propertyhub-project-detail.jpg",
-        w: 1600,
-        h: 5106,
+        // Home + flow ต่อเนื่อง (Listing Result · Listing Detail จะตามมา)
+        category: "Home",
+        screens: [
+          { label: "Home", src: "/uploads/propertyhub-home-full-v2.jpg", w: 1600, h: 7403 },
+          { label: "Listing Detail", src: "/uploads/propertyhub-listing-detail.jpg", w: 4320, h: 15296 },
+          { label: "Listing Result", src: "/uploads/propertyhub-listing-result.jpg", w: 4320, h: 15016 },
+        ],
       },
       {
-        label: "AssetBank — ทรัพย์มือสองจากธนาคาร",
-        desc: "หน้ารวมทรัพย์ NPA ราคาพิเศษจากธนาคารชั้นนำ พร้อมระบบค้นหาและโปรโมชันดอกเบี้ยต่ำ",
-        url: "propertyhub.in.th/asset-bank",
-        src: "/uploads/propertyhub-assetbank.jpg",
-        w: 1600,
-        h: 5890,
+        category: "Project Detail",
+        screens: [
+          { label: "Overview", src: "/uploads/propertyhub-detail-overview.jpg", w: 4320, h: 13665 },
+          { label: "Amenities", src: "/uploads/propertyhub-detail-amenities.jpg", w: 4320, h: 12891 },
+          { label: "Floor plan", src: "/uploads/propertyhub-detail-floorplan.jpg", w: 4320, h: 12237 },
+          { label: "Floor plan (list)", src: "/uploads/propertyhub-detail-floorplan-list.jpg", w: 4320, h: 12237 },
+          { label: "Reviews", src: "/uploads/propertyhub-detail-reviews.jpg", w: 4320, h: 12880 },
+        ],
       },
       {
-        label: "New projects",
-        desc: "หน้ารวมโครงการใหม่ บ้าน–ทาวน์เฮาส์–คอนโด คัดโครงการแนะนำและจัดกลุ่มตามทำเล/ผู้พัฒนา",
-        url: "propertyhub.in.th/new-projects",
-        src: "/uploads/propertyhub-new-projects.jpg",
-        w: 1600,
-        h: 5138,
+        category: "New Project",
+        screens: [
+          { label: "New projects", src: "/uploads/propertyhub-new-projects.jpg", w: 4320, h: 13750 },
+          { label: "Developers", src: "/uploads/propertyhub-developers.jpg", w: 4320, h: 7776 },
+          { label: "Developer detail", src: "/uploads/propertyhub-developer-detail.jpg", w: 4320, h: 10163 },
+        ],
+      },
+      {
+        category: "Asset Banks",
+        screens: [
+          { label: "Home", src: "/uploads/propertyhub-assetbank-home.jpg", w: 4320, h: 15903 },
+          { label: "All banks", src: "/uploads/propertyhub-assetbank.jpg", w: 4320, h: 9514 },
+          { label: "Kasikorn (KBANK)", src: "/uploads/propertyhub-assetbank-kbank.jpg", w: 4320, h: 9562 },
+        ],
+      },
+      {
+        // จอมือถือ (responsive) — phone:true → AppScreensShowcase · เริ่มด้วย Home (ใช้รูป hero phone เดิม) จออื่นตามมาทีหลัง
+        category: "Mobile (Responsive)",
+        phone: true,
+        screens: [
+          { label: "Home", src: "/uploads/propertyhub-hero-phone-v2.png", w: 864, h: 1726 },
+          { label: "Listing Detail", src: "/uploads/propertyhub-mobile-detail.png", w: 660, h: 1320 },
+          { label: "Asset Bank", src: "/uploads/propertyhub-mobile-assetbank.png", w: 660, h: 1320 },
+        ],
       },
     ],
     liveUrl: "https://propertyhub.in.th/",
@@ -837,19 +861,20 @@ export const placeholderProjects = {
         ],
       },
       {
-        // section Home จัดเป็น 3 สล็อต: [Home ยาว] | [dropdown ซ้อนลงมา] | [step ซ้อนลงมา]
-        // จอที่ group เดียวกันจะถูกซ้อนลงมาในสล็อตเดียว (ดู WebScreensPanel) — Home ไม่มี group = สล็อตเดี่ยว
         category: "Home",
         screens: [
           { label: "Home", src: "/uploads/renthub-agency-home.jpg", w: 1600, h: 6807 },
-          { label: "Search destination", src: "/uploads/renthub-agency-home-search-v2.jpg", group: "dropdown", w: 4320, h: 3072 },
-          { label: "Price range", src: "/uploads/renthub-agency-home-price.jpg", group: "dropdown", w: 4320, h: 3072 },
-          { label: "Search room type", src: "/uploads/renthub-agency-home-roomtype.jpg", group: "dropdown", w: 4320, h: 3072 },
-          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact-v2.jpg", group: "step", w: 4320, h: 3072 },
-          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget-v2.jpg", group: "step", w: 4320, h: 3072 },
-          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg", group: "step", w: 4320, h: 3072 },
-          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location-v2.jpg", group: "step", w: 4320, h: 3072 },
-          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", group: "step", w: 4320, h: 3072 },
+        ],
+      },
+      {
+        // flow ให้ผู้ใช้กรอกความต้องการ (ติดต่อ → งบ → สิ่งอำนวยความสะดวก → ทำเล) แล้วให้ทีมช่วยหาห้อง
+        category: "Find My Home",
+        screens: [
+          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact-v2.jpg", w: 4320, h: 3072 },
+          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget-v2.jpg", w: 4320, h: 3072 },
+          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg", w: 4320, h: 3072 },
+          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location-v2.jpg", w: 4320, h: 3072 },
+          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", w: 4320, h: 3072 },
         ],
       },
       {
