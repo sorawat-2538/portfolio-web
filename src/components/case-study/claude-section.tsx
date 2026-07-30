@@ -2,41 +2,13 @@
 
 import * as React from "react";
 import Image from "next/image";
-import {
-  X,
-  Maximize2,
-  Sparkles,
-  Plug,
-  Database,
-  Brain,
-  Target,
-  ClipboardList,
-  FileText,
-  LayoutTemplate,
-  Presentation,
-  BarChart3,
-  type LucideIcon,
-} from "lucide-react";
+import { X, Maximize2, Sparkles, ArrowRight, Lightbulb } from "lucide-react";
 import type { Project } from "@/data/projects";
-import { StepFlow, type FlowStep } from "./step-flow";
-import { StepperFlow } from "./stepper-flow";
 import { ProjectRedesign } from "./project-redesign";
-
-// lucide icon names used by claude flow steps → components
-const STEP_ICONS: Record<string, LucideIcon> = {
-  Plug,
-  Database,
-  Brain,
-  Target,
-  ClipboardList,
-  Sparkles,
-  FileText,
-  LayoutTemplate,
-  Presentation,
-  BarChart3,
-};
+import { ListingDialogMock } from "./listing-dialog-mock";
 
 type Claude = NonNullable<Project["claude"]>;
+type Shot = Claude["insight"]["image"];
 
 /** small brand eyebrow used above flow / case-study within each workflow */
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -47,9 +19,8 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** "AI in My Workflow" — 2 workflows, each shown prominently as:
- *  heading → flow การทำงาน (wraps, no horizontal scroll) → case study งานที่ได้จาก flow นั้น.
- *  WF1 case study = the insight surfaced from data · WF2 case study = the redesign (ProjectRedesign). */
+/** "AI in My Workflow" — 2 workflows, each: heading → step trail (สั้น) → case study.
+ *  WF1 case study = insight ที่ขุดจาก data → idea (mockup) · WF2 = redesign (ProjectRedesign). */
 export function ClaudeSection({
   claude,
   title,
@@ -57,29 +28,48 @@ export function ClaudeSection({
   claude: Claude;
   title: string;
 }) {
-  const [open, setOpen] = React.useState(false);
+  // lightbox — เก็บรูปที่กำลังซูม (null = ปิด)
+  const [lightbox, setLightbox] = React.useState<Shot | null>(null);
 
   React.useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setLightbox(null);
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [lightbox]);
 
-  const img = claude.insight.image;
+  /** รูปหลักฐานที่กดซูมได้ */
+  const EvidenceShot = ({ shot }: { shot: Shot }) => (
+    <div>
+      <button
+        type="button"
+        onClick={() => setLightbox(shot)}
+        aria-label={`ดู ${shot.caption} เต็มจอ`}
+        className="group relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border shadow-[0_4px_14px_-4px_rgba(30,50,90,0.2)] outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+      >
+        <Image
+          src={shot.src}
+          alt={`${title} — ${shot.caption}`}
+          width={shot.w}
+          height={shot.h}
+          sizes="(max-width: 900px) 100vw, 680px"
+          quality={88}
+          className="block h-auto w-full"
+        />
+        <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1.5 text-[12px] font-medium text-foreground opacity-0 shadow-sm ring-1 ring-border backdrop-blur transition-opacity group-hover:opacity-100">
+          <Maximize2 className="h-3.5 w-3.5" />
+          เต็มจอ
+        </span>
+      </button>
+      <p className="mt-2.5 text-[13px] leading-[1.5] text-muted-foreground">{shot.caption}</p>
+    </div>
+  );
 
-  // sample steps (ใช้ flow แรก) สำหรับบล็อกเทียบสไตล์ Flow ด้านล่าง
-  const sampleSteps: FlowStep[] = claude.flows[0].steps.map((st) => ({
-    label: st.label,
-    sub: st.sub,
-    icon: st.icon ? STEP_ICONS[st.icon] : undefined,
-  }));
-
-  // ── case study ของ Workflow 1 — insight ที่ขุดได้จาก data ──
+  // ── case study ของ Workflow 1 — insight ที่ขุดได้จาก data → idea ──
   const insightCaseStudy = (
     <div className="overflow-hidden rounded-xl border border-brand/40 bg-brand/[0.04]">
       <div className="px-[clamp(20px,3vw,30px)] pt-[clamp(20px,3vw,28px)]">
@@ -87,7 +77,14 @@ export function ClaudeSection({
           {claude.insight.lead}
         </p>
 
-        {/* stat contrast */}
+        {/* หลักฐาน A — listing_detail คือ hub (Navigation Summary) */}
+        {claude.insight.evidence && (
+          <div className="mt-6">
+            <EvidenceShot shot={claude.insight.evidence} />
+          </div>
+        )}
+
+        {/* stat contrast — ยิ่ง engage ลึก contact ยิ่งพุ่ง */}
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           {claude.insight.stats.map((st, i) => (
             <div
@@ -112,34 +109,36 @@ export function ClaudeSection({
           ))}
         </div>
 
+        {/* หลักฐาน B — engagement depth distribution (Session Explorer) */}
+        <div className="mt-6">
+          <EvidenceShot shot={claude.insight.image} />
+        </div>
+
         <p className="mt-6 text-[16px] leading-[1.75] text-muted-foreground">
           {claude.insight.takeaway}
         </p>
       </div>
 
-      {/* Session Explorer shot — clickable */}
-      <div className="mt-6 px-[clamp(20px,3vw,30px)] pb-[clamp(20px,3vw,28px)]">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label={`ดู ${img.caption} เต็มจอ`}
-          className="group relative block w-full cursor-pointer overflow-hidden rounded-lg border border-border shadow-[0_4px_14px_-4px_rgba(30,50,90,0.2)] outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-        >
-          <Image
-            src={img.src}
-            alt={`${title} — ${img.caption}`}
-            width={img.w}
-            height={img.h}
-            sizes="(max-width: 900px) 100vw, 680px"
-            quality={88}
-            className="block h-auto w-full"
-          />
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1.5 text-[12px] font-medium text-foreground opacity-0 shadow-sm ring-1 ring-border backdrop-blur transition-opacity group-hover:opacity-100">
-            <Maximize2 className="h-3.5 w-3.5" />
-            เต็มจอ
+      {/* ── idea ที่ได้ → mockup (proposed) ── */}
+      <div className="mt-7 border-t border-brand/20 bg-background/50 px-[clamp(20px,3vw,30px)] py-[clamp(22px,3vw,30px)]">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-amber-600">
+          <Lightbulb className="h-3.5 w-3.5" />
+          Proposed · ยังไม่ ship
+        </span>
+        <h4 className="mt-3 text-[clamp(18px,2.2vw,21px)] font-semibold tracking-[-0.01em] text-foreground">
+          Idea: ให้เห็นประกาศได้เยอะขึ้นในหน้า listing detail
+        </h4>
+        <p className="mt-2.5 text-[15px] leading-[1.75] text-muted-foreground">
+          ปัจจุบันถ้าจะดูประกาศทั้งโครงการ user ต้องเด้งออกไปหน้าเช่า/ขายแยก — navigate หลายหน้าเกินไป
+          จึงเสนอปุ่ม <span className="font-medium text-foreground">“ดูทั้งหมด xx ประกาศ”</span> +
+          dialog ที่รวมประกาศทั้งโครงการ (เช่า/ขาย) ไว้ในหน้าเดียว{" "}
+          <span className="font-medium text-foreground">
+            สมมติฐาน: user จะดูหลายประกาศขึ้น (2–3 view เพิ่ม) และ 1-view ลดลง
           </span>
-        </button>
-        <p className="mt-2.5 text-[13px] leading-[1.5] text-muted-foreground">{img.caption}</p>
+        </p>
+        <div className="mt-6">
+          <ListingDialogMock />
+        </div>
       </div>
     </div>
   );
@@ -153,103 +152,72 @@ export function ClaudeSection({
         {claude.intro}
       </p>
 
-      {/* ── ตัวเลือกสไตล์ "Flow การทำงาน" (ชั่วคราว — เลือกอันที่ชอบ แล้วผม apply + ลบบล็อกนี้) ── */}
-      <div className="mt-8 rounded-2xl border border-dashed border-border bg-hover/30 p-[clamp(18px,3vw,28px)]">
-        <div className="text-[12px] font-semibold uppercase tracking-[0.14em] text-brand">
-          ตัวเลือกสไตล์ Flow การทำงาน
-        </div>
-        <p className="mt-1 text-[13.5px] leading-relaxed text-muted-foreground">
-          เลือกอันที่ชอบ แล้วบอกผมได้เลย เดี๋ยว apply ให้ทั้ง 2 workflow แล้วลบบล็อกนี้ออก
-        </p>
-
-        <div className="mt-7 flex flex-col gap-9">
-          {[
-            { key: "A · แบบปัจจุบัน (card)", node: <StepFlow steps={sampleSteps} variant="card" wrap /> },
-            { key: "B · Stepper แนวตั้ง (แนะนำ)", node: <div className="max-w-[440px]"><StepperFlow steps={sampleSteps} orientation="vertical" /></div> },
-            { key: "C · Stepper แนวนอน", node: <StepperFlow steps={sampleSteps} orientation="horizontal" /> },
-          ].map((opt) => (
-            <div key={opt.key}>
-              <div className="mb-4 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-[12px] font-semibold text-foreground">
-                {opt.key}
-              </div>
-              {opt.node}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 2 workflows — each: prominent heading → flow → case study */}
+      {/* 2 workflows — each: heading → step trail (สั้น) → case study */}
       <div className="mt-9 flex flex-col gap-14">
-        {claude.flows.map((f, fi) => {
-          const steps: FlowStep[] = f.steps.map((st) => ({
-            label: st.label,
-            sub: st.sub,
-            icon: st.icon ? STEP_ICONS[st.icon] : undefined,
-          }));
+        {claude.flows.map((f, fi) => (
+          <div key={f.label}>
+            {fi > 0 && <div className="mb-14 h-px bg-border" />}
 
-          return (
-            <div key={f.label}>
-              {fi > 0 && <div className="mb-14 h-px bg-border" />}
-
-              {/* ── prominent workflow header ── */}
-              <div className="flex items-start gap-4">
-                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand text-[19px] font-bold tabular-nums text-white shadow-[0_10px_24px_-10px_rgba(45,104,255,0.6)]">
-                  {fi + 1}
+            {/* ── prominent workflow header ── */}
+            <div className="flex items-start gap-4">
+              <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand text-[19px] font-bold tabular-nums text-white shadow-[0_10px_24px_-10px_rgba(45,104,255,0.6)]">
+                {fi + 1}
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand ring-1 ring-brand/20">
+                  <Sparkles className="h-3 w-3" />
+                  Workflow {fi + 1}
                 </span>
-                <div className="min-w-0 pt-0.5">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand ring-1 ring-brand/20">
-                    <Sparkles className="h-3 w-3" />
-                    Workflow {fi + 1}
-                  </span>
-                  <h3 className="mt-2 text-[clamp(21px,2.6vw,27px)] font-bold leading-[1.2] tracking-[-0.02em] text-foreground">
-                    {f.label}
-                  </h3>
-                  {f.sub && (
-                    <p className="mt-1.5 max-w-[60ch] text-[14.5px] leading-relaxed text-muted-foreground">
-                      {f.sub}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* ── flow การทำงาน (wrap → ไม่มี scroll แนวนอน) ── */}
-              <div className="mt-7">
-                <Eyebrow>Flow การทำงาน</Eyebrow>
-                <div className="mt-4">
-                  <StepFlow steps={steps} variant="card" wrap />
-                </div>
-              </div>
-
-              {/* ── case study งานที่ได้จาก flow นี้ ── */}
-              <div className="mt-9">
-                <Eyebrow>Case study · งานที่ได้จาก flow นี้</Eyebrow>
-                <div className="mt-4">
-                  {fi === 0 ? insightCaseStudy : <ProjectRedesign />}
-                </div>
+                <h3 className="mt-2 text-[clamp(21px,2.6vw,27px)] font-bold leading-[1.2] tracking-[-0.02em] text-foreground">
+                  {f.label}
+                </h3>
+                {f.sub && (
+                  <p className="mt-1.5 max-w-[60ch] text-[14.5px] leading-relaxed text-muted-foreground">
+                    {f.sub}
+                  </p>
+                )}
               </div>
             </div>
-          );
-        })}
+
+            {/* ── step trail (สั้น, inline) — เครื่องมือ + ขั้นตอน แบบ caption ไม่ใช่กล่องใหญ่ ── */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-2 pl-16">
+              {f.steps.map((st, i) => (
+                <React.Fragment key={st.label}>
+                  {i > 0 && (
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0 text-faint" strokeWidth={2} aria-hidden="true" />
+                  )}
+                  <span className="inline-flex items-center rounded-full border border-border bg-card px-2.5 py-1 text-[12px] font-medium text-foreground/80">
+                    {st.label}
+                  </span>
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* ── case study งานที่ได้จาก flow นี้ ── */}
+            <div className="mt-9">
+              <Eyebrow>Case study · งานที่ได้จาก flow นี้</Eyebrow>
+              <div className="mt-4">{fi === 0 ? insightCaseStudy : <ProjectRedesign />}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* closing — role shift */}
-      <p className="mt-12 text-[17px] leading-[1.8] text-foreground">
-        {claude.closing}
-      </p>
+      <p className="mt-12 text-[17px] leading-[1.8] text-foreground">{claude.closing}</p>
 
-      {open && (
+      {lightbox && (
         <div
           className="fixed inset-0 z-[100] flex flex-col bg-black/80 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
+          onClick={() => setLightbox(null)}
         >
           <div className="flex shrink-0 items-center justify-between gap-4 px-5 py-4 text-white">
             <span className="min-w-0 truncate text-sm font-medium">
-              {title} — {img.caption}
+              {title} — {lightbox.caption}
             </span>
             <button
               type="button"
               aria-label="ปิด"
-              onClick={() => setOpen(false)}
+              onClick={() => setLightbox(null)}
               className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:bg-white/10"
             >
               <X className="h-5 w-5" />
@@ -258,10 +226,10 @@ export function ClaudeSection({
           <div className="flex-1 overflow-y-auto px-4 pb-8" onClick={(e) => e.stopPropagation()}>
             <div className="mx-auto max-w-4xl overflow-hidden rounded-lg">
               <Image
-                src={img.src}
-                alt={`${title} — ${img.caption}`}
-                width={img.w}
-                height={img.h}
+                src={lightbox.src}
+                alt={`${title} — ${lightbox.caption}`}
+                width={lightbox.w}
+                height={lightbox.h}
                 sizes="(max-width: 1024px) 100vw, 900px"
                 unoptimized
                 className="block h-auto w-full"

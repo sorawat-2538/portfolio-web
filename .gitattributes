@@ -1,0 +1,10 @@
+# บังคับ line ending เป็น LF ทุกที่ (กัน diff รกเวลาสลับ Mac ↔ Windows)
+* text=auto eol=lf
+
+# ไฟล์ binary — ห้าม git ยุ่งกับ line ending
+*.woff2 binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.ico   binary
+*.fig   binary

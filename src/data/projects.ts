@@ -92,6 +92,8 @@ export type Project = {
       stats: { value: string; label: string }[];
       takeaway: string;
       image: { src: string; caption: string; w: number; h: number };
+      /** หลักฐานเพิ่ม (โชว์ก่อน stats) — เช่น Navigation Summary ที่บอกว่า listing_detail คือ hub */
+      evidence?: { src: string; caption: string; w: number; h: number };
     };
     closing: string;
   };
@@ -318,7 +320,13 @@ export const projects = {
         },
       ],
       insight: {
-        lead: "พอขุดจริง เจอ insight ที่เปลี่ยนโจทย์ทั้งงาน — ผู้ใช้ส่วนใหญ่ที่เข้าหน้า listing ดูแค่ประกาศเดียวแล้วออก",
+        lead: "หน้าที่ hit target และสร้าง revenue จริงคือ listing detail (contact agent เกิดที่นี่) — พอต่อ Claude กับ analytics ขุดดู เจอว่ามันคือ “หัวใจ” ของเว็บ: session สูงสุด และ user วนกลับเข้ามาเองตลอด แต่กลับดูแค่ประกาศเดียวแล้วออกเป็นส่วนใหญ่",
+        evidence: {
+          src: "/uploads/ph-zimple-listingdetail.jpg",
+          caption: "Zimple Navigation Summary — listing_detail คือหน้าที่ session สูงสุดของเว็บ (~3.4M) และ user วนกลับเข้า listing_detail เอง (Previous 38% · Next 73% เป็น listing_detail)",
+          w: 2400,
+          h: 1166,
+        },
         stats: [
           { value: "~75%", label: "ของ session ดู listing แค่ 1 view แล้วออก (367K+ sessions)" },
           { value: "1.31%", label: "contact rate ของกลุ่ม 1 view" },
