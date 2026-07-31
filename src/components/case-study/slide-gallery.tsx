@@ -175,7 +175,7 @@ export function ArchiveGallery({
                       className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 max-lg:mr-14"
                     >
                       <ExternalLink className="h-4 w-4" />
-                      ลองโหลดดูสิ
+                      App Store
                     </a>
                   )}
                 </div>

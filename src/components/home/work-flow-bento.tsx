@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import { ArrowRight } from "lucide-react";
-import type { FlowStep } from "./step-flow";
+import type { FlowStep } from "../case-study/step-flow";
 
 function Card({
   step,

@@ -9,6 +9,7 @@ import { earlyWork, SLIDE_W, SLIDE_H } from "@/data/early-work";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { ArchiveGallery, SlideGrid } from "./slide-gallery";
+import { ProjectNav } from "./project-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -127,6 +128,9 @@ export function EarlyWorkView() {
           });
         })()}
       </ArchiveGallery>
+
+      {/* ── footer nav (prev / next) — ลำดับอิงเมนู sidebar ── */}
+      <ProjectNav slug="early-work" />
     </article>
   );
 }

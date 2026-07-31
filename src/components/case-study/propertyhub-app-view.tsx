@@ -22,6 +22,7 @@ import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { AppScreensShowcase } from "./app-screens-showcase";
+import { ProjectNav } from "./project-nav";
 
 const APP_STORE_URL = "https://apps.apple.com/th/app/propertyhub/id1574599780?l=th";
 const TOOLS = ["Figma", "Claude"];
@@ -230,7 +231,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
             >
               <ExternalLink className="h-4 w-4" />
-              ลองโหลดดูสิ
+              App Store
             </a>
           </div>
         </div>
@@ -331,6 +332,9 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
           ))}
         </div>
       </section>
+
+      {/* ── footer nav (prev / next) — ลำดับอิงเมนู sidebar ── */}
+      <ProjectNav slug="propertyhub-app" />
     </article>
   );
 }

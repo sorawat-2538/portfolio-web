@@ -19,7 +19,9 @@ export const navGroups: NavGroup[] = [
       { slug: "renthub", label: "Renthub" },
       { slug: "renthub-app", label: "Renthub App" },
       { slug: "renthub-agency", label: "Expat" },
-      { slug: "rentos", label: "RentOS" },
+      // งานวิเคราะห์ data + ใช้ AI ในกระบวนการ (ต่อ Claude เข้า GA4/Clarity ผ่าน MCP)
+      // แยกออกมาจาก case study Propertyhub เพราะเป็นทักษะของตัวเอง ไม่ใช่ผลงานเฉพาะโปรเจกต์เดียว
+      { slug: "data-analysis", label: "Data & AI Workflow" },
     ],
   },
   {
@@ -27,9 +29,7 @@ export const navGroups: NavGroup[] = [
     title: "AI Product",
     items: [
       { slug: "propertyos-chat", label: "PropertyOS Chat" },
-      { slug: "baandee", label: "Baandee" },
       { slug: "website-builder", label: "Website Builder" },
-      { slug: "ai-copilot", label: "AI Listing Assistant" },
     ],
   },
   {

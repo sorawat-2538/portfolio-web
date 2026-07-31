@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
 import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
+import { WorkflowProcess as WorkFlow } from "@/components/home/work-flow";
 import { AboutMe } from "@/components/home/about-me";
 import { ContactMe } from "@/components/home/contact-me";
 import { Reveal } from "@/components/reveal";
@@ -154,6 +155,20 @@ export default function HomePage() {
                 </p>
               </TimelineItem>
             ))}
+          </div>
+        </section>
+      </Reveal>
+
+      <Divider />
+
+      {/* MY WORK FLOW — process กลางของผม (ย้ายมาจากหน้า case study Propertyhub
+          เพราะไม่ผูกกับโปรเจกต์ไหน + ทุกคนที่เข้าเว็บควรได้เห็น)
+          */}
+      <Reveal>
+        <section>
+          <SectionHeading>My Work Flow</SectionHeading>
+          <div className="mt-8">
+            <WorkFlow />
           </div>
         </section>
       </Reveal>

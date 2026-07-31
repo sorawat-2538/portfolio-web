@@ -11,6 +11,7 @@ import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { AppScreensShowcase } from "./app-screens-showcase";
 import { WebScreensPanel } from "./web-screens-panel";
+import { ProjectNav } from "./project-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -72,7 +73,13 @@ function EmptyState({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   );
 }
 
-export function PlaceholderView({ project: p }: { project: PlaceholderProject }) {
+export function PlaceholderView({
+  slug,
+  project: p,
+}: {
+  slug: string;
+  project: PlaceholderProject;
+}) {
   const note = NOTE[p.status];
   const HeroIcon = note.icon;
   const hasPresent = Boolean(p.heroWeb && p.heroPhone);
@@ -131,7 +138,7 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
                   className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  ลองโหลดดูสิ
+                  App Store
                 </a>
               )}
             </div>
@@ -310,6 +317,9 @@ export function PlaceholderView({ project: p }: { project: PlaceholderProject })
           </section>
         </>
       )}
+
+      {/* ── footer nav (prev / next) — ลำดับอิงเมนู sidebar ── */}
+      <ProjectNav slug={slug} />
     </article>
   );
 }

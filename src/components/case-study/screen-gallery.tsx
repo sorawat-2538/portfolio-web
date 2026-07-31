@@ -78,7 +78,7 @@ export function ScreenGallery({
         type="button"
         onClick={() => setActive(i)}
         aria-label={`ดู ${s.label} เต็มจอ`}
-        className={`block cursor-pointer overflow-hidden bg-white shadow-[0_3px_12px_-3px_rgba(30,50,90,0.16)] transition-shadow duration-200 hover:shadow-[0_8px_20px_-6px_rgba(30,50,90,0.24)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${extra}`}
+        className={`block cursor-pointer overflow-hidden bg-white shadow-[0_3px_12px_-3px_rgba(30,50,90,0.16)] transition-shadow duration-200 hover:shadow-[0_8px_20px_-6px_rgba(30,50,90,0.24)] focus:outline-none focus-visible:outline-none ${extra}`}
       >
         <Image
           src={s.src}
@@ -122,7 +122,7 @@ export function ScreenGallery({
               type="button"
               onClick={() => setActive(i)}
               aria-label={`ดู ${s.label} เต็มจอ`}
-              className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-card shadow-[0_18px_44px_-20px_rgba(30,50,90,0.28)] transition-shadow duration-200 hover:shadow-[0_26px_60px_-22px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-card shadow-[0_18px_44px_-20px_rgba(30,50,90,0.28)] transition-shadow duration-200 hover:shadow-[0_26px_60px_-22px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none"
             >
               {/* chrome — matches the Hero (ScrollWindow) */}
               <div className="flex items-center gap-3 border-b border-border bg-hover px-4 py-3">

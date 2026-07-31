@@ -59,7 +59,7 @@ export function StyleGuideViewer({ items }: { items: Board[] }) {
             onClick={() => setActive(i)}
             aria-label={it.label}
             className={
-              "group relative h-[64px] w-[104px] shrink-0 overflow-hidden rounded-lg border-2 bg-background outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand " +
+              "group relative h-[64px] w-[104px] shrink-0 overflow-hidden rounded-lg border-2 bg-background outline-none transition-colors focus:outline-none focus-visible:outline-none " +
               (i === active ? "border-brand" : "border-border hover:border-brand/40")
             }
           >

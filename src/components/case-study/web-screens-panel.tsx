@@ -97,7 +97,7 @@ export function WebScreensPanel({
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มหน้า`}
-                className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none"
               >
                 {/* chrome — traffic lights */}
                 <div className="flex items-center gap-2 border-b border-border bg-white px-3.5 py-2.5">
@@ -142,7 +142,7 @@ export function WebScreensPanel({
                   type="button"
                   onClick={() => setActive(i)}
                   aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มจอ`}
-                  className="block w-full cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                  className="block w-full cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
                 >
                   <Image
                     src={s.src}

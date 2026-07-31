@@ -1,8 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import {
   Activity,
-  ArrowLeft,
   ArrowRight,
   LayoutGrid,
   Lock,
@@ -14,7 +12,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Project, ProjectSlug } from "@/data/projects";
-import { getNextSlug, getPrevSlug, projects } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { CodeEditorMock } from "./code-editor-mock";
@@ -25,9 +22,8 @@ import { LaptopMock } from "./laptop-mock";
 import { WebScreensPanel } from "./web-screens-panel";
 import { AppScreensShowcase } from "./app-screens-showcase";
 import { MeasurementStory } from "./measurement-story";
-import { ClaudeSection } from "./claude-section";
-import { WorkflowProcess } from "./workflow-process";
 import { StatusBadge } from "./status-badge";
+import { ProjectNav } from "./project-nav";
 
 // ── shared building blocks ──────────────────────────────────────────────────
 
@@ -191,8 +187,6 @@ export function CaseStudyView({
   slug: ProjectSlug;
   project: Project;
 }) {
-  const nextSlug = getNextSlug(slug);
-  const prevSlug = getPrevSlug(slug);
   // host สำหรับ address bar ของ browser mockup (ตัด protocol + / ท้าย)
   const heroUrl =
     p.liveUrl && p.liveUrl !== "#"
@@ -404,18 +398,8 @@ export function CaseStudyView({
         </div>
       </section>
 
-      {/* ── MY WORK FLOW ── (ซ่อนได้ด้วย hideWorkflow) */}
-      {!p.hideWorkflow && (
-        <>
-          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
-            <H2>How do I work?</H2>
-            <div className="mt-[26px]">
-              <WorkflowProcess />
-            </div>
-          </section>
-        </>
-      )}
+      {/* หมายเหตุ: section "My Work Flow" ย้ายไปหน้าแรกแล้ว (ก่อน Technical Skills)
+          เพราะเป็น process กลาง ไม่ผูกกับโปรเจกต์ไหน → components/home/work-flow.tsx */}
 
       {/* ── ALL ABOUT WORKS — the designed screens ── */}
       {((p.webScreens && p.webScreens.length > 0) ||
@@ -540,41 +524,8 @@ export function CaseStudyView({
       </>
       )}
 
-      {/* ── HOW CLAUDE HELPED ── (เส้นคั่นปิดท้าย How I Measured? ก่อนเข้า section นี้) */}
-      {p.claude && (
-        <>
-          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <ClaudeSection claude={p.claude} title={p.title} />
-        </>
-      )}
-
-      {/* ── footer nav (prev / next) ── */}
-      <div className="mt-[clamp(56px,8vw,90px)] flex flex-col items-stretch gap-6 border-t border-border pt-8 min-[560px]:flex-row min-[560px]:items-center min-[560px]:justify-between">
-        {prevSlug ? (
-          <Link href={`/work/${prevSlug}`} className="group inline-flex items-center gap-[22px] text-left">
-            <span className="inline-flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-foreground text-foreground">
-              <ArrowLeft className="h-[22px] w-[22px]" strokeWidth={1.8} />
-            </span>
-            <span className="flex flex-col items-start gap-1 leading-none">
-              <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
-                {projects[prevSlug].title}
-              </span>
-            </span>
-          </Link>
-        ) : (
-          <span />
-        )}
-        <Link href={`/work/${nextSlug}`} className="group inline-flex items-center justify-end gap-[22px] text-right">
-          <span className="flex flex-col items-end gap-1 leading-none">
-            <span className="text-[clamp(24px,3vw,30px)] font-bold tracking-[-0.02em] text-foreground">
-              {projects[nextSlug].title}
-            </span>
-          </span>
-          <span className="inline-flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-foreground text-foreground">
-            <ArrowRight className="h-[22px] w-[22px]" strokeWidth={1.8} />
-          </span>
-        </Link>
-      </div>
+      {/* ── footer nav (prev / next) — ลำดับอิงเมนู sidebar ── */}
+      <ProjectNav slug={slug} />
     </article>
   );
 }

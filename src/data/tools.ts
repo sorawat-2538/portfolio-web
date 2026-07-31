@@ -12,10 +12,13 @@ export const TOOL_META: Record<string, ToolMeta> = {
   "Google Analytics": { icon: "/uploads/tool-google-analytics.svg" },
   "Microsoft Clarity": { icon: "/uploads/tool-microsoft.svg" },
   Claude: { icon: "/uploads/tool-claude.svg" },
+  // ขั้นตอนที่ใช้ Claude ทำงานออกแบบ (wireframe/UI) — โลโก้เดียวกับ Claude
+  "Claude Design": { icon: "/uploads/tool-claude.svg" },
   Illustrator: { mono: "Ai", bg: "#2a0e00", fg: "#FF9A00" },
   Photoshop: { mono: "Ps", bg: "#001E36", fg: "#31A8FF" },
   "Adobe XD": { mono: "Xd", bg: "#2b0a3d", fg: "#FF61F6" },
   "Looker Studio": { mono: "Lo", bg: "#4285F4", fg: "#ffffff" },
+  "Zimple Analytics": { mono: "Zi", bg: "#1a1a18", fg: "#ffffff" },
 };
 
 export function toolMeta(name: string): ToolMeta {

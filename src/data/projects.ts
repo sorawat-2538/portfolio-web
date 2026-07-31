@@ -9,6 +9,8 @@
 // ทุกค่าที่เป็น "[ ... ]" คือ placeholder รอแทนที่ด้วยข้อมูลจริงจาก GA4 / Clarity
 // ────────────────────────────────────────────────────────────────────────────
 
+import { navGroups } from "./nav";
+
 export type Decision = {
   title: string;
   reasoning: string;
@@ -46,8 +48,7 @@ export type Project = {
    *  heroWeb = รูป laptop mockup · heroPhone = รูป phone mockup (path ใน public/) */
   heroWeb?: string;
   heroPhone?: string;
-  /** ซ่อน section (ยังไม่มีเนื้อหา) — true = ไม่แสดง */
-  hideWorkflow?: boolean;
+  /** ซ่อน section How I Measured (ยังไม่มีเนื้อหา) — true = ไม่แสดง */
   hideMeasure?: boolean;
   /** จอเพิ่มเติมที่โชว์ในหน้า case study (Home/Result/Listing ฯลฯ)
    *  แต่ละจอเป็น browser frame ที่เลื่อนดูหน้ายาวได้ในกรอบ + กดขยายเต็มจอ
@@ -77,26 +78,9 @@ export type Project = {
     }[];
   };
 
-  /** "How Claude Helped" — เล่าเป็น flow: ต่อ Claude กับ data → เจอ insight → ขยับบทบาทไปทาง product */
-  claude?: {
-    intro: string;
-    /** ways I put AI to work — each is its own labeled step-flow.
-     *  icon = lucide icon name resolved in ClaudeSection */
-    flows: {
-      label: string;
-      sub?: string;
-      steps: { label: string; sub: string; icon?: string }[];
-    }[];
-    insight: {
-      lead: string;
-      stats: { value: string; label: string }[];
-      takeaway: string;
-      image: { src: string; caption: string; w: number; h: number };
-      /** หลักฐานเพิ่ม (โชว์ก่อน stats) — เช่น Navigation Summary ที่บอกว่า listing_detail คือ hub */
-      evidence?: { src: string; caption: string; w: number; h: number };
-    };
-    closing: string;
-  };
+  // หมายเหตุ: section "AI in My Workflow" (2 workflow + insight จาก data) ย้ายออกไป
+  // เป็นหน้าของตัวเองแล้ว → ดู data/data-analysis.ts และ /work/data-analysis
+  // ส่วน "My Work Flow" ย้ายไปหน้าแรก → components/home/work-flow.tsx
 
   metaRole: string;
   metaTimeline: string;
@@ -293,50 +277,6 @@ export const projects = {
         },
       ],
     },
-    claude: {
-      intro: "ผมไม่ได้ใช้ AI แค่ช่วยงาน UX/UI — แต่ใช้ Claude เป็นเครื่องมือตลอดกระบวนการ ตั้งแต่ขุด insight จาก data จริง ไปจนถึงปั้น wireframe/mockup ให้เร็ว จุดนี้ทำให้ผมขยับบทบาทจาก designer ไปทาง product มากขึ้น — มองหาช่องทางเพิ่ม value ในมุมอื่นได้เอง โดยไม่ต้องรอทีม data หรือ dev",
-      flows: [
-        {
-          label: "ขุด insight จาก data",
-          sub: "ต่อ Claude เข้ากับ analytics ผ่าน MCP แล้ววิเคราะห์เอง ไม่ต้องรอทีม data",
-          steps: [
-            { label: "Claude + MCP", sub: "เชื่อมเครื่องมือ", icon: "Plug" },
-            { label: "GA4 · Clarity", sub: "ดึง data ผ่าน MCP", icon: "BarChart3" },
-            { label: "Analyze", sub: "ให้ Claude ช่วยวิเคราะห์", icon: "Brain" },
-            { label: "Zimple confirm", sub: "power dashboard · ยืนยัน funnel", icon: "Database" },
-            { label: "Actionable result", sub: "ได้ทิศทางไป work ต่อ", icon: "Target" },
-          ],
-        },
-        {
-          label: "จาก idea สู่ mockup",
-          sub: "set instruction ให้ Claude วิเคราะห์ สรุปเป็น MD file แล้วต่อยอดเป็น wireframe/UI ได้เร็วเพื่อนำเสนอ",
-          steps: [
-            { label: "Set instructions", sub: "กำหนดสิ่งที่จะทำ", icon: "ClipboardList" },
-            { label: "Claude analyzes", sub: "วิเคราะห์ + ได้ไอเดีย", icon: "Sparkles" },
-            { label: "MD file", sub: "สรุปเป็นสเปก", icon: "FileText" },
-            { label: "Wireframe / UI", sub: "Claude สร้างจาก MD", icon: "LayoutTemplate" },
-            { label: "Present fast", sub: "ได้ UI เร็วเพื่อนำเสนอ", icon: "Presentation" },
-          ],
-        },
-      ],
-      insight: {
-        lead: "หน้าที่ hit target และสร้าง revenue จริงคือ listing detail (contact agent เกิดที่นี่) — พอต่อ Claude กับ analytics ขุดดู เจอว่ามันคือ “หัวใจ” ของเว็บ: session สูงสุด และ user วนกลับเข้ามาเองตลอด แต่กลับดูแค่ประกาศเดียวแล้วออกเป็นส่วนใหญ่",
-        evidence: {
-          src: "/uploads/ph-zimple-listingdetail.jpg",
-          caption: "Zimple Navigation Summary — listing_detail คือหน้าที่ session สูงสุดของเว็บ (~3.4M) และ user วนกลับเข้า listing_detail เอง (Previous 38% · Next 73% เป็น listing_detail)",
-          w: 2400,
-          h: 1166,
-        },
-        stats: [
-          { value: "~75%", label: "ของ session ดู listing แค่ 1 view แล้วออก (367K+ sessions)" },
-          { value: "1.31%", label: "contact rate ของกลุ่ม 1 view" },
-          { value: "21.25%", label: "contact rate ของกลุ่มที่ดู 4+ views" },
-        ],
-        takeaway: "ยิ่ง user engage ลึก (ดู listing หลายอัน) contact rate ยิ่งพุ่ง — โจทย์ถัดไปจึงไม่ใช่แค่ “ส่งคนไป listing” แต่คือ “ทำยังไงให้ดูลึกกว่า 1 ประกาศ”",
-        image: { src: "/uploads/ph-zimple-session.jpg", caption: "Zimple Analytics — Session Explorer: engagement depth distribution (1 / 2 / 3 / 4+ views) เทียบ contact rate", w: 2400, h: 1167 },
-      },
-      closing: "จุดนี้ทำให้รู้สึกว่าตัวเองขยับจาก “designer” ไปทาง “product” มากขึ้น — ไม่ใช่แค่ออกแบบหน้าจอ แต่ใช้ data ตั้งโจทย์ วัดผล และหา direction ต่อได้เองทั้งวงจร",
-    },
     expWhy:
       "ไม่มี A/B testing tool และ research budget ผมจึงออกแบบ manual A/B test โดยใช้ GA4 event + Microsoft Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate แบบ before/after ของ variant เดิมกับ design ใหม่",
     expSegment: "[ วิธีแบ่ง variant — เช่น by user ID ]",
@@ -385,7 +325,6 @@ export const projects = {
     liveUrl: "https://www.renthub.in.th/",
     heroWeb: "/uploads/renthub-web-laptop.png",
     heroPhone: "/uploads/renthub-app-home.png",
-    hideWorkflow: true,
     hideMeasure: true,
     screensFull: true,
     screens: [
@@ -684,22 +623,12 @@ export const projects = {
 
 export type ProjectSlug = keyof typeof projects;
 
-/** ลำดับการแสดงผล (Home grid + next/prev nav) = ลำดับ key ด้านบน */
+/** ลำดับการแสดงผล (Home grid) = ลำดับ key ด้านบน
+ *  หมายเหตุ: ปุ่ม prev/next ท้ายหน้า case study ไม่ได้ใช้ลำดับนี้แล้ว — ดู getProjectNav() ท้ายไฟล์ */
 export const projectSlugs = Object.keys(projects) as ProjectSlug[];
 
 export function getProject(slug: string): Project | undefined {
   return (projects as Record<string, Project>)[slug];
-}
-
-/** slug ถัดไป (วน loop) สำหรับปุ่ม "ดูงานถัดไป" */
-export function getNextSlug(slug: ProjectSlug): ProjectSlug {
-  const i = projectSlugs.indexOf(slug);
-  return projectSlugs[(i + 1) % projectSlugs.length];
-}
-
-export function getPrevSlug(slug: ProjectSlug): ProjectSlug | null {
-  const i = projectSlugs.indexOf(slug);
-  return i <= 0 ? null : projectSlugs[i - 1];
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -746,6 +675,16 @@ export type PlaceholderProject = {
 };
 
 export const placeholderProjects = {
+  // Data & AI Workflow — render ด้วย DataAnalysisView (special-case ใน work/[slug])
+  // เนื้อหาจริงอยู่ที่ data/data-analysis.ts · entry นี้ให้ title/tagline/status + SEO metadata
+  "data-analysis": {
+    title: "Data & AI Workflow",
+    category: "Digital Product",
+    status: "available",
+    tagline:
+      "วิเคราะห์ data ของ product เองด้วย Claude + MCP — ต่อเข้ากับ GA4 / Clarity / Zimple ขุด insight แล้วต่อยอดเป็น idea และ mockup ได้โดยไม่ต้องรอทีม data",
+    tools: ["Claude", "Google Analytics", "Microsoft Clarity", "Figma"],
+  },
   "propertyhub-app": {
     title: "Propertyhub App",
     category: "Digital Product",
@@ -968,6 +907,45 @@ export const placeholderSlugs = Object.keys(placeholderProjects) as PlaceholderS
 
 export function getPlaceholder(slug: string): PlaceholderProject | undefined {
   return (placeholderProjects as Record<string, PlaceholderProject>)[slug];
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// PROJECT NAV (prev / next ท้ายหน้า case study)
+// ลำดับอิง "เมนู sidebar" (data/nav.ts) ไม่ใช่ลำดับ key ใน `projects` — เพื่อให้
+// การกดถัดไปเดินเรื่องตรงกับที่ user เห็นในเมนู และครอบคลุมงาน placeholder ด้วย
+// (เช่น Propertyhub → Propertyhub App → Renthub → …)
+// งานที่ไม่ได้อยู่ในเมนูจะไม่มีปุ่ม prev/next — กันไม่ให้หลุดไปหน้าที่ยังไม่เปิด
+// ────────────────────────────────────────────────────────────────────────────
+
+/** slug ของงานทั้งหมดเรียงตามเมนู sidebar (flatten ทุก folder) */
+export const navOrderSlugs: string[] = navGroups.flatMap((g) =>
+  g.items.map((it) => it.slug),
+);
+
+/** ชื่องานจาก slug — หาใน projects → placeholder → label ในเมนู ตามลำดับ */
+export function projectTitle(slug: string): string {
+  return (
+    getProject(slug)?.title ??
+    getPlaceholder(slug)?.title ??
+    navGroups.flatMap((g) => g.items).find((it) => it.slug === slug)?.label ??
+    slug
+  );
+}
+
+export type ProjectNavLink = { slug: string; title: string };
+
+/** งานก่อนหน้า / ถัดไป ตามลำดับเมนู — ไม่วน loop (อันแรกไม่มี prev · อันสุดท้ายไม่มี next) */
+export function getProjectNav(slug: string): {
+  prev: ProjectNavLink | null;
+  next: ProjectNavLink | null;
+} {
+  const i = navOrderSlugs.indexOf(slug);
+  if (i === -1) return { prev: null, next: null };
+  const at = (n: number): ProjectNavLink | null => {
+    const s = navOrderSlugs[n];
+    return s ? { slug: s, title: projectTitle(s) } : null;
+  };
+  return { prev: at(i - 1), next: at(i + 1) };
 }
 
 /** label ไทยของแต่ละ status (ใช้บน badge) */
