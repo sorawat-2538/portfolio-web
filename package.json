@@ -2,11 +2,20 @@
   "name": "portfolio-web",
   "version": "0.1.0",
   "private": true,
+  "//browserslist": "เบราว์เซอร์ขั้นต่ำที่รองรับ — Next 16 ตั้ง default ไว้แค่ safari 16.4+ ซึ่งทำให้ Mac ที่ยังเป็น Monterey เปิดแล้วหน้าขาว (ดู memory: safari-16-4-blank-page). ค่าด้านล่างคือพื้นล่างจริงของบันเดิล — ต่ำกว่านี้ไม่ช่วย เพราะ Object.hasOwn เป็นเมธอด transpile ไม่ได้",
+  "browserslist": [
+    "chrome 93",
+    "edge 93",
+    "firefox 92",
+    "safari 15.4"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "img:test": "node scripts/optimize-images.mjs --test",
+    "img": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -28,6 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

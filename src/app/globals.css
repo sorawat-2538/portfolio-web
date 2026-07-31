@@ -221,8 +221,12 @@
   }
 }
 
-/* Scroll reveal — fade + rise when a section enters the viewport */
-.reveal {
+/* Scroll reveal — fade + rise when a section enters the viewport
+   ⚠️ สำคัญ: `.reveal` เปล่า ๆ ต้อง "มองเห็นได้" เสมอ ห้ามใส่ opacity:0 ตรงนี้
+   เพราะถ้า JS ไม่ทำงาน (เบราว์เซอร์เก่า / extension บล็อก / โหลดไม่ครบ)
+   เนื้อหาทั้งหน้าจะหายไปเลย — เคยเกิดจริงบน Safari < 16.4 (ดู memory)
+   JS จะใส่ .is-armed ให้เฉพาะ section ที่ยังอยู่นอกจอ แล้วค่อยเติม .is-visible ตอนเลื่อนถึง */
+.reveal.is-armed {
   opacity: 0;
   transform: translateY(18px);
   transition:
@@ -230,12 +234,12 @@
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible {
+.reveal.is-armed.is-visible {
   opacity: 1;
   transform: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal.is-armed {
     opacity: 1;
     transform: none;
     transition: none;
