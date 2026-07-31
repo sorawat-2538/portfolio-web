@@ -24,17 +24,20 @@ src/
 │  ├─ projects.ts  ← ข้อมูล case study 5 โปรเจกต์ (มี screens[] ต่อโปรเจกต์)
 │  ├─ nav.ts       ← โฟลเดอร์เมนู sidebar (จัดกลุ่มโปรเจกต์)
 │  └─ tools.ts     ← โลโก้/แบดจ์เครื่องมือในหน้า case study
+│  └─ data-analysis.ts ← เนื้อหาหน้า /work/data-analysis (Data & AI Workflow)
 ├─ app/
 │  ├─ page.tsx              ← หน้าแรก — ประกอบ section: hero, AboutMe, Education,
-│  │                          Employment, SkillsGrid, SkillsConstellation, ContactMe
+│  │                          Employment, Achievements, WorkFlow, SkillsGrid, ContactMe
 │  ├─ work/[slug]/page.tsx  ← case study (static ทุก slug + SEO metadata)
 │  ├─ layout.tsx            ← Inter + SidebarProvider + shell (header/sidebar/footer). ⚠️ ไม่มี dark mode แล้ว
 │  └─ globals.css           ← design tokens + @font-face Aktiv Grotesk Thai + keyframes (orbit, reveal)
 ├─ components/
 │  ├─ site-header.tsx (มี avatar วงกลม) / site-footer.tsx / back-to-top.tsx / reveal.tsx
 │  ├─ sidebar/ → site-sidebar.tsx (accordion + mobile drawer), sidebar-context.tsx, menu-button.tsx
-│  ├─ home/  → about-me.tsx, skills-grid.tsx, skills-constellation.tsx, contact-me.tsx, work-grid.tsx*
-│  └─ case-study/ → case-study-view.tsx (7 section), screen-gallery.tsx (thumbnail+lightbox)
+│  ├─ home/  → about-me.tsx, skills-grid.tsx, contact-me.tsx, work-flow.tsx (+bento), work-grid.tsx*
+│  └─ case-study/ → case-study-view.tsx, project-nav.tsx (ปุ่ม prev/next ใช้ร่วมทุกหน้า),
+│                   data-analysis-view.tsx + claude-section.tsx + analysis-terminal.tsx,
+│                   screen-gallery.tsx (thumbnail+lightbox)
 public/  uploads/ (รูปงาน) · fonts/ (aktiv-grotesk-thai.woff2)
 ```
 *work-grid.tsx ยังมีอยู่แต่ไม่ได้ใช้ (เอา Selected Work ออกจากหน้าแรกแล้ว เพราะซ้ำ sidebar) — โปรเจกต์เข้าถึงผ่าน sidebar
@@ -55,8 +58,9 @@ public/  uploads/ (รูปงาน) · fonts/ (aktiv-grotesk-thai.woff2)
 
 ## Deploy / สถานะ
 - live: https://portfolio-web-sigma-tan.vercel.app · GitHub: `sorawat-2538/portfolio-web` (auto-deploy ทุก push main)
-- push จากเครื่องนี้ผ่าน SSH alias `github-personal` (ดู memory) — เครื่องนี้จะคืนออฟฟิศ
-- ⚠️ งานหลายรอบยังอยู่แค่ localhost ยังไม่ push (user review บน localhost ก่อนแล้วค่อยสั่ง "ขึ้นเว็บ")
+- ⚠️ **AI push เองไม่ได้บนเครื่องนี้** — remote เป็น HTTPS, ไม่มี `~/.ssh`, ไม่มี `gh`, `credential.helper=manager`
+  ต้องเด้ง GUI ให้ login ซึ่ง session ของ AI เปิดไม่ได้ → **ให้ user รัน `git push origin main` เองใน terminal**
+- workflow ประจำ: user review บน localhost ก่อน แล้วค่อยสั่ง "ขึ้นเว็บ"
 
 ## ยังเป็น placeholder รอข้อมูลจริง
 - `profile.ts`: phone, LinkedIn, resumeUrl, certifications (ชื่อจริง), avatar (ยัง pixel art — รอรูปถ่ายจริง)
