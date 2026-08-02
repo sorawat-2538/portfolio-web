@@ -5,9 +5,10 @@
 import * as React from "react";
 import Image from "next/image";
 import { profile } from "@/data/profile";
-import { earlyWork, SLIDE_W, SLIDE_H } from "@/data/early-work";
+import { earlyWork } from "@/data/early-work";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
+import { ArchiveWindow } from "./archive-window";
 import { ArchiveGallery, SlideGrid } from "./slide-gallery";
 import { ProjectNav } from "./project-nav";
 
@@ -68,20 +69,10 @@ export function EarlyWorkView() {
 
         <div className="mt-6 border-t border-border" />
 
-        {/* preview — 3 ชิ้นเด่น (แทน hero mockup ของหน้า project ปกติ) */}
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 min-[900px]:mt-[50px]">
-          {earlyWork.featured.map((src) => (
-            <Image
-              key={src}
-              src={src}
-              alt="Early work highlight"
-              width={SLIDE_W}
-              height={SLIDE_H}
-              sizes="(max-width: 640px) 100vw, 33vw"
-              className="block h-auto w-full rounded-[12px] shadow-[0_14px_36px_-20px_rgba(30,50,90,0.28)]"
-              priority
-            />
-          ))}
+        {/* ── HERO — หน้าต่าง "คลังงานเก่า" (สไตล์เดียวกับ terminal ของหน้า
+            Data & AI Workflow) · รูปเด่น 3 ชิ้นอยู่ในพาเนล output ── */}
+        <div className="mt-8 min-[900px]:mt-[50px]">
+          <ArchiveWindow />
         </div>
       </section>
 

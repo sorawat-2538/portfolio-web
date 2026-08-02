@@ -32,11 +32,11 @@ export const earlyWork = {
   overview:
     "รวมผลงานช่วงปี 2018–2020 จาก portfolio เล่มเดิม — ครอบคลุมงานออกแบบแอป เว็บ/หลังบ้าน design system และงานกราฟิก หลายชิ้นอยู่ในสายก่อสร้าง/อสังหาฯ (Builk, INSITE, Site Report) และงานฟรีแลนซ์ ช่วงนั้นยังได้รางวัลชนะเลิศ Hackathon 2019 (Builk x AWS) ด้วย — เก็บไว้เป็นคลังอ้างอิงจุดเริ่มต้น ก่อนขยับมาโฟกัสงาน product อย่างจริงจัง",
   tools: ["Figma", "Adobe XD", "Illustrator", "Photoshop"],
-  /** รูปเด่นโชว์เป็น preview บนหัวหน้า (ก่อน Overview) */
+  /** รูปเด่นโชว์เป็น preview ในหน้าต่าง hero (ArchiveWindow) — 3 ชิ้น */
   featured: [
-    "/uploads/archive/kwanjai-next.jpg",
-    "/uploads/archive/insite-web-admin.jpg",
-    "/uploads/archive/micha-cafe.jpg",
+    { src: "/uploads/archive/kwanjai-next.jpg", label: "Kwanjai Next", tag: "app" },
+    { src: "/uploads/archive/insite-web-admin.jpg", label: "INSITE Web Admin", tag: "web" },
+    { src: "/uploads/archive/micha-cafe.jpg", label: "Micha Cafe", tag: "graphic" },
   ],
   groups: [
     {
