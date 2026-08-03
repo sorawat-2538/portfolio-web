@@ -31,17 +31,33 @@ export type DataAnalysisStep = {
   stats?: { value: string; label: string; tone?: "bad" | "good" }[];
   /** รูปหลักฐาน — กดขยายเต็มจอได้ */
   image?: DataAnalysisShot;
+  /** หลายรูปในขั้นเดียว — โชว์เป็นกริด 2 คอลัมน์ กดขยายได้เหมือนกัน */
+  images?: DataAnalysisShot[];
   /** ข้อสรุปของขั้นนี้ — callout ส้ม */
   takeaway?: string;
   /** mockup ประกอบ — resolve เป็น component ใน ClaudeSection */
-  mock?: "listing-dialog" | "project-redesign";
+  mock?:
+    | "listing-dialog"
+    | "spec-handoff"
+    | "claude-instructions"
+    | "claude-files"
+    | "ascii-screen";
 };
 
 /** หนึ่ง section — H2 + goal callout + ไทม์ไลน์ step (โครงเดียวกับ How I Measured?) */
 export type DataAnalysisSection = {
   heading: string;
+  /** ประโยคสรุป section เป็นบรรทัดเดียว — โชว์ตัวหนาเป็นบรรทัดแรกในกล่อง goal */
+  lead?: string;
   /** เป้าหมายของ section นี้ — callout เส้นซ้ายหนา พื้นเทา ให้อ่านก่อนไล่ step */
   goal: string;
+  /** แถบ workflow ย่อ (อ่านรวดเดียวจบ) — โชว์ใต้ goal ก่อนลงไทม์ไลน์
+   *  icon = key ที่ map เป็นไอคอนจริงใน ClaudeSection */
+  flow?: {
+    label: string;
+    sub?: string;
+    icon?: "instructions" | "analyze" | "file" | "design" | "wireframe";
+  }[];
   steps: DataAnalysisStep[];
 };
 
@@ -54,25 +70,27 @@ export type DataAnalysisContent = {
   tools: string[];
   /** section เนื้อหา เรียงตามลำดับที่แสดง (คั่นด้วยเส้นอัตโนมัติ) */
   sections: DataAnalysisSection[];
-  closing: string;
+  /** ย่อหน้าปิดท้าย — ไม่ใส่ = ไม่แสดง (ตอนนี้ไม่ได้ใช้) */
+  closing?: string;
 };
 
 export const dataAnalysis: DataAnalysisContent = {
   overview: [
-    "ปกติเวลา designer อยากรู้ว่างานที่ปล่อยไปได้ผลไหม ต้องตั้งคำถามแล้วรอทีม data ดึงตัวเลขให้ ซึ่งช้าและถามต่อยาก ผมเลยต่อ Claude เข้ากับเครื่องมือ analytics โดยตรงผ่าน MCP (GA4, Microsoft Clarity, Zimple Analytics) แล้ววิเคราะห์เอง — หน้านี้รวม 2 วิธีที่ใช้จริง คือขุด insight จาก data เพื่อหาว่าโจทย์ถัดไปควรเป็นอะไร และแปลง insight นั้นเป็นสเปกกับ wireframe ให้เร็วพอจะเอาไปเสนอทีมได้ ตัวอย่างทั้งหมดใช้ data จริงของ Propertyhub",
+    "ปกติอยากรู้ว่างานที่ปล่อยไปได้ผลไหม ต้องรอทีม data ดึงตัวเลขให้ — ช้าและถามต่อยาก ผมเลยต่อ Claude เข้ากับเครื่องมือ analytics ตรง ๆ ผ่าน MCP (GA4, Clarity, Zimple) แล้ววิเคราะห์เอง หน้านี้รวม 2 วิธีที่ใช้จริง: ขุด data เพื่อหาว่าโจทย์ถัดไปคืออะไร และแปลงโจทย์นั้นเป็นสเปกกับหน้าจอให้เร็วพอจะเอาไปเสนอทีมได้",
   ],
 
-  // ลำดับ = ลำดับการใช้จริง: คุย idea → ดู data → ต่อยอด wireframe → ทำ UI
-  tools: ["Claude", "Zimple Analytics", "Claude Design", "Figma"],
+  // ลำดับ = ลำดับการใช้จริง: คุย idea → ดู data → ต่อยอดเป็น artifact → ทำ wireframe
+  tools: ["Claude", "Zimple Analytics", "Claude Design", "v0 by Vercel"],
 
   sections: [
     {
       heading: "Data for Future Growth",
-      goal: "Set project instructions ให้กับ Claude เพื่อคุย Idea ว่าเรากำลังจะทำอะไร และหลังจากนั้นใช้ Zimple Analytics ดู Data ของ Propertyhub เพื่อหาช่องทางในการเพิ่มหรือดัน User มาหน้าที่มีการ Landing มากที่สุดของ Website เช่นหน้า Listing Detail",
+      lead: "Data becomes a design brief — not a monthly report.",
+      goal: "ใช้ data ตั้งโจทย์ให้ตัวเอง — ไล่ดูว่าหน้าไหนของ Propertyhub ทำเงินจริง เจอว่าเป็น Listing Detail แต่ 3 ใน 4 ของ session ดูแค่ประกาศเดียวแล้วออก ตัวเลขนี้เลยกลายเป็นโจทย์ออกแบบ",
       steps: [
         {
           title: "Navigation Summary",
-          body: "หน้าที่ hit target และสร้าง revenue จริงคือ listing detail (contact agent เกิดที่นี่) — พอต่อ Claude กับ analytics ขุดดู เจอว่ามันคือ “หัวใจ” ของเว็บ: session สูงสุด และ user วนกลับเข้ามาเองตลอด แต่กลับดูแค่ประกาศเดียวแล้วออกเป็นส่วนใหญ่",
+          body: "listing detail คือหน้าที่ session สูงสุดของเว็บ และเป็นที่ที่ contact agent เกิดขึ้นจริง — user วนกลับเข้ามาเองตลอด แต่ส่วนใหญ่ดูประกาศเดียวแล้วออก",
           image: {
             src: "/uploads/ph-zimple-listingdetail.jpg",
             caption:
@@ -83,7 +101,7 @@ export const dataAnalysis: DataAnalysisContent = {
         },
         {
           title: "Session Explorer",
-          body: "ขุดต่อว่า user ที่เข้า listing detail ดูกี่ประกาศก่อนจะกด contact agent — แบ่ง session ตาม engagement depth (1 / 2 / 3 / 4+ views) แล้วเทียบ contact rate ของแต่ละกลุ่ม",
+          body: "แบ่ง session ตาม engagement depth (1 / 2 / 3 / 4+ views) แล้วเทียบ contact rate ของแต่ละกลุ่ม",
           stats: [
             {
               value: "75%",
@@ -109,32 +127,61 @@ export const dataAnalysis: DataAnalysisContent = {
             h: 1167,
           },
           takeaway:
-            "ยิ่ง user engage ลึก (ดู listing หลายอัน) contact rate ยิ่งพุ่ง — โจทย์ถัดไปจึงไม่ใช่แค่ “ส่งคนไป listing” แต่คือ “ทำยังไงให้ดูลึกกว่า 1 ประกาศ”",
+            "ยิ่งดูลึก contact rate ยิ่งพุ่ง — โจทย์จึงไม่ใช่ “ส่งคนไป listing” แต่คือ “ทำยังไงให้ดูมากกว่า 1 ประกาศ”",
         },
         {
-          title: "What I Changed",
-          body: "ปัจจุบันถ้าจะดูประกาศทั้งโครงการ user ต้องเด้งออกไปหน้าเช่า/ขายแยก — navigate หลายหน้าเกินไป จึงเสนอปุ่ม “ดูทั้งหมด xx ประกาศ” + dialog ที่รวมประกาศทั้งโครงการ (เช่า/ขาย) ไว้ในหน้าเดียว สมมติฐาน: user จะดูหลายประกาศขึ้น (2–3 view เพิ่ม) และ 1-view ลดลง",
+          title: "What I Changed?",
+          body: "ใน sidebar ของหน้า Listing Detail มีการ์ด “ประกาศเช่าใน แอชตัน จุฬา สีลม” ที่โชว์ได้แค่ไม่กี่รายการ อยากดูต่อต้องเด้งออกไปหน้าอื่น ผมเลยเพิ่มปุ่ม “ดูทั้งหมด xx ประกาศ” ที่เปิด dialog รวมทั้งโครงการพร้อม filter ไว้ในหน้าเดียว — ดูต่อได้โดยไม่ต้องออกจากหน้า",
           mock: "listing-dialog",
+        },
+        {
+          title: "Handoff to Dev",
+          body: "เขียน dev spec เป็นไฟล์ .md ส่งให้ทีม dev เอง — 3 feature (mobile section / desktop sidebar / modal), กติกาที่ใช้ร่วมกัน, pre-filter logic และ GA4 event ครบ 14 ตัว ส่งคู่ไปกับ standalone HTML ที่ทำจาก Claude Design (Idea 3b — Same Project Sidebar + Modal) เปิดไฟล์เดียวจบ กดเล่นได้จริงทั้ง sidebar และ modal — dev เลยได้ทั้ง “กติกาเป็นตัวหนังสือ” และ “ของที่ต้องได้” พร้อมกัน ไม่ต้องเดาจากภาพนิ่ง",
+          mock: "spec-handoff",
+          takeaway:
+            "spec มี event tracking ติดไปตั้งแต่วันแรก วงจรเลยครบ: data ตั้งโจทย์ → ออกแบบ → ส่ง dev → กลับมาวัดด้วย data ชุดเดิม",
         },
       ],
     },
 
     {
-      heading: "From Idea to Mockup",
-      goal: "อีกวิธีที่ใช้ AI คนละส่วนกับการหา insight ด้านบน — set instruction ให้ Claude วิเคราะห์ สรุปเป็น MD file แล้วต่อยอดเป็น wireframe/UI ได้เร็วพอจะเอาไปนำเสนอ ไม่ต้องรอคิว dev หรือเริ่มจากหน้าขาวใน Figma",
+      heading: "AI Workflow by Claude",
+      goal: "แทนที่จะถาม AI ทีละครั้งแล้วจบ ผมวางเป็นขั้นตอนตายตัวไว้ในหนึ่ง project ของ Claude — ตัวอย่างนี้คือ PropertyOS แพลตฟอร์ม SaaS สำหรับเอเจนต์อสังหาฯ ที่กำลังทำอยู่",
+      flow: [
+        { label: "Set instructions", sub: "บริบทของทั้งโปรดักต์", icon: "instructions" },
+        { label: "Claude analyzes", sub: "คุยไอเดียทีละหัวข้อ", icon: "analyze" },
+        { label: "ASCII screen", sub: "ร่างโครงเป็นตัวอักษร", icon: "design" },
+        { label: "Wireframe", sub: "ต่อยอดใน v0 by Vercel", icon: "wireframe" },
+      ],
       steps: [
-        { title: "Set instructions", body: "กำหนดสิ่งที่จะทำ" },
-        { title: "Claude analyzes", body: "วิเคราะห์ + ได้ไอเดีย" },
-        { title: "MD file", body: "สรุปเป็นสเปก" },
         {
-          title: "Wireframe / UI",
-          body: "Claude สร้างจาก MD",
-          mock: "project-redesign",
+          title: "Set Project Instructions",
+          body: "เขียน instruction ครั้งเดียวว่าโปรดักต์คืออะไร ใครใช้ และมี core feature อะไร — หลังจากนั้นทุกแชตในโปรเจกต์รู้บริบทเอง ไม่ต้องเล่าใหม่",
+          mock: "claude-instructions",
+        },
+        {
+          title: "Claude Analyzes",
+          body: "คุยไอเดียทีละหัวข้อ แล้วให้สรุปเป็นไฟล์เก็บไว้ใน project — persona, feature phase 1, user flow, IA กลายเป็น knowledge base ที่แชตถัด ๆ ไปใช้ต่อได้",
+          mock: "claude-files",
+        },
+        {
+          title: "ASCII Artifact as a Mini Screen",
+          body: "ขอ artifact เป็น ASCII layout ของแต่ละหน้าจอ — เป็นการร่างโครงหน้าจอก่อนจะไปเป็น wireframe จริง ว่าหน้านี้มีส่วนอะไรบ้าง วางตรงไหน และเรียงลำดับข้อมูลยังไง อ่านแล้วเห็นเป็นหน้าจอทันที แก้ง่ายเพราะเป็นแค่ตัวอักษร",
+          mock: "ascii-screen",
+        },
+        {
+          title: "From ASCII to Wireframe",
+          body: "พอโครงนิ่งค่อยเอา ASCII ไปทำต่อเป็น wireframe ใน v0 by Vercel — ยังไม่ใช่หน้าจอจริง แต่เป็น wireframe ที่ใกล้เคียงของจริงพอจะกดดูฟังก์ชันได้ ตั้งใจให้ดู “มันทำงานยังไง” มากกว่า “มันสวยแค่ไหน” ความสวยค่อยไปจบทีหลัง",
+          images: [
+            { src: "/uploads/propertyos/chat.png", caption: "แชท — รวมทุกช่องทางไว้ที่เดียว พร้อมข้อมูลลูกค้าฝั่งขวา", w: 1920, h: 902 },
+            { src: "/uploads/propertyos/chat-tags.png", caption: "แท็กลูกค้า — จัดกลุ่มตามความสนใจเพื่อติดตามต่อ", w: 1920, h: 900 },
+            { src: "/uploads/propertyos/watchlist.png", caption: "หาทรัพย์ในตลาด — Watch List คอยจับประกาศใหม่ตามเงื่อนไข", w: 1920, h: 901 },
+            { src: "/uploads/propertyos/watchlist-detail.png", caption: "ผลของ Watch List — ประกาศใหม่จากหลาย portal พร้อมช่องทางติดต่อเจ้าของ", w: 1920, h: 901 },
+            { src: "/uploads/propertyos/line-connect.png", caption: "ตั้งค่าการเชื่อมต่อ — LINE Official Account", w: 1920, h: 902 },
+            { src: "/uploads/propertyos/line-dialog.png", caption: "ขั้นตอนเชื่อม LINE OA — Channel Secret + Access Token", w: 1920, h: 901 },
+          ],
         },
       ],
     },
   ],
-
-  closing:
-    "จุดนี้ทำให้รู้สึกว่าตัวเองขยับจาก “designer” ไปทาง “product” มากขึ้น — ไม่ใช่แค่ออกแบบหน้าจอ แต่ใช้ data ตั้งโจทย์ วัดผล และหา direction ต่อได้เองทั้งวงจร",
 };

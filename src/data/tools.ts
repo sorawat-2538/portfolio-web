@@ -18,7 +18,10 @@ export const TOOL_META: Record<string, ToolMeta> = {
   Photoshop: { mono: "Ps", bg: "#001E36", fg: "#31A8FF" },
   "Adobe XD": { mono: "Xd", bg: "#2b0a3d", fg: "#FF61F6" },
   "Looker Studio": { mono: "Lo", bg: "#4285F4", fg: "#ffffff" },
+  "Tailwind CSS": { mono: "Tw", bg: "#0b2b36", fg: "#38BDF8" },
   "Zimple Analytics": { mono: "Zi", bg: "#1a1a18", fg: "#ffffff" },
+  // v0 by Vercel — ใช้ต่อยอด ASCII เป็น wireframe (โลโก้เป็นตัวอักษรตามแบรนด์)
+  "v0 by Vercel": { mono: "v0", bg: "#000000", fg: "#ffffff" },
 };
 
 export function toolMeta(name: string): ToolMeta {

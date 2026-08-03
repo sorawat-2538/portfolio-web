@@ -5,6 +5,7 @@ import { PlaceholderView } from "@/components/case-study/placeholder-view";
 import { PropertyhubAppView } from "@/components/case-study/propertyhub-app-view";
 import { EarlyWorkView } from "@/components/case-study/early-work-view";
 import { DataAnalysisView } from "@/components/case-study/data-analysis-view";
+import { WebsiteBuilderView } from "@/components/case-study/website-builder-view";
 import {
   getPlaceholder,
   getProject,
@@ -58,6 +59,10 @@ export default async function WorkPage({
     // Data Analysis — 2 workflow การใช้ AI ขุด data (เนื้อหาที่ย้ายออกจาก Propertyhub)
     if (slug === "data-analysis") {
       return <DataAnalysisView project={placeholder} />;
+    }
+    // PropertyOS — เนื้อหาคืองาน Website Builder ที่อยู่ใต้แพลตฟอร์ม (ชุดธีม + screen flow)
+    if (slug === "propertyos") {
+      return <WebsiteBuilderView project={placeholder} />;
     }
     return <PlaceholderView slug={slug} project={placeholder} />;
   }

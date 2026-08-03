@@ -75,6 +75,8 @@ export type Project = {
       title: string;
       body: string;
       images?: { src: string; caption: string; w: number; h: number }[];
+      /** mockup ประกอบท้าย step — resolve เป็น component ใน MeasurementStory */
+      mock?: "project-redesign";
     }[];
   };
 
@@ -870,13 +872,6 @@ export const placeholderProjects = {
     status: "process",
     tagline: "รายละเอียดเร็ว ๆ นี้",
   },
-  "propertyos-chat": {
-    title: "PropertyOS Chat",
-    category: "AI Product",
-    status: "process",
-    tagline:
-      "ผู้ช่วย AI แชทสำหรับงานอสังหาฯ — ถาม-ตอบข้อมูลทรัพย์และช่วยงานประจำวันของทีม",
-  },
   baandee: {
     title: "Baandee",
     category: "AI Product",
@@ -885,12 +880,14 @@ export const placeholderProjects = {
     demoUrl: "/demos/baandee.html",
     demoCover: "/uploads/baandee-cover.jpg",
   },
-  "website-builder": {
-    title: "Website Builder",
+  // PropertyOS — โปรเจกต์เดียวของหมวด AI Product (Website Builder อยู่ใต้ตัวนี้)
+  // เนื้อหาเต็มอยู่ที่ data/website-builder.ts — render ด้วย WebsiteBuilderView
+  propertyos: {
+    title: "PropertyOS",
     category: "AI Product",
     status: "process",
     tagline:
-      "เครื่องมือสร้างเว็บไซต์ประกาศอสังหาฯ สำหรับเอเจนต์ — ตั้งค่าและปล่อยเว็บได้เอง",
+      "แพลตฟอร์มรวมงานของเอเจนต์อสังหาฯ ไว้ที่เดียว — หน้านี้เล่างาน Website Builder ที่อยู่ในนั้น: ชุดธีม 3 แบบ × 3 ประเภทหน้า ที่ระบบเอาไปสร้างเว็บให้เอเจนต์ได้ในคลิกเดียว",
   },
   // คลังงานเก่า 2018–2020 — render ด้วย EarlyWorkView (special-case ใน work/[slug])
   "early-work": {

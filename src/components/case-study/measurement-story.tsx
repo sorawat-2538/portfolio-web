@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Project } from "@/data/projects";
+import { ProjectRedesign } from "./project-redesign";
 
 type Img = { src: string; caption: string; w: number; h: number };
 type Measure = NonNullable<Project["measure"]>;
@@ -254,6 +255,13 @@ export function MeasurementStory({
                     <Shot img={imgs[0]} title={title} onOpen={setActive} />
                   </div>
                 ) : null}
+
+                {/* mock ประกอบ — ตอนนี้มีแค่ before/after ของหน้า Project Detail */}
+                {s.mock === "project-redesign" && (
+                  <div className="mt-6">
+                    <ProjectRedesign />
+                  </div>
+                )}
               </div>
             </div>
           );

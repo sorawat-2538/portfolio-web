@@ -245,3 +245,26 @@
     transition: none;
   }
 }
+
+/* ASCII artifact — เล่นเหมือนกำลังพิมพ์โค้ดอยู่จริง
+   จังหวะและ treatment อ้างอิงจาก hero code editor ของ milerdev.com:
+   บรรทัดที่ยังไม่ถึงไม่ได้ "หาย" แต่จางไว้ที่ opacity .06 + เลื่อนขวา 8px
+   แล้วสไลด์เข้าที่ตอนถูกพิมพ์ · cursor กะพริบแบบ step-end (ไม่ fade)
+   ⚠️ opacity คุมด้วย inline style จาก JS — ตอน SSR เป็น 1 ทั้งหมด
+   ถ้า JS ไม่ทำงานเนื้อหาจึงยังเห็นครบ (กติกาเดียวกับ .reveal) */
+.ascii-line {
+  transition:
+    opacity 0.24s,
+    transform 0.24s;
+}
+@keyframes ascii-caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.ascii-caret {
+  animation: ascii-caret-blink 1s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ascii-line { transition: none; }
+  .ascii-caret { animation: none; }
+}

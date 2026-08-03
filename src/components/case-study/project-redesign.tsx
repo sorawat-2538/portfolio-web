@@ -1,8 +1,10 @@
-// Case study for Workflow 2 ("จาก idea สู่ mockup") — the redesign output.
+// Before / After ของหน้า Project Detail (Propertyhub) — ใช้ปิดท้าย "How I Measured?"
 // Insight จาก analytics: ปุ่ม "ยูนิตเช่า/ยูนิตขาย" บนสุดแทบไม่มีคนกด ในขณะที่
 // กล่อง CTA ล่างกว่าพา user ไปต่อได้ดีกว่า → เปลี่ยนปุ่มให้กดแล้วเลื่อนไปดู
 // ประกาศในโครงการทันที ผู้ใช้ไม่ต้อง scroll หาเอง. Stylized mock, token-based.
-// ถูก render อยู่ใน ClaudeSection (ใต้ Workflow 2) — ไม่ใช่ section แยกอีกต่อไป.
+//
+// component นี้เป็น "ภาพ" อย่างเดียว — หัวข้อกับคำอธิบายมาจาก step ที่เรียกใช้
+// (measure.steps ใน data/projects.ts) จะได้ไม่มีหัวข้อซ้อนหัวข้อ
 
 import { ArrowDown, MousePointerClick, MapPin } from "lucide-react";
 
@@ -40,19 +42,8 @@ function MiniListing({ price }: { price: string }) {
 export function ProjectRedesign() {
   return (
     <div>
-      <h4 className="text-[clamp(18px,2.2vw,21px)] font-semibold tracking-[-0.01em] text-foreground">
-        Insight → Redesign
-      </h4>
-      <p className="mt-2.5 text-[15px] leading-[1.75] text-muted-foreground">
-        จาก data บนหน้า Project เจอว่า ปุ่ม{" "}
-        <span className="font-medium text-foreground">“ยูนิตเช่า / ยูนิตขาย”</span>{" "}
-        ที่อยู่บนสุด มีคนกดน้อยมาก — ทั้งที่ตำแหน่งเด่นสุด ในขณะที่กล่อง “สนใจประกาศโครงการนี้?”
-        ที่อยู่ล่างกว่ากลับพา user ไปต่อได้ดีกว่า จึงเปลี่ยนปุ่มให้ “กดแล้วเลื่อนไปดูประกาศในโครงการทันที”
-        ผู้ใช้ไม่ต้อง scroll หาเอง
-      </p>
-
       {/* before / after */}
-      <div className="mt-6 grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         {/* BEFORE */}
         <figure className="min-w-0">
           <div className="overflow-hidden rounded-xl border border-border bg-card shadow-[0_10px_30px_-18px_rgba(30,50,90,0.3)]">

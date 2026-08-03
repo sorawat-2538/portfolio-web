@@ -11,17 +11,42 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import {
+  AppWindow,
+  FileText,
+  LayoutTemplate,
+  ListChecks,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import type {
   DataAnalysisContent,
+  DataAnalysisSection,
   DataAnalysisShot,
 } from "@/data/data-analysis";
 import { toolMeta } from "@/data/tools";
-import { ProjectRedesign } from "./project-redesign";
 import { ListingDialogMock } from "./listing-dialog-mock";
+import { SpecHandoffMock } from "./spec-handoff-mock";
+import { ClaudeInstructionsMock } from "./claude-instructions-mock";
+import { ClaudeFilesMock } from "./claude-files-mock";
+import { AsciiScreenMock } from "./ascii-screen-mock";
+import { WorkflowBento } from "../home/work-flow-bento";
 
 type Claude = DataAnalysisContent;
 type Shot = DataAnalysisShot;
+
+/** key ใน data → ไอคอนจริง (data เป็น .ts เลยไม่ให้ import component เข้าไปเอง) */
+const FLOW_ICON: Record<
+  NonNullable<NonNullable<DataAnalysisSection["flow"]>[number]["icon"]>,
+  LucideIcon
+> = {
+  instructions: ListChecks,
+  analyze: Sparkles,
+  file: FileText,
+  design: LayoutTemplate,
+  wireframe: AppWindow,
+};
 
 /** รูปหลักฐานที่กดซูมได้ (caption จัดกลางใต้รูป)
  *  treatment เดียวกับรูปใน How I Measured? ของ Propertyhub เป๊ะ ๆ:
@@ -139,12 +164,33 @@ export function ClaudeSection({
             {sec.heading}
           </h2>
 
-          {/* goal — callout เดียวกับ How I Measured? (เส้นซ้ายหนา + พื้นเทา) ให้อ่านก่อน */}
+          {/* goal — callout เดียวกับ How I Measured? (เส้นซ้ายหนา + พื้นเทา) ให้อ่านก่อน
+              lead = ประโยคสรุป section ตัวหนาบรรทัดแรก (มีเฉพาะบาง section) */}
           <div className="mt-6 rounded-r-xl border-l-[3px] border-foreground bg-hover px-[clamp(18px,2.4vw,26px)] py-[clamp(18px,2.4vw,24px)]">
+            {sec.lead && (
+              <p className="mb-3 text-[clamp(17px,2vw,21px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
+                {sec.lead}
+              </p>
+            )}
             <p className="text-[clamp(16px,1.9vw,20px)] leading-[1.62] text-foreground">
               {sec.goal}
             </p>
           </div>
+
+          {/* flow — แถบ workflow ย่อ ให้เห็นทั้งกระบวนการก่อนลงรายละเอียดทีละขั้น
+              ใช้การ์ดชุดเดียวกับ "My Work Flow" หน้าแรก (WorkflowBento) ให้ภาษาภาพตรงกัน */}
+          {sec.flow && sec.flow.length > 0 && (
+            <div className="mt-7">
+              <WorkflowBento
+                showNumber={false}
+                steps={sec.flow.map((f) => ({
+                  label: f.label,
+                  sub: f.sub,
+                  icon: f.icon ? FLOW_ICON[f.icon] : undefined,
+                }))}
+              />
+            </div>
+          )}
 
           {/* steps — ไทม์ไลน์มีเลขกำกับ + เส้นเชื่อม */}
           <div className="mt-[38px] flex flex-col">
@@ -219,23 +265,53 @@ export function ClaudeSection({
                       </div>
                     )}
 
+                    {/* หลายรูปในขั้นเดียว — กริด 2 คอลัมน์ */}
+                    {s.images && s.images.length > 0 && (
+                      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                        {s.images.map((shot) => (
+                          <EvidenceShot
+                            key={shot.src}
+                            shot={shot}
+                            title={title}
+                            onZoom={setLightbox}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* mock ก่อน takeaway เสมอ — ให้เห็นของจริงก่อน แล้วค่อยสรุป */}
+                    {s.mock === "listing-dialog" && (
+                      <div className="mt-6">
+                        <ListingDialogMock />
+                      </div>
+                    )}
+                    {s.mock === "spec-handoff" && (
+                      <div className="mt-6">
+                        <SpecHandoffMock />
+                      </div>
+                    )}
+                    {s.mock === "claude-instructions" && (
+                      <div className="mt-6">
+                        <ClaudeInstructionsMock />
+                      </div>
+                    )}
+                    {s.mock === "claude-files" && (
+                      <div className="mt-6">
+                        <ClaudeFilesMock />
+                      </div>
+                    )}
+                    {s.mock === "ascii-screen" && (
+                      <div className="mt-6">
+                        <AsciiScreenMock />
+                      </div>
+                    )}
+
                     {/* takeaway — callout ส้ม: ข้อสรุปที่ควรสะดุดตาที่สุดของขั้นนี้ */}
                     {s.takeaway && (
                       <div className="mt-6 rounded-r-xl border-l-[3px] border-amber-500 bg-amber-400/[0.12] px-[clamp(18px,2.4vw,26px)] py-[clamp(16px,2vw,22px)]">
                         <p className="text-[clamp(16px,1.8vw,19px)] leading-[1.62] text-foreground">
                           {s.takeaway}
                         </p>
-                      </div>
-                    )}
-
-                    {s.mock === "listing-dialog" && (
-                      <div className="mt-6">
-                        <ListingDialogMock />
-                      </div>
-                    )}
-                    {s.mock === "project-redesign" && (
-                      <div className="mt-6">
-                        <ProjectRedesign />
                       </div>
                     )}
                   </div>
@@ -246,10 +322,12 @@ export function ClaudeSection({
         </React.Fragment>
       ))}
 
-      {/* closing — role shift */}
-      <p className="mt-12 text-[17px] leading-[1.8] text-foreground">
-        {claude.closing}
-      </p>
+      {/* closing — ย่อหน้าปิดท้าย (ใส่หรือไม่ใส่ก็ได้ใน data) */}
+      {claude.closing && (
+        <p className="mt-12 text-[17px] leading-[1.8] text-foreground">
+          {claude.closing}
+        </p>
+      )}
 
       {lightbox && (
         <div

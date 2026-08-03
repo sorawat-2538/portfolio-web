@@ -27,10 +27,9 @@ export const navGroups: NavGroup[] = [
   {
     key: "ai",
     title: "AI Product",
-    items: [
-      { slug: "propertyos-chat", label: "PropertyOS Chat" },
-      { slug: "website-builder", label: "Website Builder" },
-    ],
+    // ยุบเหลือโปรเจกต์เดียว — Website Builder เป็นงานที่อยู่ "ใต้" PropertyOS อีกที
+    // ไม่ใช่โปรเจกต์คนละตัว (เนื้อหาเต็มอยู่ที่ data/website-builder.ts)
+    items: [{ slug: "propertyos", label: "PropertyOS" }],
   },
   {
     key: "archive",
