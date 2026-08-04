@@ -12,8 +12,9 @@ export function ProjectNav({ slug }: { slug: string }) {
   const { prev, next } = getProjectNav(slug);
   if (!prev && !next) return null;
 
+  // ระยะห่างจาก section สุดท้ายถึงแถบ prev/next — cap ที่ 50px (เดิม 90px ว่างเกินไป)
   return (
-    <div className="mt-[clamp(56px,8vw,90px)] flex flex-col items-stretch gap-6 border-t border-border pt-8 min-[560px]:flex-row min-[560px]:items-center min-[560px]:justify-between">
+    <div className="mt-[clamp(40px,6vw,50px)] flex flex-col items-stretch gap-6 border-t border-border pt-8 min-[560px]:flex-row min-[560px]:items-center min-[560px]:justify-between">
       {prev ? (
         <Link
           href={`/work/${prev.slug}`}

@@ -1,5 +1,6 @@
-// BuilderOnboardingMock — 4 หน้าจอ onboarding ของ Website Builder (30–120 วินาที)
-// ใช้ใน section "How a theme gets used" ของหน้า PropertyOS
+// OnboardingScreen — จอ onboarding ของ Website Builder ทีละสเต็ป (รวม 4 จอ · 30–120 วินาที)
+// เรียกใช้จากไทม์ไลน์ในหน้า PropertyOS: 1 step = เลขใหญ่ + คำอธิบาย + จอของสเต็ปนั้น
+// (treatment เดียวกับ "Data for Future Growth" ที่มีรูปหลักฐานใต้แต่ละขั้น)
 //
 // แกะจาก CompleteScreenFlowWebBuilder.md ส่วน 🚀 Onboarding Flow ทีละสเต็ป:
 //   1) ตั้งชื่อเว็บ + โชว์ URL ที่จะได้ทันที   2) เลือกธีม (progress 2/2)
@@ -7,36 +8,27 @@
 // ธีมในสเต็ป 2 ดึงจาก data/website-builder.ts ตรง ๆ (สี accent จริงของแต่ละธีม)
 //
 // fake UI (ไม่ใช่ screenshot) · token-based สีสว่าง เข้าชุดกับ mock อื่นในเว็บ
-// ข้อความในจอเป็นภาษาไทยตามของจริง — ตัวอังกฤษใช้เฉพาะไฟล์ ASCII
+// ⚠️ ข้อความในจอเป็นภาษาอังกฤษ + ฟอนต์ Inter ทั้งหมด ตามที่ user สั่ง
 
 import { Check, Copy, Link2, Share2 } from "lucide-react";
-import { websiteBuilder as wb } from "@/data/website-builder";
+import { propertyos as po } from "@/data/propertyos";
 
-/** กรอบหนึ่งสเต็ป — หัวเรื่องเล็กด้านบน + ตัว dialog ด้านใน */
+/** กรอบหนึ่งสเต็ป — dialog ตัวเดียวพร้อมคำอธิบายใต้ภาพ (ใช้เดี่ยว ๆ ใต้ step ในไทม์ไลน์) */
 function StepFrame({
-  step,
-  title,
-  time,
+  caption,
   children,
 }: {
-  step: number;
-  title: string;
-  time: string;
+  caption: string;
   children: React.ReactNode;
 }) {
   return (
     <figure className="min-w-0">
-      <div className="flex items-baseline gap-2">
-        <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white">
-          {step}
-        </span>
-        <span className="min-w-0 truncate text-[13px] font-semibold text-foreground">{title}</span>
-        <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">{time}</span>
+      <div className="overflow-hidden rounded-xl border border-border bg-card p-[clamp(14px,2vw,20px)] shadow-[0_12px_34px_-20px_rgba(30,50,90,0.35)]">
+        <div className="mx-auto max-w-[420px]">{children}</div>
       </div>
-
-      <div className="mt-2.5 h-[218px] overflow-hidden rounded-xl border border-border bg-card p-3.5 shadow-[0_10px_30px_-18px_rgba(30,50,90,0.35)]">
-        {children}
-      </div>
+      <figcaption className="mt-2.5 text-center text-[13px] leading-[1.5] text-muted-foreground">
+        {caption}
+      </figcaption>
     </figure>
   );
 }
@@ -66,46 +58,49 @@ function Tick({ children, done = true }: { children: React.ReactNode; done?: boo
   );
 }
 
-export function BuilderOnboardingMock() {
-  return (
-    <div className="grid grid-cols-1 gap-x-5 gap-y-6 min-[720px]:grid-cols-2">
-      {/* ── STEP 1 — ตั้งชื่อเว็บ ── */}
-      <StepFrame step={1} title="ตั้งชื่อเว็บไซต์" time="~10 วินาที">
+/** จอของ onboarding ทีละสเต็ป — เรียกจากไทม์ไลน์ในหน้า PropertyOS (1 step = 1 จอ) */
+export function OnboardingScreen({ step }: { step: 1 | 2 | 3 | 4 }) {
+  if (step === 1) {
+    return (
+      <StepFrame caption="Step 1 — ถามแค่ชื่อเว็บ แล้วโชว์ URL ที่จะได้ทันทีระหว่างพิมพ์">
         <Progress value={50} />
-        <div className="mt-3 text-[12px] font-bold text-foreground">ตั้งชื่อเว็บไซต์ของคุณ</div>
+        <div className="mt-3 text-[12px] font-bold text-foreground">Name your website</div>
 
         <div className="mt-3">
-          <span className="text-[10px] text-muted-foreground">ชื่อเว็บ</span>
+          <span className="text-[10px] text-muted-foreground">Site name</span>
           <div className="mt-1 rounded-lg border border-brand/60 bg-card px-2.5 py-2 text-[12px] text-foreground shadow-[0_0_0_3px_rgba(45,104,255,0.08)]">
             john-property
           </div>
         </div>
 
         <div className="mt-3 rounded-lg bg-hover px-2.5 py-2">
-          <div className="text-[9.5px] text-muted-foreground">URL ของคุณจะเป็น</div>
+          <div className="text-[9.5px] text-muted-foreground">Your URL will be</div>
           <div className="mt-0.5 flex items-center gap-1.5 text-[11px] font-medium text-foreground">
             <Link2 className="h-3 w-3 shrink-0 text-muted-foreground" />
             <span className="min-w-0 truncate">john-property.propertyos.com</span>
           </div>
           <div className="mt-1 text-[9.5px] text-muted-foreground">
-            เปลี่ยนทีหลังได้ ไม่ต้องกังวล
+            You can change it later
           </div>
         </div>
 
         <div className="mt-3 flex justify-end">
           <span className="rounded-lg bg-brand px-3 py-1.5 text-[11px] font-semibold text-white">
-            ถัดไป →
+            Next →
           </span>
         </div>
       </StepFrame>
+    );
+  }
 
-      {/* ── STEP 2 — เลือกธีม ── */}
-      <StepFrame step={2} title="เลือกธีม" time="~20 วินาที">
+  if (step === 2) {
+    return (
+      <StepFrame caption="Step 2 — เลือกธีม ดู preview ได้ก่อนตัดสินใจ (เปลี่ยนทีหลังได้)">
         <Progress value={100} />
-        <div className="mt-3 text-[12px] font-bold text-foreground">เลือกธีมที่ใช่สำหรับคุณ</div>
+        <div className="mt-3 text-[12px] font-bold text-foreground">Choose the theme that fits you</div>
 
         <div className="mt-3 grid grid-cols-3 gap-2">
-          {wb.themes.map((t, i) => (
+          {po.themes.map((t, i) => (
             <div
               key={t.key}
               className={`overflow-hidden rounded-lg border bg-card ${
@@ -123,28 +118,31 @@ export function BuilderOnboardingMock() {
               </div>
               <div className="px-1.5 py-1.5">
                 <div className="truncate text-[10px] font-semibold text-foreground">{t.name}</div>
-                <div className="mt-0.5 truncate text-[9px] text-muted-foreground">{t.mood}</div>
+                <div className="mt-0.5 truncate text-[9px] text-muted-foreground">{t.font}</div>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-2.5 text-[9.5px] text-muted-foreground">
-          เลือกธีมที่เข้ากับสไตล์ของคุณ — เปลี่ยนได้ทีหลังเสมอ
+          Pick the one that matches your style — you can switch anytime
         </div>
 
         <div className="mt-2.5 flex items-center justify-between">
-          <span className="text-[11px] text-muted-foreground">← ย้อนกลับ</span>
+          <span className="text-[11px] text-muted-foreground">← Back</span>
           <span className="rounded-lg bg-brand px-3 py-1.5 text-[11px] font-semibold text-white">
-            สร้างเว็บไซต์
+            Create website
           </span>
         </div>
       </StepFrame>
+    );
+  }
 
-      {/* ── STEP 3 — ระบบสร้างให้ ── */}
-      <StepFrame step={3} title="ระบบสร้างเว็บให้" time="~30 วินาที">
-        <div className="flex h-full flex-col items-center justify-center text-center">
-          <div className="text-[12px] font-bold text-foreground">กำลังสร้างเว็บไซต์...</div>
+  if (step === 3) {
+    return (
+      <StepFrame caption="Step 3 — ระหว่างรอ บอกให้รู้ว่าระบบกำลังทำอะไรอยู่ ไม่ใช่แค่หมุน ๆ">
+        <div className="flex flex-col items-center justify-center py-2 text-center">
+          <div className="text-[12px] font-bold text-foreground">Building your website...</div>
 
           <div className="mt-3 w-full max-w-[220px]">
             <div className="h-1.5 overflow-hidden rounded-full bg-hover">
@@ -154,20 +152,22 @@ export function BuilderOnboardingMock() {
           </div>
 
           <ul className="mt-3.5 flex w-full max-w-[240px] flex-col gap-1.5 text-left">
-            <Tick>กำลังตั้งค่าธีมที่เลือกไว้</Tick>
-            <Tick>กำลังดึงลิสต์ประกาศจาก PropertyOS</Tick>
-            <Tick done={false}>เกือบเสร็จแล้ว...</Tick>
+            <Tick>Setting up the selected theme</Tick>
+            <Tick>Pulling listings from PropertyOS</Tick>
+            <Tick done={false}>Almost there...</Tick>
           </ul>
         </div>
       </StepFrame>
+    );
+  }
 
-      {/* ── STEP 4 — เสร็จแล้ว ── */}
-      <StepFrame step={4} title="เผยแพร่ หรือเข้าไปปรับต่อ" time="เสร็จ">
+  return (
+    <StepFrame caption="Step 4 — จบด้วยทางแยก: แชร์ลิงก์ได้เลย หรือเข้า editor ไปปรับต่อ">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-white">
             <Check className="h-3 w-3" />
           </span>
-          <span className="text-[12px] font-bold text-foreground">สร้างเว็บไซต์สำเร็จ!</span>
+          <span className="text-[12px] font-bold text-foreground">Your site is live!</span>
         </div>
 
         <div className="mt-2.5 flex items-center gap-1.5 rounded-lg bg-hover px-2.5 py-2 text-[11px] font-medium text-foreground">
@@ -177,28 +177,27 @@ export function BuilderOnboardingMock() {
 
         <div className="mt-2 flex gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[9.5px] text-foreground">
-            <Copy className="h-2.5 w-2.5" /> คัดลอกลิงก์
+            <Copy className="h-2.5 w-2.5" /> Copy link
           </span>
           <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[9.5px] text-foreground">
-            <Share2 className="h-2.5 w-2.5" /> แชร์
+            <Share2 className="h-2.5 w-2.5" /> Share
           </span>
         </div>
 
         <ul className="mt-2.5 flex flex-col gap-1">
-          <Tick>ธีมที่เลือกพร้อมใช้งาน</Tick>
-          <Tick>ดึงลิสต์ประกาศจาก PropertyOS ให้แล้ว (24 รายการ)</Tick>
-          <Tick>หน้าเพจหลักและฟอร์มติดต่อพร้อมใช้งาน</Tick>
+          <Tick>Selected theme is ready</Tick>
+          <Tick>Listings pulled from PropertyOS (24 items)</Tick>
+          <Tick>Main pages and contact form are live</Tick>
         </ul>
 
         <div className="mt-2.5 flex gap-1.5">
           <span className="rounded-lg bg-brand px-2.5 py-1.5 text-[10.5px] font-semibold text-white">
-            เริ่มแก้ไขเว็บไซต์
+            Start editing
           </span>
           <span className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[10.5px] text-foreground">
-            ดูเว็บไซต์
+            View site
           </span>
         </div>
-      </StepFrame>
-    </div>
+    </StepFrame>
   );
 }

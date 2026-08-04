@@ -36,11 +36,14 @@ export function WebScreensPanel({
   title,
   screens,
   variant = "rail",
+  cols = 2,
 }: {
   title?: string;
   screens: WebScreen[];
   /** "rail" = จอเต็มความสูงเลื่อนแนวนอน (default) · "grid" = จอในกรอบ browser crop หัวเท่ากัน 2 ต่อแถว */
   variant?: "rail" | "grid";
+  /** grid เท่านั้น — จำนวนคอลัมน์บนจอกว้าง (ใช้ 3 ตอนอยากให้เทียบกันในสายตาเดียว) */
+  cols?: 2 | 3;
 }) {
   const shots = screens.filter((s): s is Shot => Boolean(s.src));
   const [active, setActive] = React.useState<number | null>(null);
@@ -87,7 +90,11 @@ export function WebScreensPanel({
         </div>
       ) : variant === "grid" ? (
         /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */
-        <div className="grid grid-cols-1 items-start gap-4 px-[clamp(18px,3vw,30px)] min-[560px]:grid-cols-2 min-[560px]:gap-6">
+        <div
+          className={`grid grid-cols-1 items-start gap-4 px-[clamp(18px,3vw,30px)] min-[560px]:gap-6 ${
+            cols === 3 ? "min-[560px]:grid-cols-2 min-[820px]:grid-cols-3" : "min-[560px]:grid-cols-2"
+          }`}
+        >
           {shots.map((s, i) => {
             // จอยาว (h/w > 1) → crop + ป้าย "full page" · จอเตี้ย → โชว์เต็มจอในกรอบ (กรอบ border ปิดครบ) ไม่มีป้าย
             const tall = (s.h ?? 5000) / (s.w ?? 1600) > 1;

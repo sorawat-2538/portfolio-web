@@ -85,7 +85,6 @@ export const dataAnalysis: DataAnalysisContent = {
   sections: [
     {
       heading: "Data for Future Growth",
-      lead: "Data becomes a design brief — not a monthly report.",
       goal: "ใช้ data ตั้งโจทย์ให้ตัวเอง — ไล่ดูว่าหน้าไหนของ Propertyhub ทำเงินจริง เจอว่าเป็น Listing Detail แต่ 3 ใน 4 ของ session ดูแค่ประกาศเดียวแล้วออก ตัวเลขนี้เลยกลายเป็นโจทย์ออกแบบ",
       steps: [
         {

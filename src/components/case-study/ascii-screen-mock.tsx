@@ -254,6 +254,10 @@ function useTyping(ref: React.RefObject<HTMLElement | null>) {
   const [started, setStarted] = React.useState(false);
   const [line, setLine] = React.useState(TOTAL);
   const [seg, setSeg] = React.useState(0);
+  // พิมพ์จบแล้วยังไม่ "นิ่ง" ทันที — บรรทัดท้าย ๆ ยังสไลด์จาก translateX(8px) กลับเข้าที่
+  // อีก 0.24s (ดู .ascii-line ใน globals.css) ซึ่งพื้นที่ที่ถูก transform ยังนับเป็น
+  // scroll area อยู่ → ถ้าเปิด overflow-x ตอนนั้นจะเห็น scrollbar แวบนึงแล้วหาย
+  const [settled, setSettled] = React.useState(true);
 
   React.useEffect(() => {
     const el = ref.current;
@@ -267,6 +271,7 @@ function useTyping(ref: React.RefObject<HTMLElement | null>) {
     setArmed(true);
     setLine(0);
     setSeg(0);
+    setSettled(false);
 
     const io = new IntersectionObserver(
       ([e]) => {
@@ -299,12 +304,24 @@ function useTyping(ref: React.RefObject<HTMLElement | null>) {
     return () => window.clearTimeout(timer);
   }, [armed, started, line, seg]);
 
-  return { line: armed ? line : TOTAL, seg, typing: armed && line < TOTAL };
+  // พิมพ์ครบแล้วรอให้บรรทัดสุดท้ายสไลด์เข้าที่จบก่อน ค่อยถือว่า "นิ่ง"
+  React.useEffect(() => {
+    if (!armed || line < TOTAL || settled) return;
+    const id = window.setTimeout(() => setSettled(true), 320);
+    return () => window.clearTimeout(id);
+  }, [armed, line, settled]);
+
+  return {
+    line: armed ? line : TOTAL,
+    seg,
+    typing: armed && line < TOTAL,
+    settled,
+  };
 }
 
 export function AsciiScreenMock() {
   const ref = React.useRef<HTMLDivElement>(null);
-  const { line, seg, typing } = useTyping(ref);
+  const { line, seg, typing, settled } = useTyping(ref);
 
   const col = typing
     ? LINES[Math.min(line, TOTAL - 1)]
@@ -343,13 +360,13 @@ export function AsciiScreenMock() {
           </div>
 
           {/* จอแคบให้ปัดดูแนวนอนได้ — ถ้าปล่อยให้บีบ คอลัมน์จะแคบจนอ่านไม่ออก
-              (เดสก์ท็อปกว้างพอ ไม่มี scrollbar โผล่) */}
-          {/* ระหว่างพิมพ์ปิด scroll แนวนอนไว้ — แถบ scroll โผล่มาระหว่าง animation แล้วรก
-              (พิมพ์จบค่อยเปิดให้ปัดอ่านได้ · ค่าตั้งต้นตอน SSR = เปิด) */}
+              ปิด scroll ไว้ตลอดช่วง animation (รวมช่วงที่บรรทัดสุดท้ายยังสไลด์เข้าที่)
+              แล้วค่อยเปิดตอนทุกอย่างนิ่ง — กัน scrollbar เด้งแวบเดียวตอนพิมพ์จบ
+              ค่าตั้งต้นตอน SSR / เครื่องที่ JS ไม่ทำงาน = เปิด scroll ปกติ */}
           <div
             ref={ref}
             className={`pb-1 [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar]:h-1.5 ${
-              typing ? "overflow-x-hidden" : "overflow-x-auto"
+              typing || !settled ? "overflow-x-hidden" : "overflow-x-auto"
             }`}
           >
             <div className="min-w-[520px] font-mono text-[clamp(9px,1.1vw,11.5px)] leading-[1.7]">

@@ -127,7 +127,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 export function BuilderScreenMock() {
   return (
-    <div className="float-slow select-none overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_28px_60px_-24px_rgba(30,50,90,0.32)]">
+    <div className="select-none overflow-hidden rounded-[14px] border border-border bg-card shadow-[0_28px_60px_-24px_rgba(30,50,90,0.32)]">
       {/* ── แถบบนของแอป ── */}
       <div className="flex items-center gap-3 border-b border-border bg-hover px-3 py-2.5">
         <span className="flex shrink-0 gap-1.5">
@@ -143,7 +143,7 @@ export function BuilderScreenMock() {
             john-property.propertyos.com
           </span>
           <span className="shrink-0 rounded-full border border-border bg-card px-2 py-0.5 text-[9.5px] text-muted-foreground">
-            บันทึกแล้ว
+            Saved
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1.5">
@@ -194,7 +194,7 @@ export function BuilderScreenMock() {
 
         {/* ── PANEL 2 — พรีวิวสด ── */}
         <div className="min-w-0 flex-1 bg-hover/30">
-          <div className="flex items-center gap-1.5 border-b border-border bg-card px-3 py-2">
+          <div className="flex items-center justify-center gap-1.5 border-b border-border bg-card px-3 py-2">
             <span className="flex items-center gap-1 rounded-md bg-brand/[0.08] px-1.5 py-1 text-[10px] font-medium text-brand">
               <Monitor className="h-3 w-3" /> Desktop
             </span>
@@ -212,22 +212,22 @@ export function BuilderScreenMock() {
               <div className="relative overflow-hidden rounded-md bg-hover px-3 py-5">
                 <div className="mx-auto max-w-[260px] text-center">
                   <div className="text-[12px] font-bold text-foreground">
-                    ค้นหาบ้านในฝันของคุณ
+                    Find your dream home
                   </div>
                   <div className="mt-1 text-[9.5px] text-muted-foreground">
-                    กับผู้เชี่ยวชาญอสังหาริมทรัพย์
+                    With property experts by your side
                   </div>
                   <div className="mt-2.5 flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1.5">
                     <Search className="h-3 w-3 shrink-0 text-muted-foreground" />
                     <span className="min-w-0 flex-1 truncate text-left text-[9.5px] text-muted-foreground">
-                      ค้นหาตำแหน่ง, โครงการ...
+                      Search location, project...
                     </span>
                     <span className="shrink-0 rounded bg-brand px-1.5 py-0.5 text-[9px] text-white">
-                      ค้นหา
+                      Search
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap justify-center gap-1">
-                    {["ซื้อ", "เช่า", "คอนโด", "บ้าน"].map((c) => (
+                    {["Buy", "Rent", "Condo", "House"].map((c) => (
                       <span
                         key={c}
                         className="rounded-full border border-border bg-card px-1.5 py-0.5 text-[9px] text-muted-foreground"
@@ -242,7 +242,7 @@ export function BuilderScreenMock() {
 
             {/* FEATURED */}
             <PreviewSection label="Featured properties">
-              <div className="text-[10.5px] font-semibold text-foreground">แนะนำประกาศพิเศษ</div>
+              <div className="text-[10.5px] font-semibold text-foreground">Featured properties</div>
               <div className="mt-2 grid grid-cols-4 gap-1.5">
                 {FEATURED.map((p) => (
                   <PropertyCard key={p} price={p} />
@@ -252,7 +252,7 @@ export function BuilderScreenMock() {
 
             {/* LATEST — ตัดครึ่งไว้ให้รู้ว่ายังมีต่อ */}
             <PreviewSection label="Latest listings">
-              <div className="text-[10.5px] font-semibold text-foreground">ประกาศล่าสุด</div>
+              <div className="text-[10.5px] font-semibold text-foreground">Latest listings</div>
               <div className="mt-2 grid grid-cols-4 gap-1.5">
                 {LATEST.map((p) => (
                   <PropertyCard key={p} price={p} />
@@ -288,8 +288,8 @@ export function BuilderScreenMock() {
               <GroupLabel>Content</GroupLabel>
             </div>
             <div className="mt-2 flex flex-col gap-2">
-              <Field label="Headline" value="ค้นหาบ้านในฝันของคุณ" />
-              <Field label="Subheading" value="กับผู้เชี่ยวชาญอสังหาฯ" />
+              <Field label="Headline" value="Find your dream home" />
+              <Field label="Subheading" value="With property experts" />
               <div>
                 <span className="text-[10px] text-muted-foreground">Background image</span>
                 <div className="mt-1 flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1.5 text-[10.5px] text-foreground">

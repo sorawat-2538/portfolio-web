@@ -1,6 +1,7 @@
 // BuilderPanelsMock — โครง 3 พาเนลของ Website Builder ที่ร่างไว้เป็น ASCII
-// ใช้เป็น hero ของหน้า PropertyOS — เปิดมาต้องรู้ทันทีว่านี่คือ "เว็บที่เอาไว้สร้างเว็บ"
-// (หน้าจอจริงที่แกะจากไฟล์เดียวกันอยู่ถัดลงไปใน case study → BuilderScreenMock)
+// ใช้ใน section "What did I do with this project?" ของหน้า PropertyOS
+// (หน้าจอจริงที่แกะจากไฟล์เดียวกันเป็นรูปนำของบล็อก Website Builder → BuilderScreenMock)
+// static ล้วน ไม่มี animation ลอยขึ้นลง — อยู่กลางหน้า ไม่ใช่ hero
 //
 // ที่มา: ไฟล์ CompleteScreenFlowWebBuilder.md (1,672 บรรทัด · 8 flow) ที่เขียนไว้ก่อนลงมือทำจริง
 // ตัดมาเฉพาะหน้า Home Page Editor ซึ่งเป็นหน้าที่ใช้โครงพาเนลครบที่สุด
@@ -116,7 +117,7 @@ function Fill({ width }: { width: string }) {
 export function BuilderPanelsMock() {
   return (
     <div>
-      <div className="float-slow select-none overflow-hidden rounded-[14px] border border-white/10 bg-[#0d1a2b] shadow-[0_28px_60px_-24px_rgba(8,15,30,0.6)]">
+      <div className="select-none overflow-hidden rounded-[14px] border border-white/10 bg-[#0d1a2b] shadow-[0_28px_60px_-24px_rgba(8,15,30,0.6)]">
         {/* ── CHROME ── */}
         <div className="flex items-center gap-4 border-b border-white/[0.06] bg-[#0f1f33] px-4 py-3">
           <span className="flex shrink-0 gap-1.5">
