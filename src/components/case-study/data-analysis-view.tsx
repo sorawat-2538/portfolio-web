@@ -4,7 +4,7 @@
 //
 // โครงหน้า = เหมือนหน้า project จริง:
 //   badge → H1 → avatar bar → hero (terminal mockup) → Overview
-//   → Data for Future Growth (ClaudeSection) → prev/next
+//   → From Data to Decision (ClaudeSection) → prev/next
 // ไม่มี section Tools — เครื่องมือโชว์เป็นการ์ดในขั้นแรกของไทม์ไลน์แทน
 // ข้อความทั้งหมดแก้ที่ data/data-analysis.ts
 
@@ -36,7 +36,7 @@ export function DataAnalysisView({ project: p }: { project: PlaceholderProject }
           {p.title}
         </h1>
 
-        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 flex flex-col gap-4 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="flex items-center gap-3">
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
               <Image
@@ -54,7 +54,7 @@ export function DataAnalysisView({ project: p }: { project: PlaceholderProject }
           </div>
         </div>
 
-        <div className="mt-6 border-t border-border" />
+        <div className="mt-5 border-t border-border" />
 
         {/* ── HERO — terminal mockup: session วิเคราะห์ data ผ่าน MCP
             (สไตล์เดียวกับ ContactForm ที่หน้า Contact Me · ตัวเลขในนั้นเป็นของจริง) ── */}
@@ -78,7 +78,7 @@ export function DataAnalysisView({ project: p }: { project: PlaceholderProject }
       </section>
 
       {/* หมายเหตุ: ไม่มี section Tools — เครื่องมือแสดงเป็นการ์ดในขั้นที่ 1 ของ
-          Data for Future Growth อยู่แล้ว (ตรงจุดที่ใช้จริง ไม่ต้องมีลิสต์ซ้ำด้านบน) */}
+          From Data to Decision อยู่แล้ว (ตรงจุดที่ใช้จริง ไม่ต้องมีลิสต์ซ้ำด้านบน) */}
 
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 

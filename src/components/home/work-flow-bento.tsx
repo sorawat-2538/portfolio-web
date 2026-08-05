@@ -7,6 +7,7 @@
 import * as React from "react";
 import { ArrowRight } from "lucide-react";
 import type { FlowStep } from "../case-study/step-flow";
+import { ScrollRail } from "../case-study/scroll-rail";
 
 function Card({
   step,
@@ -74,12 +75,17 @@ export function WorkflowBento({
     );
   }
 
+  // มือถือ = rail เลื่อนแนวนอน (การ์ด 8 ใบเรียงลงมาทำให้หน้ายาวเกินไป — user สั่ง)
+  //          bleed ออกนอก padding ของ shell เพื่อให้เลื่อนได้เต็มความกว้างจอ
+  // ≥640px  = grid เหมือนเดิม (ปิด scroll ด้วย sm:overflow-visible)
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ScrollRail className="-mx-5 flex gap-4 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
       {steps.map((s, i) => (
-        <Card key={s.label} step={s} index={i} showNumber={showNumber} showSub={showSub} />
+        <div key={s.label} className="w-[62%] max-w-[240px] shrink-0 sm:w-auto sm:max-w-none">
+          <Card step={s} index={i} showNumber={showNumber} showSub={showSub} />
+        </div>
       ))}
-    </div>
+    </ScrollRail>
   );
 }
 

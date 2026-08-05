@@ -63,6 +63,66 @@ function Takeaway({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** อ่านค่าความสว่างของสีพื้น (#rrggbb) — ใช้เลือกสีตัวอักษรบนแถบสีของธีมให้อ่านออกทั้งพื้นอ่อน/พื้นเข้ม */
+function isDark(hex: string) {
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.5;
+}
+
+/** การ์ดธีม — ให้ตัวธีมเป็นพระเอก: แถบสีพื้นจริงของธีม + ชื่อตัวใหญ่ + เส้น accent
+ *  แล้วค่อยตามด้วยอารมณ์ / กลุ่มที่เหมาะ / ฟอนต์กับสี */
+function ThemeCard({ theme: t }: { theme: (typeof po.themes)[number] }) {
+  const onDark = isDark(t.surface);
+  return (
+    <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+      {/* แถบสีของธีม — พื้นจริงที่ธีมนั้นใช้ + ขีด accent ด้านล่าง */}
+      <div
+        className="relative flex h-[132px] flex-col justify-end px-5 pb-5"
+        style={{ background: t.surface }}
+      >
+        <span
+          className="text-[11px] font-medium uppercase tracking-[0.16em]"
+          style={{ color: onDark ? "rgba(255,255,255,0.62)" : "rgba(0,0,0,0.42)" }}
+        >
+          Theme
+        </span>
+        <h4
+          className="mt-1 text-[27px] font-semibold leading-none tracking-[-0.015em]"
+          style={{ color: onDark ? "#ffffff" : "#1a1a1a" }}
+        >
+          {t.name}
+        </h4>
+        <span
+          className="absolute inset-x-0 bottom-0 h-[5px]"
+          style={{ background: t.accent }}
+        />
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <p className="text-[16px] font-medium leading-[1.6] text-foreground">{t.mood}</p>
+        <p className="mb-2 mt-2 text-[14px] leading-[1.7] text-muted-foreground">{t.bestFor}</p>
+        <dl className="mt-auto flex flex-col gap-2 border-t border-border pt-4 text-[13px] [margin-block-start:1.25rem]">
+          <div className="flex gap-2">
+            <dt className="w-[52px] shrink-0 text-muted-foreground">Font</dt>
+            <dd className="min-w-0 text-foreground">{t.font}</dd>
+          </div>
+          <div className="flex items-center gap-2">
+            <dt className="w-[52px] shrink-0 text-muted-foreground">Accent</dt>
+            <dd className="flex min-w-0 items-center gap-2 text-foreground">
+              <span
+                className="h-3.5 w-3.5 shrink-0 rounded-full ring-1 ring-black/10"
+                style={{ background: t.accent }}
+              />
+              {t.accentName} <span className="text-muted-foreground">{t.accent}</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  );
+}
+
 function ToolCard({ name }: { name: string }) {
   const meta = toolMeta(name);
   return (
@@ -171,7 +231,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
           </div>
         </div>
 
-        <div className="mt-6 border-t border-border" />
+        <div className="mt-5 border-t border-border" />
 
         {/* hero — หน้าต่าง code editor เนื้อในเป็นหน้า Dashboard ของแพลตฟอร์ม
             animation มีแค่ float ขึ้นลงเหมือน hero หน้าอื่น (user สั่งเรื่อง consistency) */}
@@ -287,7 +347,10 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
         {/* โครงหน้าจอของ editor */}
         <div className="mt-12">
           <H3>{po.screenFlow.title}</H3>
-          <GoalCallout>{po.screenFlow.goal}</GoalCallout>
+          {/* overview ของหน้า editor — ย่อหน้าธรรมดา ไม่ใส่กรอบเน้น (user สั่ง) */}
+          <p className="mt-[22px] text-[17px] leading-[1.8] text-muted-foreground">
+            {po.screenFlow.goal}
+          </p>
 
           {/* หน้าจอ editor ที่แกะจากไฟล์ ASCII มาทำเป็นหน้าจอจริง */}
           <div className="mt-7">
@@ -303,10 +366,6 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
               </div>
             ))}
           </div>
-
-          <p className="mt-7 text-[17px] leading-[1.8] text-muted-foreground">
-            {po.screenFlow.decisions}
-          </p>
 
           {/* dialog เลือก layout — ต้องมีบรรทัดเกริ่นก่อน ไม่งั้นมันโผล่มาเฉย ๆ
               และเป็นตัวเชื่อมไปยังบล็อก layout ด้านล่าง */}
@@ -325,31 +384,9 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
             {po.themesSection.intro}
           </p>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 min-[720px]:grid-cols-3">
+          <div className="mt-7 grid grid-cols-1 gap-5 min-[720px]:grid-cols-3">
             {po.themes.map((t) => (
-              <div key={t.key} className="rounded-xl border border-border bg-card p-5">
-                <div className="flex items-center gap-2.5">
-                  <span
-                    className="h-4 w-4 shrink-0 rounded-full ring-1 ring-black/10"
-                    style={{ background: t.accent }}
-                  />
-                  <h4 className="text-[17px] font-semibold text-foreground">{t.name}</h4>
-                </div>
-                <p className="mt-3 text-[15px] leading-[1.7] text-foreground">{t.mood}</p>
-                <p className="mt-2 text-[14px] leading-[1.7] text-muted-foreground">{t.bestFor}</p>
-                <dl className="mt-4 flex flex-col gap-1.5 border-t border-border pt-3.5 text-[13px]">
-                  <div className="flex gap-2">
-                    <dt className="w-[52px] shrink-0 text-muted-foreground">Font</dt>
-                    <dd className="min-w-0 text-foreground">{t.font}</dd>
-                  </div>
-                  <div className="flex gap-2">
-                    <dt className="w-[52px] shrink-0 text-muted-foreground">Accent</dt>
-                    <dd className="min-w-0 text-foreground">
-                      {t.accentName} <span className="text-muted-foreground">{t.accent}</span>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+              <ThemeCard key={t.key} theme={t} />
             ))}
           </div>
 

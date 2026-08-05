@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
+import { ArrowRight, Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
 import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
 import { WorkflowProcess as WorkFlow } from "@/components/home/work-flow";
@@ -67,10 +67,10 @@ function TimelineItem({
 
 export default function HomePage() {
   return (
-    <main className="py-12 min-[900px]:py-[50px]">
-      {/* HERO */}
+    <main className="py-[30px] min-[900px]:py-[50px]">
+      {/* HERO — มือถือเว้นบน/ล่าง 30px (user สั่ง) · desktop คงเดิม 50px */}
       <Reveal>
-        <section className="pb-[50px]">
+        <section className="pb-[30px] min-[900px]:pb-[50px]">
           <h1 className="text-[clamp(32px,5.4vw,48px)] font-bold leading-[1.12] tracking-[-0.028em] text-foreground">
             <span className="hero-wave mr-2.5 inline-block origin-[70%_80%]">
               {profile.hero.emoji}
@@ -192,9 +192,19 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* VIEW MY WORK CTA */}
+      {/* VIEW MY WORK CTA
+          มือถือ = ปุ่มดำเต็มความกว้าง ตัวหนังสือขาว ไม่มีมุมโค้ง (user สั่ง)
+          desktop (≥900px) = ตัวหนังสือใหญ่ + วงกลมลูกศร แบบเดิม */}
       <Reveal>
-        <div className="flex justify-end">
+        <Link
+          href={`/work/${projectSlugs[0]}`}
+          className="flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[16px] font-semibold text-white transition-opacity hover:opacity-90 min-[900px]:hidden"
+        >
+          View my work
+          <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.8} />
+        </Link>
+
+        <div className="hidden justify-end min-[900px]:flex">
           <Link
             href={`/work/${projectSlugs[0]}`}
             className="group inline-flex items-center gap-5 text-right"

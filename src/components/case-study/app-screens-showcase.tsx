@@ -1,10 +1,11 @@
 // AppScreensShowcase — จอมือถือวางบนพื้นเทา (#f3f3f1) แบบ present:
 // header = text ตัวใหญ่ (uppercase) มุมซ้ายบน · จอเลื่อนแนวนอนได้ในตัว (ไม่มีปุ่มลูกศร —
-// เลื่อนดูเอาเพราะรู้อยู่แล้วว่าต้อง scroll)
+// touchpad ปัดเอา · เมาส์กดค้างแล้วลาก ผ่าน ScrollRail) · free scroll ไม่มี snap
 // padding: ตัว panel เว้นเฉพาะบน/ล่าง — ซ้าย/ขวาเป็น padding "ภายใน rail" (เป็น gutter ของจอแรก/
 // จอสุดท้าย) จอเลยเลื่อนได้เต็มความกว้าง panel ไม่ดูเหมือนมุดใต้ padding
 
 import Image from "next/image";
+import { ScrollRail } from "./scroll-rail";
 
 type Shot = { src: string; label: string };
 
@@ -31,12 +32,13 @@ export function AppScreensShowcase({
           รูปกำลังจะมา — เร็ว ๆ นี้
         </div>
       ) : (
-        /* rail — full-width scroll; padding อยู่ "ในตัว rail" ทำหน้าที่เป็น gutter หัว/ท้าย */
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scroll-padding-inline:clamp(18px,3vw,30px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-5">
+        /* rail — full-width free scroll (ไม่มี snap); padding อยู่ "ในตัว rail" เป็น gutter หัว/ท้าย
+           ครอบด้วย ScrollRail → กดค้างลากด้วยเมาส์ได้ (PC ที่ไม่มี touchpad) */
+        <ScrollRail className="flex gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-5">
           {screens.map((s) => (
             <div
               key={s.src}
-              className="w-[46%] shrink-0 snap-start sm:w-[190px] lg:w-[204px]"
+              className="w-[46%] shrink-0 sm:w-[190px] lg:w-[204px]"
             >
               <Image
                 src={s.src}
@@ -44,11 +46,12 @@ export function AppScreensShowcase({
                 width={660}
                 height={1320}
                 sizes="(max-width: 640px) 46vw, 200px"
+                draggable={false}
                 className="block h-auto w-full drop-shadow-[0_18px_40px_-22px_rgba(30,50,90,0.5)]"
               />
             </div>
           ))}
-        </div>
+        </ScrollRail>
       )}
     </div>
   );

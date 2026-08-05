@@ -30,7 +30,7 @@ export const earlyWork = {
   title: "Early Work",
   years: "2018 – 2020",
   overview:
-    "รวมผลงานช่วงปี 2018–2020 จาก portfolio เล่มเดิม — ครอบคลุมงานออกแบบแอป เว็บ/หลังบ้าน design system และงานกราฟิก หลายชิ้นอยู่ในสายก่อสร้าง/อสังหาฯ (Builk, INSITE, Site Report) และงานฟรีแลนซ์ ช่วงนั้นยังได้รางวัลชนะเลิศ Hackathon 2019 (Builk x AWS) ด้วย — เก็บไว้เป็นคลังอ้างอิงจุดเริ่มต้น ก่อนขยับมาโฟกัสงาน product อย่างจริงจัง",
+    "รวมผลงานช่วงปี 2018–2020 ครอบคลุมงานออกแบบที่หลากหลาย ทั้งงานออกแบบแอปพลิเคชัน เว็บไซต์และระบบหลังบ้าน การวาง design system ตลอดจนงานกราฟิกสำหรับสื่อต่างๆ โดยหลายชิ้นอยู่ในสายก่อสร้างและอสังหาริมทรัพย์ ได้แก่ Builk, INSITE และ Site Report รวมถึงงานฟรีแลนซ์ที่รับทำในช่วงเวลาดังกล่าว สะท้อนขอบเขตงานที่ผ่านมาตั้งแต่การออกแบบ interface การจัดระบบงานดีไซน์ ไปจนถึงงานสื่อสารด้วยภาพ เก็บรวบรวมไว้เป็นคลังอ้างอิงถึงจุดเริ่มต้นของเส้นทางการทำงาน",
   tools: ["Figma", "Adobe XD", "Illustrator", "Photoshop"],
   /** รูปเด่นโชว์เป็น preview ในหน้าต่าง hero (ArchiveWindow) — 3 ชิ้น */
   featured: [
@@ -63,7 +63,6 @@ export const earlyWork = {
     {
       title: "Design Process",
       items: [
-        A("UX Process", "กระบวนการออกแบบ end-to-end", "process-ux"),
         A("Requirement & Ideation", "เก็บโจทย์ + ระดมไอเดีย (whiteboard)", "process-requirement", "process-requirement-2"),
         A("Design System Planning", "วางระบบดีไซน์", "process-designsystem"),
         A("Flow Diagram & User Flow", "ผังงาน + เส้นทางผู้ใช้", "process-flow", "process-flow-2"),

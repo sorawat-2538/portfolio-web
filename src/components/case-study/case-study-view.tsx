@@ -234,7 +234,7 @@ export function CaseStudyView({
         </h1>
 
         {/* identity + action bar (product-page style) */}
-        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 flex flex-col gap-4 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           {/* who — avatar + name + role */}
           <div className="flex items-center gap-3">
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
@@ -258,12 +258,12 @@ export function CaseStudyView({
 
           {/* primary action — full-width บนมือถือ / auto บน desktop */}
           {p.liveUrl && p.liveUrl !== "#" && (
-            <div className="flex w-full shrink-0 flex-wrap gap-2.5 sm:w-auto">
+            <div className="flex w-full shrink-0 flex-wrap gap-2.5 min-[900px]:w-auto">
               <a
                 href={p.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90 min-[900px]:w-auto"
               >
                 <Rocket className="h-4 w-4" />
                 เปิดดูเว็บไซต์
@@ -273,7 +273,7 @@ export function CaseStudyView({
         </div>
 
         {/* divider between the action bar and the hero */}
-        <div className="mt-6 border-t border-border" />
+        <div className="mt-5 border-t border-border" />
 
         {/* hero เดิม (ProductMock + รูป static) — เก็บไว้ก่อน; ตั้ง SHOW_HERO_MOCKS=true เพื่อกลับมาแสดง */}
         {SHOW_HERO_MOCKS && (

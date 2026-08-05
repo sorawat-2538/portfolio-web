@@ -7,12 +7,12 @@ import { profile } from "@/data/profile";
 function Avatar() {
   return (
     <div className="group relative">
-      <span className="relative block h-9 w-9 overflow-hidden rounded-full border border-border bg-hover">
+      <span className="relative block h-10 w-10 overflow-hidden rounded-full border border-border bg-hover">
         <Image
           src={profile.hero.avatar}
           alt={profile.name}
           fill
-          sizes="36px"
+          sizes="40px"
           className="object-cover object-top [image-rendering:pixelated]"
         />
       </span>

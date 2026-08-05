@@ -11,6 +11,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ScrollRail } from "./scroll-rail";
 
 type WebScreen = { src?: string; label?: string; group?: string; w?: number; h?: number };
 type Shot = WebScreen & { src: string };
@@ -136,12 +137,13 @@ export function WebScreensPanel({
           })}
         </div>
       ) : (
-        /* rail — จอเรียง scroll แนวนอน · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา */
-        <div className="flex snap-x snap-mandatory items-start gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scroll-padding-inline:clamp(18px,3vw,30px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6">
+        /* rail — จอเรียง free scroll แนวนอน (ไม่มี snap) · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา
+           ScrollRail = กดค้างลากด้วยเมาส์ได้ (ลากแล้วปล่อยจะไม่เปิด lightbox) */
+        <ScrollRail className="flex items-start gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6">
           {columns.map((col, ci) => (
             <div
               key={ci}
-              className="flex w-[78%] shrink-0 snap-start flex-col gap-4 sm:w-[320px]"
+              className="flex w-[78%] shrink-0 flex-col gap-4 sm:w-[320px]"
             >
               {col.map(({ s, i }) => (
                 <button
@@ -159,13 +161,14 @@ export function WebScreensPanel({
                     sizes="(max-width: 640px) 78vw, 320px"
                     quality={88}
                     unoptimized
+                    draggable={false}
                     className="block h-auto w-full"
                   />
                 </button>
               ))}
             </div>
           ))}
-        </div>
+        </ScrollRail>
       )}
 
       {/* fullscreen lightbox — เต็มหน้า เลื่อนได้ + prev/next (เหมือน ScreenGallery) */}

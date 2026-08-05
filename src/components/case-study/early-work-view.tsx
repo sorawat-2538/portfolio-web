@@ -67,7 +67,7 @@ export function EarlyWorkView() {
           </div>
         </div>
 
-        <div className="mt-6 border-t border-border" />
+        <div className="mt-5 border-t border-border" />
 
         {/* ── HERO — หน้าต่าง "คลังงานเก่า" (สไตล์เดียวกับ terminal ของหน้า
             Data & AI Workflow) · รูปเด่น 3 ชิ้นอยู่ในพาเนล output ── */}

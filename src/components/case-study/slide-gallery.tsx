@@ -143,9 +143,11 @@ export function ArchiveGallery({
 
               {/* sticky navbar — ผู้จัดทำ + download (fix ตอน scroll) */}
               <div className="sticky top-0 z-10 border-b border-border bg-card">
-                <div className="mx-auto flex w-full max-w-[1024px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
-                  {/* author — ขนาดเดียวกับหน้าหลัก */}
-                  <div className="flex items-center gap-3">
+                {/* มือถือ/แท็บเล็ต = ชื่อบน · ปุ่มเต็มความกว้างข้างล่าง (user สั่ง)
+                    desktop (≥900px) = เรียงข้างกัน ชื่อซ้าย ปุ่มขวา */}
+                <div className="mx-auto flex w-full max-w-[1024px] flex-col gap-3 px-5 pb-5 pt-3 sm:px-8 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between min-[900px]:gap-4 min-[900px]:py-3">
+                  {/* author — ขนาดเดียวกับหน้าหลัก · pr เว้นที่ให้ปุ่มปิดที่ลอยขวาบน */}
+                  <div className="flex items-center gap-3 pr-14 min-[900px]:pr-0">
                     <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
                       <Image
                         src={profile.hero.avatar}
@@ -166,13 +168,13 @@ export function ArchiveGallery({
                   </div>
 
                   {/* download app — ใช้ปุ่มเดียวกับ header หน้า case study (ถ้ามีลิงก์)
-                      max-lg:mr-14 = เว้นที่ให้ close ขวาสุดเฉพาะจอแคบ (จอกว้าง close อยู่ไกลริมจออยู่แล้ว) */}
+                      อยู่แถวล่างเต็มความกว้างจนถึง 900px แล้วค่อยไปอยู่ขวาของชื่อ */}
                   {open.appStore && (
                     <a
                       href={open.appStore}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 max-lg:mr-14"
+                      className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 min-[900px]:w-auto"
                     >
                       <ExternalLink className="h-4 w-4" />
                       App Store

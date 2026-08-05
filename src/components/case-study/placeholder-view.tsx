@@ -95,7 +95,7 @@ export function PlaceholderView({
         </h1>
 
         {/* identity bar — avatar + name + role (ตำแหน่งเดียวกับหน้าจริง) */}
-        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 flex flex-col gap-4 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="flex items-center gap-3">
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
               <Image
@@ -124,7 +124,7 @@ export function PlaceholderView({
                   href={p.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 min-[900px]:w-auto"
                 >
                   <Rocket className="h-4 w-4" />
                   เปิดดูเว็บไซต์
@@ -135,7 +135,7 @@ export function PlaceholderView({
                   href={p.appStoreUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-white outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 min-[900px]:w-auto"
                 >
                   <ExternalLink className="h-4 w-4" />
                   App Store
@@ -145,7 +145,7 @@ export function PlaceholderView({
           )}
         </div>
 
-        <div className="mt-6 border-t border-border" />
+        <div className="mt-5 border-t border-border" />
 
         {/* hero — laptop+phone present > phone screens > empty state */}
         {hasPresent ? (
