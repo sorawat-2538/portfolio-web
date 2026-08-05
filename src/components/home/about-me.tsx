@@ -5,13 +5,14 @@ export function AboutMe() {
   return (
     <section className="flex flex-col items-center rounded-xl border border-border p-8 text-center sm:p-[50px]">
       {/* avatar */}
-      <div className="relative h-[150px] w-[150px] overflow-hidden rounded-full bg-hover ring-4 ring-[#f4d98c]/70">
+      {/* avatar ลายเส้น (ชุดเดียวกับ navbar) — พื้นขาว ใช้เส้นขอบเป็นตัวกำหนดวงกลม */}
+      <div className="relative h-[150px] w-[150px] overflow-hidden rounded-full border border-border bg-white">
         <Image
-          src={profile.hero.avatar}
+          src={profile.hero.aboutAvatar}
           alt={profile.name}
           fill
           sizes="150px"
-          className="object-cover object-top [image-rendering:pixelated]"
+          className="object-cover"
         />
       </div>
 

@@ -7,13 +7,15 @@ import { profile } from "@/data/profile";
 function Avatar() {
   return (
     <div className="group relative">
-      <span className="relative block h-10 w-10 overflow-hidden rounded-full border border-border bg-hover">
+      {/* avatar navbar — รูป original (พื้นขาว) + เส้นขอบ 1px เป็นตัวกำหนดขอบวงกลม
+          ตัวเลือกอีกแบบที่เคยลอง: ลายเส้นโปร่งใสบนพื้น #E4E6EA ไม่มีขอบ (ไฟล์ avatar-nav-v2.png) */}
+      <span className="relative block h-10 w-10 overflow-hidden rounded-full border border-border bg-white">
         <Image
-          src={profile.hero.avatar}
+          src={profile.hero.navAvatar}
           alt={profile.name}
           fill
           sizes="40px"
-          className="object-cover object-top [image-rendering:pixelated]"
+          className="object-cover"
         />
       </span>
       {/* hover toast */}
@@ -33,7 +35,7 @@ function Logo() {
     >
       <svg
         width="32"
-        height="19"
+        height="20"
         viewBox="0 0 34 20"
         fill="none"
         aria-hidden="true"
@@ -61,7 +63,22 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-[1180px] items-center justify-between px-5 sm:px-8 min-[900px]:px-0">
-        <Logo />
+        {/* mobile — เมนูซ้าย · โลโก้ต่อท้ายชิดซ้าย · Resume ดันไปขวาสุด */}
+        <div className="flex w-full items-center gap-3 min-[900px]:hidden">
+          <MenuButton />
+          <Logo />
+          <a
+            href={profile.resumeUrl}
+            className="ml-auto inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-4 py-2 text-[13.5px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Resume
+          </a>
+        </div>
+
+        {/* desktop — โลโก้ซ้าย · controls ขวา */}
+        <div className="hidden min-[900px]:block">
+          <Logo />
+        </div>
 
         {/* desktop controls */}
         <nav className="hidden items-center gap-5 min-[900px]:flex">
@@ -82,11 +99,6 @@ export function SiteHeader() {
           </a>
         </nav>
 
-        {/* mobile controls */}
-        <div className="flex items-center gap-2.5 min-[900px]:hidden">
-          <Avatar />
-          <MenuButton />
-        </div>
       </div>
     </header>
   );

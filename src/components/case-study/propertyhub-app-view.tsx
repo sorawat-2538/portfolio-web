@@ -190,7 +190,7 @@ function PhoneShot({
 // ── page ─────────────────────────────────────────────────────────────────────
 export function PropertyhubAppView({ project: p }: { project: PlaceholderProject }) {
   return (
-    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -203,8 +203,8 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
             desktop (≥900px) = เรียงข้างกัน ชื่อซ้าย ปุ่มขวา */}
         <div className="mt-5 flex flex-col gap-4 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="flex items-center gap-3">
-            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
-              <Image src={profile.hero.avatar} alt={profile.name} fill sizes="40px" className="object-cover object-top [image-rendering:pixelated]" />
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-white">
+              <Image src={profile.hero.navAvatar} alt={profile.name} fill sizes="40px" className="object-cover" />
             </span>
             <div className="min-w-0 leading-tight">
               <div className="text-[15px] font-semibold text-foreground">{profile.fullName}</div>

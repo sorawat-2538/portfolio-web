@@ -85,7 +85,7 @@ export function PlaceholderView({
   const hasPresent = Boolean(p.heroWeb && p.heroPhone);
 
   return (
-    <article className="pt-5 pb-12 font-sans font-normal min-[900px]:py-[50px]">
+    <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
       {/* ── HEADER — เหมือนหน้า project จริงทุกอย่าง ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -97,13 +97,13 @@ export function PlaceholderView({
         {/* identity bar — avatar + name + role (ตำแหน่งเดียวกับหน้าจริง) */}
         <div className="mt-5 flex flex-col gap-4 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between">
           <div className="flex items-center gap-3">
-            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-white">
               <Image
-                src={profile.hero.avatar}
+                src={profile.hero.navAvatar}
                 alt={profile.name}
                 fill
                 sizes="40px"
-                className="object-cover object-top [image-rendering:pixelated]"
+                className="object-cover"
               />
             </span>
             <div className="min-w-0 leading-tight">

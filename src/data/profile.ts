@@ -24,6 +24,12 @@ export const profile = {
     statement:
       "ผมเชื่อว่างานออกแบบที่ดีเริ่มจากความใส่ใจ — ใส่ใจตั้งแต่ภาพรวมไปจนถึงทุกพิกเซล",
     avatar: "/uploads/profile.png",
+    /** avatar เวอร์ชันลายเส้นขาวดำ พื้นโปร่งใส — ใช้เฉพาะวงกลมเล็กบน navbar
+     *  สีพื้นวงกลมคุมด้วย CSS ที่ site-header.tsx (เปลี่ยนสีได้โดยไม่ต้องทำรูปใหม่)
+     *  ⚠️ ถ้าแก้ไฟล์รูป ให้เปลี่ยนชื่อไฟล์ด้วย ไม่งั้น cache ของ next/image ค้างรูปเก่า */
+    navAvatar: "/uploads/avatar-nav-74.png",
+    /** avatar ลายเส้นตัวใหญ่ — วงกลม 150px ใน section About Me */
+    aboutAvatar: "/uploads/avatar-about.png",
   },
 
   about: [

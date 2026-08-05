@@ -67,7 +67,7 @@ function TimelineItem({
 
 export default function HomePage() {
   return (
-    <main className="py-[30px] min-[900px]:py-[50px]">
+    <main className="pb-5 pt-[30px] min-[900px]:py-[50px]">
       {/* HERO — มือถือเว้นบน/ล่าง 30px (user สั่ง) · desktop คงเดิม 50px */}
       <Reveal>
         <section className="pb-[30px] min-[900px]:pb-[50px]">
@@ -190,7 +190,8 @@ export default function HomePage() {
         <ContactMe />
       </Reveal>
 
-      <Divider />
+      {/* เส้นคั่นก่อนปุ่มปิดท้าย — มือถือชิดกว่าเส้นอื่น (เว้น 20px เหนือปุ่มตามที่ user สั่ง) */}
+      <div className="my-5 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* VIEW MY WORK CTA
           มือถือ = ปุ่มดำเต็มความกว้าง ตัวหนังสือขาว ไม่มีมุมโค้ง (user สั่ง)

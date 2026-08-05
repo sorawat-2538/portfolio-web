@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Folder, Mail, X } from "lucide-react";
@@ -30,7 +31,7 @@ function NavAccordion({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav>
-      {navGroups.map((group) => {
+      {navGroups.map((group, i) => {
         const isOpen = !!open[group.key];
         return (
           <div key={group.key} className="border-b-2 border-foreground">
@@ -39,7 +40,11 @@ function NavAccordion({ onNavigate }: { onNavigate?: () => void }) {
               onClick={() =>
                 setOpen((s) => ({ ...s, [group.key]: !s[group.key] }))
               }
-              className="flex w-full items-center justify-between gap-2.5 px-0.5 py-4 text-left text-foreground"
+              // โฟลเดอร์แรกตัด padding-top ทิ้ง — ไม่งั้นซ้อนกับ padding 20px ของ content แล้วห่างเกิน
+              className={
+                "flex w-full items-center justify-between gap-2.5 px-0.5 pb-4 text-left text-foreground " +
+                (i === 0 ? "pt-0" : "pt-4")
+              }
             >
               <span className="flex items-center gap-2.5 whitespace-nowrap text-2xl font-semibold tracking-[-0.015em]">
                 <Folder className="h-5 w-5 shrink-0 text-foreground" strokeWidth={1.8} />
@@ -117,21 +122,26 @@ export function SiteSidebar() {
       )}
       <aside
         className={
-          "fixed left-0 top-0 z-[80] h-screen w-[min(86vw,340px)] overflow-y-auto border-r border-border bg-background px-6 pb-[34px] pt-7 transition-transform duration-[340ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-[900px]:hidden " +
+          // ไม่มี padding ที่ตัว aside — แบ่งเป็น 2 ส่วน (header / content) ที่คุม padding เอง
+          // เส้นคั่นใต้ header จึงลากได้เต็มความกว้าง drawer (ไม่ถูก padding ตัดหัวท้าย)
+          "fixed left-0 top-0 z-[80] flex h-screen w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-border bg-background transition-transform duration-[340ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-[900px]:hidden " +
           (open
             ? "translate-x-0 shadow-[0_0_60px_rgba(0,0,0,0.22)]"
             : "-translate-x-[105%]")
         }
       >
-        <div className="mb-1.5 flex items-center justify-between gap-3">
-          <span className="flex items-center gap-2.5 text-foreground">
-            <svg width="30" height="18" viewBox="0 0 34 20" fill="none" aria-hidden="true" className="block">
-              <circle cx="7" cy="12.5" r="6" fill="currentColor" />
-              <rect x="18.5" y="-1" width="6.2" height="22" rx="3.1" transform="rotate(22 21.6 10)" fill="currentColor" />
-            </svg>
-            <span className="text-lg font-bold tracking-[-0.02em]">
-              {profile.name}
-            </span>
+        {/* ── ส่วนที่ 1: HEADER (navbar ของ drawer) ──
+            avatar แทนชื่อ S.Tunaram (ย้ายมาจาก navbar มือถือ ที่วางคู่ปุ่มเมนูแล้วดูเบียด)
+            เส้นคั่นเต็มความกว้าง แยกออกจาก content ด้านล่างชัดเจน */}
+        <div className="flex h-[76px] shrink-0 items-center justify-between gap-3 border-b border-border px-5">
+          <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-white">
+            <Image
+              src={profile.hero.navAvatar}
+              alt={profile.name}
+              fill
+              sizes="40px"
+              className="object-cover"
+            />
           </span>
           <button
             type="button"
@@ -143,19 +153,22 @@ export function SiteSidebar() {
           </button>
         </div>
 
-        <NavAccordion onNavigate={() => setOpen(false)} />
+        {/* ── ส่วนที่ 2: CONTENT (เมนู + CTA) — padding 20px รอบด้าน ── */}
+        <div className="p-5">
+          <NavAccordion onNavigate={() => setOpen(false)} />
 
-        {/* CTA ปิดท้าย drawer — ปุ่มดำ ตัวหนังสือขาว ไม่มีมุมโค้ง (user สั่ง)
-            แทนลิสต์ email/LinkedIn เดิม · พาไป section Contact Me บนหน้าแรก */}
-        <div className="mt-6 border-t border-border pt-[18px]">
-          <Link
-            href="/#contact"
-            onClick={() => setOpen(false)}
-            className="flex w-full items-center justify-center gap-2.5 bg-foreground px-5 py-3.5 text-[15px] font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            <Mail className="h-[18px] w-[18px]" strokeWidth={1.8} />
-            Contact Me
-          </Link>
+          {/* CTA ปิดท้าย drawer — ปุ่มดำ ตัวหนังสือขาว ไม่มีมุมโค้ง (user สั่ง)
+              แทนลิสต์ email/LinkedIn เดิม · พาไป section Contact Me บนหน้าแรก */}
+          <div className="mt-6 border-t border-border pt-[18px]">
+            <Link
+              href="/#contact"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center justify-center gap-2.5 bg-foreground px-5 py-3.5 text-[15px] font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              <Mail className="h-[18px] w-[18px]" strokeWidth={1.8} />
+              Contact Me
+            </Link>
+          </div>
         </div>
       </aside>
     </>

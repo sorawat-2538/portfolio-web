@@ -14,8 +14,9 @@ export function ProjectNav({ slug }: { slug: string }) {
   if (!prev && !next) return null;
 
   // งานสุดท้ายไม่มี next → มือถือไม่ต้องโชว์แถบนี้เลย (ไม่งั้นเหลือเส้นคั่นกับที่ว่าง)
+  // มือถือ: เว้น 20px ทั้งเหนือและใต้ปุ่ม (ใต้ปุ่มมาจาก pb-5 ของ <article>)
   const wrap =
-    "mt-8 border-t border-border pt-6 min-[900px]:mt-[50px] min-[900px]:pt-8" +
+    "mt-5 border-t border-border pt-5 min-[900px]:mt-[50px] min-[900px]:pt-8" +
     (next ? "" : " hidden min-[900px]:block");
 
   return (

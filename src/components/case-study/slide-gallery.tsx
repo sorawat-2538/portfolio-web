@@ -148,13 +148,13 @@ export function ArchiveGallery({
                 <div className="mx-auto flex w-full max-w-[1024px] flex-col gap-3 px-5 pb-5 pt-3 sm:px-8 min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between min-[900px]:gap-4 min-[900px]:py-3">
                   {/* author — ขนาดเดียวกับหน้าหลัก · pr เว้นที่ให้ปุ่มปิดที่ลอยขวาบน */}
                   <div className="flex items-center gap-3 pr-14 min-[900px]:pr-0">
-                    <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-hover">
+                    <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-white">
                       <Image
-                        src={profile.hero.avatar}
+                        src={profile.hero.navAvatar}
                         alt={profile.name}
                         fill
                         sizes="40px"
-                        className="object-cover object-top [image-rendering:pixelated]"
+                        className="object-cover"
                       />
                     </span>
                     <div className="min-w-0 leading-tight">
