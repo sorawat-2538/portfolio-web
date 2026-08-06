@@ -16,9 +16,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "S.Tunaram — Product Designer",
+  title: "S.Tunaram — UX/UI Designer",
   description:
-    "Portfolio of S.Tunaram — a solo product designer working hypothesis-driven, with manual A/B testing (GA4 + Clarity).",
+    "Portfolio of S.Tunaram — a UX/UI designer with 7+ years as the sole designer at a construction tech startup and a digital media platform, owning end-to-end design across web and mobile.",
 };
 
 export default function RootLayout({

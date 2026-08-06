@@ -1,21 +1,18 @@
 import {
   AppWindow,
-  Bot,
   Boxes,
-  Braces,
-  BrainCircuit,
   Brush,
   ClipboardCheck,
-  Code2,
-  FileCode2,
   Frame,
   GitBranch,
   Image as ImageIcon,
+  LayoutTemplate,
+  MonitorSmartphone,
   MousePointerClick,
   Palette,
-  PenTool,
   Search,
   Sparkles,
+  SquareKanban,
   Workflow,
   type LucideIcon,
 } from "lucide-react";
@@ -29,17 +26,14 @@ const ICONS: Record<string, LucideIcon> = {
   ClipboardCheck,
   Boxes,
   Workflow,
+  LayoutTemplate,
+  MonitorSmartphone,
   Frame,
-  PenTool,
   Image: ImageIcon,
   Brush,
-  Code2,
-  FileCode2,
-  Sparkles,
-  Bot,
+  SquareKanban,
   GitBranch,
-  BrainCircuit,
-  Braces,
+  Sparkles,
 };
 
 export function SkillsGrid() {
@@ -51,7 +45,9 @@ export function SkillsGrid() {
             {group.title}
           </h3>
 
-          <div className="mt-4 grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+          {/* auto-fill (ไม่ใช่ auto-fit) — กลุ่มที่มีของไม่ครบแถว เช่น 2 ชิ้นใน 3 ช่อง
+              จะคงความกว้างช่องเดิมไว้ ปล่อยช่องที่เหลือว่าง ไม่ยืดกล่องให้เต็มแถว */}
+          <div className="mt-4 grid gap-3.5 [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
             {group.items.map((item) => {
               const Icon = ICONS[item.icon] ?? Sparkles;
               return (

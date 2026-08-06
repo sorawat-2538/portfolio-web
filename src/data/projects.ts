@@ -249,15 +249,15 @@ export const projects = {
       goal: "เป้าหมายหลักของหน้า Project page คือ ส่งผู้ใช้ต่อไปยังหน้า listing เช่า/ขายคอนโด (/เช่าคอนโด · /ขายคอนโด) ให้ได้มากที่สุด — ยิ่งพาไปเจอ listing ที่ตรง intent มากเท่าไหร่ ยิ่งมีโอกาสกด contact agent ซึ่งเป็น revenue signal ของ Propertyhub",
       steps: [
         {
-          title: "หลัง redesign หน้า Project Detail ใหม่ ผมวัดผลยังไง?",
-          body: "หลังปล่อย design ใหม่ ผมไม่มี A/B testing tool หรือ research budget จึงวัดผลเองด้วย 3 เครื่องมือฟรี",
+          title: "วิธีวัดผลหลัง redesign หน้า Project Detail",
+          body: "ภายใต้ข้อจำกัดที่ไม่มี A/B testing tool และไม่มี research budget การวัดผลหลังปล่อย design ใหม่จึงอาศัยเครื่องมือที่เข้าถึงได้ 3 ตัว — GA4 Funnel Exploration สำหรับติดตาม conversion ตลอด funnel · Microsoft Clarity สำหรับอ่านพฤติกรรมการใช้งานจริง · และ Zimple Analytics สำหรับยืนยันผลและกำหนดเป้าหมายถัดไป",
           images: [
             { src: "/uploads/propertyhub-project-detail.jpg", caption: "หน้า Project Detail ที่ redesign ใหม่ — จุดตั้งต้นของการวัดผล", w: 1600, h: 5106 },
           ],
         },
         {
           title: "วัดผลด้วย GA4 — Funnel Exploration",
-          body: "ตั้ง Funnel Exploration ใน GA4 เอง 4 ขั้น (เข้าหน้าโครงการ → ไปหน้า listing result → เข้าหน้า listing detail → กด contact agent) เพื่อดูว่าหน้า Project ใหม่ยังทำงานได้ดีหรือแย่ลงเมื่อเทียบกับ design เก่า ในช่วงเวลาใกล้เคียงกัน — จากรูป ขั้นแรก session ของ design เก่าจะสูงกว่าราวเท่าตัว เพราะเรื่อง consent การกด Accept cookies ของเว็บ แต่ช่วงกลางและปลาย funnel session ใกล้เคียงกันมาก และเมื่อดูตัวเลขจะเห็นว่า design ใหม่ส่ง user ไปถึงขั้นที่ 4 (กด contact agent) ได้มากกว่า design เก่า",
+          body: "ตั้ง Funnel Exploration ใน GA4 เอง 4 ขั้น (เข้าหน้าโครงการ → ไปหน้า listing result → เข้าหน้า listing detail → กด contact agent) เพื่อดูว่าหน้า Project ใหม่ยังทำงานได้ดีหรือแย่ลงเมื่อเทียบกับ design เก่า ในช่วงเวลาใกล้เคียงกัน — จากรูป ขั้นแรก session ของ design เก่าจะสูงกว่าราวเท่าตัว เพราะเรื่อง consent การกด Accept cookies ของเว็บ แต่ช่วงกลางและปลาย funnel session ใกล้เคียงกันมาก การวิเคราะห์จึงโฟกัสที่ช่วงกลางถึงปลาย funnel ซึ่งเทียบกันได้ตรงกว่า และพบว่า design ใหม่ส่งผู้ใช้ไปถึงขั้นที่ 4 (กด contact agent) ซึ่งเป็น conversion หลักของแพลตฟอร์ม ได้ในสัดส่วนที่สูงกว่า — จาก 1.6% เป็น 3.0% ของ session",
           images: [
             { src: "/uploads/ph-ga4-funnel.jpg", caption: "GA4 Funnel Exploration — 4 ขั้น เทียบ design เก่า (ฟ้า) กับใหม่ (ม่วง) ช่วงเวลาใกล้เคียงกัน", w: 2400, h: 1122 },
           ],
@@ -280,16 +280,18 @@ export const projects = {
       ],
     },
     expWhy:
-      "ไม่มี A/B testing tool และ research budget ผมจึงออกแบบ manual A/B test โดยใช้ GA4 event + Microsoft Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate แบบ before/after ของ variant เดิมกับ design ใหม่",
+      "ภายใต้ข้อจำกัดที่ไม่มี A/B testing tool และ research budget จึงออกแบบ manual A/B test ขึ้นเอง โดยเก็บพฤติกรรมจริงผ่าน GA4 event ร่วมกับ Microsoft Clarity แล้วเปรียบเทียบ conversion rate แบบ before/after ระหว่าง design เดิมกับ design ใหม่",
     expSegment: "[ วิธีแบ่ง variant — เช่น by user ID ]",
     expTracking: "GA4 event + Microsoft Clarity",
     expDuration: "[ __ สัปดาห์ ]",
     expSample: "Before [ __,000 ] · After [ __,000 ] sessions",
+    // ⚠️ ฟิลด์ result*/devices ชุดนี้ยังไม่มี component ไหนเรนเดอร์ (ไม่มี section Results ในหน้า)
+    //    ตัวเลขจริงที่ผู้ใช้เห็น อยู่ใน measure.steps ขั้น GA4 ด้านบน
     resultPrimary: {
-      label: "CTR: Project page → Listing Result",
-      before: "[ ก่อน ]",
-      after: "[ หลัง ]",
-      delta: "+[ __% ] relative improvement",
+      label: "Contact agent rate (% ของ session)",
+      before: "1.6%",
+      after: "3.0%",
+      delta: "+88% relative improvement",
     },
     resultsSecondary: [
       { label: "Listing detail → result conversion", change: "[ ก่อน ] → [ หลัง ]  ([ +% ])" },

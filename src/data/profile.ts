@@ -13,7 +13,8 @@ export const profile = {
   lineId: "sorawat2538",
   location: "Bangkok, Thailand",
   linkedin: "https://www.linkedin.com/in/sorawat-tunaram-497091207/",
-  resumeUrl: "#", // TODO: ลิงก์ resume แยกจาก portfolio (เช่น PDF / Google Drive)
+  // ไฟล์อยู่ที่ public/ — อัปเดต resume = วางไฟล์ทับชื่อเดิม ไม่ต้องแก้โค้ด
+  resumeUrl: "/resume-sorawat-tunaram.pdf",
 
   hero: {
     greeting: "Hello there! I'm",
@@ -73,15 +74,15 @@ export const profile = {
       company: "Zimple Media",
       tag: "Real estate",
       description:
-        "บริษัทแพลตฟอร์มสื่อดิจิทัล ผู้ให้บริการเว็บไซต์ Renthub เว็บหาหอพักอันดับ 1 ในประเทศไทย",
+        "บริษัทแพลตฟอร์มสื่อดิจิทัล ผู้ให้บริการเว็บไซต์ Renthub สำหรับหาหอพักและห้องเช่า และเว็บไซต์ Propertyhub สำหรับซื้อ ขาย และเช่าอสังหาริมทรัพย์",
     },
     {
       period: "2018 - 2021",
-      title: "UX/UI Designer",
+      title: "Junior UX/UI Designer",
       company: "Builk One Group",
       tag: "Construction",
       description:
-        "บริษัทสตาร์ทเทคโนโลยีเพื่ออุตสาหกรรมก่อสร้างและอสังหาริมทรัพย์",
+        "บริษัทสตาร์ทอัพด้านเทคโนโลยีเพื่ออุตสาหกรรมการก่อสร้าง",
     },
   ],
 
@@ -98,37 +99,32 @@ export const profile = {
   // Technical Skills แบ่ง 3 กลุ่ม — icon แต่ละอันอ้างชื่อจาก lucide-react
   skillGroups: [
     {
-      title: "Design Skills",
+      title: "Design",
       items: [
-        { label: "User Research", icon: "Search" },
+        { label: "Research", icon: "Search" },
         { label: "User Interface Design", icon: "AppWindow" },
         { label: "Visual Design", icon: "Palette" },
         { label: "Prototyping", icon: "MousePointerClick" },
         { label: "Usability Testing", icon: "ClipboardCheck" },
         { label: "Design System", icon: "Boxes" },
         { label: "User Flow", icon: "Workflow" },
+        { label: "Wireframing", icon: "LayoutTemplate" },
+        { label: "Responsive & Mobile UI", icon: "MonitorSmartphone" },
       ],
     },
     {
-      title: "Computer Skills",
+      title: "Tools",
       items: [
         { label: "Figma", icon: "Frame" },
-        { label: "Adobe XD", icon: "PenTool" },
-        { label: "Adobe Photoshop", icon: "Image" },
-        { label: "Adobe Illustrator", icon: "Brush" },
-        { label: "VS Code", icon: "Code2" },
-        { label: "HTML", icon: "FileCode2" },
+        { label: "Photoshop", icon: "Image" },
+        { label: "Illustrator", icon: "Brush" },
       ],
     },
     {
-      title: "AI Skills",
+      title: "AI-Assisted Workflow",
       items: [
-        { label: "Claude Design", icon: "Sparkles" },
-        { label: "Claude Code", icon: "Bot" },
-        { label: "Claude → MCP → Figma", icon: "Workflow" },
         { label: "AI Design Workflow", icon: "GitBranch" },
-        { label: "AI Agents", icon: "BrainCircuit" },
-        { label: "Design Tokens", icon: "Braces" },
+        { label: "AI Prototyping", icon: "Sparkles" },
       ],
     },
   ],

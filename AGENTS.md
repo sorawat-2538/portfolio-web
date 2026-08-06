@@ -57,7 +57,8 @@ public/  uploads/ (รูปงาน) · fonts/ (aktiv-grotesk-thai.woff2)
 - animation: `<Reveal>` (fade+rise ตอน scroll เข้า, respect reduced-motion) · constellation หมุนด้วย CSS
 
 ## Deploy / สถานะ
-- live: https://portfolio-web-sigma-tan.vercel.app · GitHub: `sorawat-2538/portfolio-web` (auto-deploy ทุก push main)
+- live: **https://sorawat.vercel.app** (domain หลัก — ที่ใช้ในเรซูเม่) · URL เดิม `portfolio-web-sigma-tan.vercel.app` redirect มาที่นี่
+- GitHub: `sorawat-2538/portfolio-web` (auto-deploy ทุก push main)
 - ⚠️ **AI push เองไม่ได้บนเครื่องนี้** — remote เป็น HTTPS, ไม่มี `~/.ssh`, ไม่มี `gh`, `credential.helper=manager`
   ต้องเด้ง GUI ให้ login ซึ่ง session ของ AI เปิดไม่ได้ → **ให้ user รัน `git push origin main` เองใน terminal**
 - workflow ประจำ: user review บน localhost ก่อน แล้วค่อยสั่ง "ขึ้นเว็บ"

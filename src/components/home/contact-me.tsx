@@ -68,7 +68,7 @@ const rows: Row[] = [
   },
   {
     label: "Location",
-    value: "Sutthisan, Bangkok",
+    value: profile.location,
     icon: MapPin,
   },
   {

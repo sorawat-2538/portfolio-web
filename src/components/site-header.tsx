@@ -69,6 +69,8 @@ export function SiteHeader() {
           <Logo />
           <a
             href={profile.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="ml-auto inline-flex shrink-0 items-center gap-2 rounded-full bg-brand px-4 py-2 text-[13.5px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Resume
@@ -93,6 +95,8 @@ export function SiteHeader() {
           <Avatar />
           <a
             href={profile.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-[13.5px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Resume
