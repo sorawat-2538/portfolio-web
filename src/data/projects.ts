@@ -250,7 +250,7 @@ export const projects = {
       steps: [
         {
           title: "วิธีวัดผลหลัง redesign หน้า Project Detail",
-          body: "ภายใต้ข้อจำกัดที่ไม่มี A/B testing tool และไม่มี research budget การวัดผลหลังปล่อย design ใหม่จึงอาศัยเครื่องมือที่เข้าถึงได้ 3 ตัว — GA4 Funnel Exploration สำหรับติดตาม conversion ตลอด funnel · Microsoft Clarity สำหรับอ่านพฤติกรรมการใช้งานจริง · และ Zimple Analytics สำหรับยืนยันผลและกำหนดเป้าหมายถัดไป",
+          body: "การวัดผลหลังปล่อย design ใหม่ใช้เครื่องมือ 3 ตัวประกอบกัน — GA4 Funnel Exploration สำหรับติดตาม conversion ตลอด funnel · Microsoft Clarity สำหรับอ่านพฤติกรรมการใช้งานจริง · และ Zimple Analytics สำหรับยืนยันผลและกำหนดเป้าหมายถัดไป",
           images: [
             { src: "/uploads/propertyhub-project-detail.jpg", caption: "หน้า Project Detail ที่ redesign ใหม่ — จุดตั้งต้นของการวัดผล", w: 1600, h: 5106 },
           ],
