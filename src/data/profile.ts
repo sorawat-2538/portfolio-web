@@ -29,8 +29,9 @@ export const profile = {
      *  สีพื้นวงกลมคุมด้วย CSS ที่ site-header.tsx (เปลี่ยนสีได้โดยไม่ต้องทำรูปใหม่)
      *  ⚠️ ถ้าแก้ไฟล์รูป ให้เปลี่ยนชื่อไฟล์ด้วย ไม่งั้น cache ของ next/image ค้างรูปเก่า */
     navAvatar: "/uploads/avatar-nav-74.png",
-    /** avatar ลายเส้นตัวใหญ่ — วงกลม 150px ใน section About Me */
-    aboutAvatar: "/uploads/avatar-about.png",
+    /** รูปถ่ายจริง — วงกลม 150px ใน section About Me (ลายเส้นเดิมอยู่ที่ avatar-about.png)
+     *  ⚠️ ถ้าเปลี่ยนรูป ให้เปลี่ยนชื่อไฟล์ด้วย ไม่งั้น cache ของ next/image ค้างรูปเก่า */
+    aboutAvatar: "/uploads/avatar-about-photo.jpg",
   },
 
   about: [
@@ -106,8 +107,8 @@ export const profile = {
         { label: "Visual Design", icon: "Palette" },
         { label: "Prototyping", icon: "MousePointerClick" },
         { label: "Usability Testing", icon: "ClipboardCheck" },
-        { label: "Design System", icon: "Boxes" },
-        { label: "User Flow", icon: "Workflow" },
+        { label: "Design Systems", icon: "Boxes" },
+        { label: "User Flows", icon: "Workflow" },
         { label: "Wireframing", icon: "LayoutTemplate" },
         { label: "Responsive & Mobile UI", icon: "MonitorSmartphone" },
       ],
