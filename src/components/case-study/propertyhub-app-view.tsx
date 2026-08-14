@@ -1,131 +1,75 @@
 // PropertyhubAppView — case study เต็มของ "Propertyhub App"
-// โครง: Header (+ปุ่มดาวน์โหลดแอป) → Overview → Tools
-// → Design System (Color/Typography/Icon) → Screens (แยกตามเมนูแอป 6 เมนู + Detail:
-//   Home / Detail / Listings / Activity / Messages / Notifications / Menu)
-// Overview อ่านจาก data/projects.ts (placeholderProjects["propertyhub-app"].overview)
+// โครง: Header (+ปุ่มดาวน์โหลดแอป) → Overview → Tools → Business Goal
+// → Process & Key Decisions (Requirement / Research / Wireframe & Style Guide → Decision 1..n)
+// → Final User Interface (พื้นเทาผืนเดียว แบ่งกลุ่มด้วยชื่อหน้า · กริด 3 จอต่อแถว)
+//
+// ข้อความ + รูป Style Guide อ่านจาก data/projects.ts
+// (placeholderProjects["propertyhub-app"] → overview / processNote / processPhases / decisions)
+// เหลือแค่ MAIN_GROUPS (จอในแต่ละหน้า) ที่ยังอยู่ในไฟล์นี้
 
 import Image from "next/image";
-import {
-  Bell,
-  ExternalLink,
-  FileText,
-  Home,
-  LayoutGrid,
-  LayoutList,
-  Menu,
-  MessageSquareText,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
+// ไอคอนของ tab (Bell/Home/Menu ฯลฯ) ไม่ได้ใช้แล้ว ตั้งแต่ยุบ 8 panel เหลือพื้นเทาผืนเดียว
+import { ExternalLink } from "lucide-react";
 import type { PlaceholderProject } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { AppScreensShowcase } from "./app-screens-showcase";
+import { ProcessSection, hasProcess } from "./process-section";
 import { ProjectNav } from "./project-nav";
 
 const APP_STORE_URL = "https://apps.apple.com/th/app/propertyhub/id1574599780?l=th";
-const TOOLS = ["Figma", "Claude"];
+// user สั่ง 14 ส.ค. 2026 — เอา Claude ออก ใส่ Illustrator / Photoshop แทน (โลโก้ Adobe จริง)
+// ชื่อไม่มีคำว่า "Adobe" นำหน้า ให้ตรงกับหน้า Archive และ Brand & Graphic Works
+const TOOLS = ["Figma", "Illustrator", "Photoshop"];
 
 // ── content ──────────────────────────────────────────────────────────────────
-const DESIGN_SYSTEM: { label: string; src: string; w: number; h: number }[] = [
-  { label: "Color", src: "/uploads/propertyhub-app-ds-color.jpg", w: 4320, h: 4200 },
-  { label: "Typography", src: "/uploads/propertyhub-app-ds-typography.jpg", w: 4320, h: 5700 },
-  { label: "Icon", src: "/uploads/propertyhub-app-ds-icon-v2.jpg", w: 4320, h: 7818 },
-];
+// หมายเหตุ: DESIGN_SYSTEM (Color/Typography/Icon) ย้ายไปอยู่ใน processPhases ของ
+// placeholderProjects["propertyhub-app"] แล้ว — แก้รูป Style Guide ที่ data/projects.ts
 
 type Shot = { src: string; label: string };
 const S = (src: string, label: string): Shot => ({ src: `/uploads/${src}`, label });
 
-const TABS: { tab: string; en: string; icon: LucideIcon; screens: Shot[] }[] = [
+// Final User Interface — พื้นเทาผืนเดียว แบ่งกลุ่มด้วยชื่อหน้า · กริด 3 จอต่อแถว
+//
+// รอบแก้ 14 ส.ค. 2026 (เย็น): เหลือ 2 กลุ่ม — ยุบ section Home / Activity / Messages / Listings ทิ้ง
+// เก็บจอ "ลงประกาศ · จัดการรูปภาพ" จาก Listings ไว้ท้าย Related · เปลี่ยนชื่อ Detail เป็น Related
+//
+// จอที่ไม่ได้ใช้ยังอยู่ครบใน public/uploads เอากลับมาใส่ได้ตลอด:
+//   onboarding 5 จอ · home-3 · province · developers · developer-detail
+//   listings-rejected · listings-bulk · listings-tags · save-search · messages-photos
+//   menu-register · menu-signin · menu-editprofile
+//   + จอที่เพิ่งตัดรอบนี้: detail-contact · new-projects · assetbank · assetbank-kbank
+//     · activity-savesearch · activity-viewed · messages-chat · home-2 · home-4
+//     · package · post-step1
+const MAIN_GROUPS: { title: string; screens: Shot[] }[] = [
   {
-    // 5 จอ onboarding — step 1–4 + step 5 (propertyhub-app-onboarding.png เดิม = จอ "มาเริ่มกันเลย")
-    tab: "เริ่มต้นใช้งาน",
-    en: "Onboarding",
-    icon: Sparkles,
+    // ภาพรวมเมนูหลักของแอป — เมนูละ 1 จอ (6 เมนู) · user สั่ง "เหมือนเดิม" ห้ามแตะ
+    title: "Main Screen",
     screens: [
-      S("propertyhub-app-onboarding-1.png", "สวัสดี"),
-      S("propertyhub-app-onboarding-2.png", "ค้นหาด้วยแผนที่"),
-      S("propertyhub-app-onboarding-3.png", "ค้นหาแบบพื้นที่"),
-      S("propertyhub-app-onboarding-4.png", "สัญลักษณ์ยืนยันตัวตน"),
-      S("propertyhub-app-onboarding.png", "มาเริ่มกันเลย"),
+      S("propertyhub-app-home.png", "หน้าหลัก"),
+      S("propertyhub-app-listings.png", "ประกาศ"),
+      S("propertyhub-app-activity.png", "กิจกรรม"),
+      S("propertyhub-app-messages.png", "ข้อความ"),
+      S("propertyhub-app-notification.png", "แจ้งเตือน"),
+      S("propertyhub-app-menu.png", "เมนู"),
     ],
   },
   {
-    tab: "หน้าหลัก",
-    en: "Home",
-    icon: Home,
-    screens: [
-      S("propertyhub-app-home.png", "หน้าแรก"),
-      S("propertyhub-app-home-2.png", "ประกาศที่ดูล่าสุด · โครงการยอดนิยม"),
-      S("propertyhub-app-home-3.png", "โครงการใหม่ · ผู้พัฒนาแนะนำ"),
-      S("propertyhub-app-home-4.png", "ทรัพย์ธนาคาร · ประกาศเช่าล่าสุด"),
-      S("propertyhub-app-province.png", "ค้นหาตามจังหวัด"),
-    ],
-  },
-  {
-    tab: "รายละเอียด",
-    en: "Detail",
-    icon: FileText,
+    // เดิมชื่อ "Detail" — user เปลี่ยน wording เป็น "Related"
+    // ตัดจอลำดับที่ 4,6,8,9 ของกลุ่มนี้ออก (นับจาก 9 จอที่แสดงอยู่ ไม่ใช่ลิสต์ตั้งต้น 11 จอ
+    // — user ระบุว่า "เรียกชื่อ screen เป็นตัวเลขเฉพาะใน section นี้"):
+    //   1 detail · 2 search-results · 3 search-map · [4 detail-contact] · 5 project
+    //   [6 new-projects] · 7 agent · [8 assetbank] · [9 assetbank-kbank]
+    // จอสุดท้ายย้ายมาจาก section Listings ที่ถูกยุบทิ้ง
+    title: "Related",
     screens: [
       S("propertyhub-app-detail.png", "รายละเอียดประกาศ"),
       S("propertyhub-app-search-results.png", "ผลการค้นหา"),
       S("propertyhub-app-search-map.png", "มุมมองแผนที่"),
-      S("propertyhub-app-detail-contact.png", "ติดต่อเจ้าของประกาศ"),
       S("propertyhub-app-project.png", "รายละเอียดโครงการ"),
-      S("propertyhub-app-new-projects.png", "รวมโครงการใหม่"),
-      S("propertyhub-app-developers.png", "ผู้พัฒนาอสังหาฯ"),
-      S("propertyhub-app-developer-detail.png", "รายละเอียดผู้พัฒนา"),
       S("propertyhub-app-agent.png", "โปรไฟล์เอเจนต์"),
-      S("propertyhub-app-assetbank.png", "ทรัพย์ธนาคาร (Asset Bank)"),
-      S("propertyhub-app-assetbank-kbank.png", "ทรัพย์ธนาคารกสิกร (KBANK)"),
-    ],
-  },
-  {
-    tab: "ประกาศ",
-    en: "Listings",
-    icon: LayoutList,
-    screens: [
-      S("propertyhub-app-listings.png", "รายการประกาศ"),
-      S("propertyhub-app-listings-rejected.png", "ประกาศไม่ผ่านการตรวจสอบ"),
-      S("propertyhub-app-listings-bulk.png", "เลือกหลายประกาศ"),
-      S("propertyhub-app-listings-tags.png", "จัดการแท็ก"),
-      S("propertyhub-app-package.png", "รายละเอียดแพ็กเกจ"),
-      S("propertyhub-app-post-step1.png", "ลงประกาศ · ข้อมูลทั่วไป"),
       S("propertyhub-app-post-step4.png", "ลงประกาศ · จัดการรูปภาพ"),
-    ],
-  },
-  {
-    tab: "กิจกรรม",
-    en: "Activity",
-    icon: LayoutGrid,
-    screens: [
-      S("propertyhub-app-activity.png", "ประกาศที่สนใจ"),
-      S("propertyhub-app-activity-savesearch.png", "บันทึกการค้นหา"),
-      S("propertyhub-app-save-search.png", "บันทึกการค้นหาใหม่"),
-      S("propertyhub-app-activity-viewed.png", "เคยเข้าชม"),
-    ],
-  },
-  {
-    tab: "ข้อความ",
-    en: "Messages",
-    icon: MessageSquareText,
-    screens: [
-      S("propertyhub-app-messages.png", "ข้อความ"),
-      S("propertyhub-app-messages-chat.png", "แชทกับเอเจนต์"),
-      S("propertyhub-app-messages-photos.png", "ส่งรูปในแชท"),
-    ],
-  },
-  { tab: "แจ้งเตือน", en: "Notifications", icon: Bell, screens: [S("propertyhub-app-notification.png", "การแจ้งเตือน")] },
-  {
-    tab: "เมนู",
-    en: "Menu",
-    icon: Menu,
-    screens: [
-      S("propertyhub-app-menu.png", "เมนู"),
-      S("propertyhub-app-menu-register.png", "สมัครสมาชิก"),
-      S("propertyhub-app-menu-signin.png", "เข้าสู่ระบบ"),
-      S("propertyhub-app-menu-editprofile.png", "แก้ไขข้อมูลส่วนตัว"),
     ],
   },
 ];
@@ -268,37 +212,50 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
         </div>
       </section>
 
+      {/* ── BUSINESS GOAL ── ลำดับเดียวกับหน้า propertyhub เว็บ (อยู่ถัดจาก Tools)
+          ไม่มีข้อมูล = ไม่แสดง section */}
+      {p.businessGoal && p.businessGoal.length > 0 && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <section>
+            <H2>Business Goal</H2>
+            <div className="mt-[22px] space-y-[18px]">
+              {p.businessGoal.map((para, i) => (
+                <Body key={i}>{para}</Body>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── PROCESS & KEY DECISIONS ── ลำดับเดียวกับหน้า propertyhub (ถัดจาก Business Goal) */}
+      {hasProcess(p.decisions) && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <ProcessSection
+            title={p.title}
+            decisions={p.decisions!}
+            note={p.processNote}
+            image={p.processImage}
+            phases={p.processPhases}
+            validationLabel="Why this works"
+          />
+        </>
+      )}
+
+      {/* หมายเหตุ: section "Style Guide" ที่เคยอยู่ตรงนี้ (รูป Color/Typography/Icon เต็มความกว้าง
+          เรียงลงมา) ถูกย้ายเข้าไปเป็นขั้นย่อย "Wireframe & Style Guide" ใน Process & Key Decisions
+          และเปลี่ยนเป็นกริด 3 คอลัมน์ ตามคำสั่ง user 14 ส.ค. 2026 — รูปชุดเดิมทั้งหมด
+          ตอนนี้อ่านจาก placeholderProjects["propertyhub-app"].processPhases ใน data/projects.ts */}
+
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
-      {/* ── STYLE GUIDE ── วางคู่: แบบเดิม (รูปเต็ม) + แบบใหม่ (viewer) เพื่อเทียบ */}
+      {/* ── FINAL USER INTERFACE ── พื้นเทาผืนเดียว แบ่งกลุ่มด้วยชื่อหน้า (Home / Detail / …)
+          แต่ละกลุ่มเรียงกริด 3 จอต่อแถว ไม่มี scroll แนวนอน */}
       <section>
-        <H2>Style Guide</H2>
-        <div className="mt-7 space-y-10">
-          {DESIGN_SYSTEM.map((b) => (
-            <figure key={b.label}>
-              <Image
-                src={b.src}
-                alt={`Propertyhub App style guide — ${b.label}`}
-                width={b.w}
-                height={b.h}
-                sizes="(max-width: 900px) 100vw, 860px"
-                quality={88}
-                className="block h-auto w-full shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-
-      {/* ── SCREENS ── แต่ละ tab = พื้นเทา + จอ + ปุ่มเลื่อนเมื่อ >4 */}
-      <section>
-        <H2>Screens</H2>
-        <div className="mt-8 flex flex-col gap-6">
-          {TABS.map((t) => (
-            <AppScreensShowcase key={t.tab} title={t.en} screens={t.screens} />
-          ))}
+        <H2>Final User Interface</H2>
+        <div className="mt-8">
+          <AppScreensShowcase groups={MAIN_GROUPS} />
         </div>
       </section>
 

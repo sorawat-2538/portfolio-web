@@ -11,6 +11,7 @@ import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { AppScreensShowcase } from "./app-screens-showcase";
 import { WebScreensPanel } from "./web-screens-panel";
+import { ProcessSection, hasProcess } from "./process-section";
 import { ProjectNav } from "./project-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -249,12 +250,45 @@ export function PlaceholderView({
         )}
       </section>
 
+      {/* ── BUSINESS GOAL ── ลำดับเดียวกับหน้า propertyhub (อยู่ถัดจาก Tools)
+          ไม่มีข้อมูล = ไม่แสดง section */}
+      {p.businessGoal && p.businessGoal.length > 0 && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <section>
+            <H2>Business Goal</H2>
+            <div className="mt-[22px] space-y-[18px]">
+              {p.businessGoal.map((para, i) => (
+                <p key={i} className="text-[17px] leading-[1.8] text-muted-foreground">
+                  {para}
+                </p>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── PROCESS & KEY DECISIONS ── ลำดับเดียวกับหน้า propertyhub (ถัดจาก Business Goal)
+          ไม่มี p.decisions = ไม่แสดง section */}
+      {hasProcess(p.decisions) && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <ProcessSection
+            title={p.title}
+            decisions={p.decisions!}
+            note={p.processNote}
+            image={p.processImage}
+            phases={p.processPhases}
+          />
+        </>
+      )}
+
       {/* ── SCREENS — จอแอปแยกตาม section (แบบ Propertyhub App) ── */}
       {p.appScreens && p.appScreens.length > 0 && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
-            <H2>Screens</H2>
+            <H2>Final User Interface</H2>
             <div className="mt-8 flex flex-col gap-6">
               {p.appScreens.map((s) => (
                 <AppScreensShowcase key={s.title} title={s.title} screens={s.screens} />
@@ -297,7 +331,7 @@ export function PlaceholderView({
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <section>
-            <H2>Screens</H2>
+            <H2>Final User Interface</H2>
             <div className="mt-8 flex flex-col gap-6">
               {p.webScreens.map((c) =>
                 c.phone ? (

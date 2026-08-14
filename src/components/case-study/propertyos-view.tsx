@@ -26,6 +26,7 @@ import { BuilderPanelsMock } from "./builder-panels-mock";
 import { OnboardingScreen } from "./builder-onboarding-mock";
 import { BuilderScreenMock } from "./builder-screen-mock";
 import { LayoutPickerMock } from "./layout-picker-mock";
+import { ProcessSection, hasProcess } from "./process-section";
 import { ProjectNav } from "./project-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
@@ -299,6 +300,22 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
           ))}
         </div>
       </section>
+
+      {/* ── PROCESS & KEY DECISIONS ── โครงเดียวกับหน้า propertyhub (user สั่ง 14 ส.ค. 2026)
+          วางก่อนบล็อก Chat System / Website Builder เพราะเป็นวิธีคิดที่นำไปสู่ทั้งสองฟีเจอร์
+          decisions อยู่ใน placeholderProjects.propertyos (data/projects.ts) */}
+      {hasProcess(p.decisions) && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <ProcessSection
+            title={po.title}
+            decisions={p.decisions!}
+            note={p.processNote}
+            image={p.processImage}
+            phases={p.processPhases}
+          />
+        </>
+      )}
 
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 

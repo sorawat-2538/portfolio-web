@@ -11,11 +11,38 @@
 
 import { navGroups } from "./nav";
 
+/** รูปประกอบในหน้า case study — กดดูเต็มจอได้ (w/h = ขนาดจริง กัน layout shift)
+ *  crop: true = รูปสูงมาก ให้ตัดความสูงเหลือพอเห็นแล้วไล่เฟดท้าย (กดดูเต็มได้เหมือนเดิม) */
+export type CaseImage = { src: string; label?: string; w: number; h: number; crop?: boolean };
+
+/** 1 จุดตัดสินใจ = 4 ส่วน (Problem Observed → Options Considered → Trade-off Accepted → Validation) */
 export type Decision = {
   title: string;
+  /** Problem Observed — ปัญหาที่เห็นก่อนตัดสินใจ */
   reasoning: string;
+  /** รูปหลักฐานประกอบ Problem (เช่น กราฟ analytics ที่ทำให้เห็นปัญหา)
+   *  ปกติวาง "ใต้" ย่อหน้า Problem */
+  reasoningImage?: CaseImage;
+  /** true = ยก reasoningImage ขึ้นไปไว้ใต้หัวข้อ decision (เหนือย่อหน้า Problem)
+   *  ตอนนี้ใช้แค่ decision 1 ของ propertyhub — user สั่งให้สลับเฉพาะข้อนั้น */
+  reasoningImageFirst?: boolean;
+  /** Trade-off — สิ่งที่ยอมแลก */
   tradeoff: string;
-  cut: string;
+  /** Validation — วัดผลว่าเดิมพันถูกไหม */
+  outcome?: string;
+  /** รูปหลักฐานประกอบ Validation (เช่น heatmap) */
+  outcomeImage?: CaseImage;
+  /** รูปเทียบก่อน/หลังของ decision นี้ — ใส่ทั้งคู่ถึงจะแสดง */
+  before?: CaseImage;
+  after?: CaseImage;
+  /** fake-UI / diagram ประกอบ decision (แทนรูป before/after) — resolve เป็น component ใน ProcessSection
+   *  "listing-dialog"  = หน้า Listing Detail ย่อส่วน + ปุ่ม "ดูทั้งหมด" ที่กดเปิด dialog ได้จริง
+   *  "feature-phases"  = ตารางคัดฟีเจอร์เข้า phase แรก vs รอบถัดไป (Propertyhub App decision 1) */
+  mock?: "listing-dialog" | "feature-phases";
+  /** true = ยังไม่มีเนื้อหา แสดงเป็นการ์ดโครงรอไว้ (ไม่ใช่ข้อมูลจริง) */
+  pending?: boolean;
+  /** @deprecated ยุบไปอยู่ใน options แล้ว — เก็บไว้เพราะโปรเจกต์อื่นยังมี field นี้ */
+  cut?: string;
 };
 
 export type ResultRow = { label: string; change: string };
@@ -92,6 +119,44 @@ export type Project = {
 
   overview: string[];
 
+  /** ── ACHIEVEMENT ── ผลลัพธ์หลังเปิดตัว · section ใต้ Tools
+   *  ข้อความล้วน (ย่อหน้าละ 1 string) ไม่มีการ์ด/กล่อง · ไม่ใส่ = ไม่แสดง section */
+  achievement?: string[];
+
+  /** ── CONTEXT & ROLE ──
+   *  บริบทที่ recruiter สแกนหาใน 10 วินาทีแรก: ทำเมื่อไหร่ นานเท่าไหร่ ทีมกี่คน
+   *  เราทำหน้าที่อะไร ใช้เครื่องมืออะไร (`tools` ถูกย้ายมาแสดงในกล่องนี้ ไม่มี section Tools แยกแล้ว)
+   *  ไม่ใส่ = ไม่แสดง section นี้ */
+  context?: {
+    duration: string;
+    team: string;
+    role: string;
+    /** ย่อหน้าเล่าบริบท — ทำงานกับใคร ขอบเขตงานมาจากไหน */
+    body?: string[];
+    /** หน้าที่ที่รับผิดชอบจริง — bullet สั้น ๆ ให้สแกนได้เร็ว */
+    responsibilities?: string[];
+  };
+
+  /** ── BUSINESS GOAL & OPPORTUNITY ──
+   *  statement = โจทย์/เป้าหมายของโปรเจกต์ · ใส่เป็น string เดียวหรือหลายย่อหน้า (string[]) ก็ได้
+   *              แสดงเป็นย่อหน้าปกติชุดเดียวกับ Overview (ไม่ใช่ callout ส้มแล้ว)
+   *  body = ย่อหน้าขยายว่าทำไมปัญหานี้ถึงสำคัญทั้งมุม user และมุม business
+   *  ไม่ใส่ = fallback ไปใช้ ctxProblem / ctxBusiness แบบเดิม */
+  problem?: {
+    statement: string | string[];
+    /** รูปวางใต้ย่อหน้า statement (เหนือหัวข้อย่อย UX Challenge) */
+    goalImage?: CaseImage;
+    body?: string[];
+    images?: CaseImage[];
+  };
+
+  /** ── SOLUTION ──
+   *  สิ่งที่ออกแบบออกมาจริง — แต่ละ point ต้องผูกกลับไปที่ problem ได้ */
+  solution?: { intro?: string; points: { title: string; body: string }[] };
+
+  /** ── REFLECTION ── ย่อหน้าสิ่งที่เรียนรู้ (ต่อท้ายด้วย reflectResource/reflectLesson ที่มีอยู่เดิม) */
+  reflection?: { body: string[] };
+
   ctxBusiness: string;
   ctxProblem: string;
   constraints: string[];
@@ -134,57 +199,22 @@ export const projects = {
     // Screens แยกตาม category (grid) — category ที่ยังไม่มีรูป = screens:[] → โชว์ "เร็ว ๆ นี้"
     webScreens: [
       {
-        category: "Sign Up / Sign In",
-        screens: [
-          { label: "Sign in", src: "/uploads/propertyhub-signin.jpg", w: 4320, h: 3072 },
-          { label: "Sign up", src: "/uploads/propertyhub-signup.jpg", w: 4320, h: 3072 },
-        ],
-      },
-      {
-        // Home + flow ต่อเนื่อง (Listing Result · Listing Detail จะตามมา)
-        category: "Home",
+        // จอเว็บทั้งหมดอยู่ใน panel เดียว พื้นหลังเดียวกัน ไม่แยก category ต่อหน้าแล้ว
+        // (user สั่ง 13 ส.ค. 2026 — "มีแค่คำว่า Main Screen ก็พอ")
+        // จอที่ตัดออกไป (Amenities, Floor plan, Reviews, Developers, All banks ฯลฯ)
+        // ไฟล์ยังอยู่ใน public/uploads เอากลับมาใส่ได้ตลอด
+        category: "Main Screen",
         screens: [
           { label: "Home", src: "/uploads/propertyhub-home-full-v2.jpg", w: 1600, h: 7403 },
           { label: "Listing Detail", src: "/uploads/propertyhub-listing-detail.jpg", w: 4320, h: 15296 },
           { label: "Listing Result", src: "/uploads/propertyhub-listing-result.jpg", w: 4320, h: 15016 },
+          { label: "Project Detail", src: "/uploads/propertyhub-detail-overview.jpg", w: 4320, h: 13665 },
+          { label: "New Project", src: "/uploads/propertyhub-new-projects.jpg", w: 4320, h: 13750 },
+          { label: "Asset Bank", src: "/uploads/propertyhub-assetbank-home.jpg", w: 4320, h: 15903 },
         ],
       },
-      {
-        category: "Project Detail",
-        screens: [
-          { label: "Overview", src: "/uploads/propertyhub-detail-overview.jpg", w: 4320, h: 13665 },
-          { label: "Amenities", src: "/uploads/propertyhub-detail-amenities.jpg", w: 4320, h: 12891 },
-          { label: "Floor plan", src: "/uploads/propertyhub-detail-floorplan.jpg", w: 4320, h: 12237 },
-          { label: "Floor plan (list)", src: "/uploads/propertyhub-detail-floorplan-list.jpg", w: 4320, h: 12237 },
-          { label: "Reviews", src: "/uploads/propertyhub-detail-reviews.jpg", w: 4320, h: 12880 },
-        ],
-      },
-      {
-        category: "New Project",
-        screens: [
-          { label: "New projects", src: "/uploads/propertyhub-new-projects.jpg", w: 4320, h: 13750 },
-          { label: "Developers", src: "/uploads/propertyhub-developers.jpg", w: 4320, h: 7776 },
-          { label: "Developer detail", src: "/uploads/propertyhub-developer-detail.jpg", w: 4320, h: 10163 },
-        ],
-      },
-      {
-        category: "Asset Banks",
-        screens: [
-          { label: "Home", src: "/uploads/propertyhub-assetbank-home.jpg", w: 4320, h: 15903 },
-          { label: "All banks", src: "/uploads/propertyhub-assetbank.jpg", w: 4320, h: 9514 },
-          { label: "Kasikorn (KBANK)", src: "/uploads/propertyhub-assetbank-kbank.jpg", w: 4320, h: 9562 },
-        ],
-      },
-      {
-        // จอมือถือ (responsive) — phone:true → AppScreensShowcase · เริ่มด้วย Home (ใช้รูป hero phone เดิม) จออื่นตามมาทีหลัง
-        category: "Mobile (Responsive)",
-        phone: true,
-        screens: [
-          { label: "Home", src: "/uploads/propertyhub-hero-phone-v2.png", w: 864, h: 1726 },
-          { label: "Listing Detail", src: "/uploads/propertyhub-mobile-detail.png", w: 660, h: 1320 },
-          { label: "Asset Bank", src: "/uploads/propertyhub-mobile-assetbank.png", w: 660, h: 1320 },
-        ],
-      },
+      // หมายเหตุ: category "Mobile (Responsive)" (phone:true → AppScreensShowcase) ถูกเอาออก
+      // ตามคำสั่ง user 13 ส.ค. 2026 — รูปจอมือถือยังอยู่ใน public/uploads เอากลับมาใส่ได้
     ],
     liveUrl: "https://propertyhub.in.th/",
     heroBadges: [
@@ -197,10 +227,77 @@ export const projects = {
     metaTimeline: "[ MMM YYYY – MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
-    tools: ["Figma", "Claude", "Google Analytics", "Microsoft Clarity"],
+    tools: ["Figma", "Illustrator", "Google Analytics", "Microsoft Clarity"],
+    // Overview = 3 วินาทีแรกที่ recruiter ตัดสินใจว่าจะอ่านต่อไหม → ทำอะไร ให้ใคร ผลลัพธ์อะไร (ตัวเลขจริง)
     overview: [
-      "PropertyHub เป็นเว็บไซต์ตลาดกลางอสังหาริมทรัพย์ออนไลน์ของไทย รวมประกาศซื้อ ขาย และเช่าคอนโด บ้านเดี่ยว ทาวน์เฮ้าส์ ที่ดิน และอสังหาฯ เชิงพาณิชย์ทั่วประเทศ พร้อมข้อมูลโครงการใหม่ รีวิวทำเล และบทความ ผู้ใช้ค้นหาตามพื้นที่ ราคา และแนวรถไฟฟ้าได้ ส่วนผู้ขายและนายหน้าลงประกาศได้ฟรี",
+      "ออกแบบหน้าเว็บไซต์หลักของ Propertyhub ใหม่ ได้แก่ Home, Listing Result, Listing Detail และ Project Page จากเดิมที่เป็นเว็บไซต์ลงประกาศสำหรับคอนโดมิเนียมอย่างเดียว ให้รองรับการลงประกาศอสังหาริมทรัพย์ประเภทอื่นได้ครบในเว็บไซต์เดียว หลังเปิดตัวในปี 2024 จำนวนผู้ใช้งานเติบโตจาก 5.5M เป็น 7.9M ในปี 2025 หรือเพิ่มขึ้นกว่า 43%",
     ],
+    // duration / team / role = metadata เฉย ๆ ไม่ได้เรนเดอร์ (เคยลองแยกเป็นบรรทัด
+    // "Duration:" / "Role:" อยู่ช่วงสั้น ๆ 14 ส.ค. 2026 แล้ว user สั่งกลับมาเป็นย่อหน้าเดียว)
+    // ตัวที่ขึ้นหน้าเว็บจริงคือ body ด้านล่าง = ย่อหน้าที่ 2 ของ Overview
+    context: {
+      duration: "ไม่มีระยะเวลากำหนด เป็นแพลตฟอร์มของบริษัท",
+      team: "PM, Business, Marketing, Developer",
+      role: "UX/UI Designer คนเดียวของโปรเจกต์",
+      // ข้อความตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
+      body: [
+        "โปรเจกต์นี้เป็นแพลตฟอร์มหลักของบริษัทที่พัฒนาต่อเนื่องตามการเติบโตของธุรกิจ รับผิดชอบในฐานะ UX/UI Designer เพียงคนเดียวแบบ end-to-end ตั้งแต่ research และ design ไปจนถึง hand-off และตรวจงานก่อน deploy โดยทำงานร่วมกับทีม PM, Business, Marketing และ Developer",
+      ],
+    },
+    // ── ACHIEVEMENT ── section ใต้ Tools (user สั่ง 14 ส.ค. 2026)
+    // ข้อความล้วน ไม่มีการ์ด/กล่องตัวเลข (user สั่งตรง ๆ "มีแค่ text ไม่ต้องมีกล่องอะไร")
+    achievement: [
+      "หลังเปิดตัวในปี 2024 จำนวนผู้ใช้งานเติบโตจาก 5.5M เป็น 7.9M ในปี 2025 หรือเพิ่มขึ้นกว่า 43%",
+    ],
+    problem: {
+      // เดิมเป็นประโยคเดียวใน callout ส้ม — ขยายเป็น 3 ย่อหน้าและย้ายมาเป็นเนื้อความปกติ
+      // ตัวอย่าง field ที่ยกมาอ้างอิงจาก field matrix (รูปด้านล่างของ section นี้)
+      statement: [
+        "เปลี่ยน Propertyhub จากแพลตฟอร์มที่รองรับเฉพาะประกาศคอนโดมิเนียม สู่แพลตฟอร์มอสังหาริมทรัพย์แบบครบวงจร ครอบคลุมทุกประเภททรัพย์สิน ตั้งแต่บ้าน ทาวน์โฮม ที่ดิน ไปจนถึงอาคารพาณิชย์ สำนักงาน พื้นที่ขายของ และกิจการ เพื่อสร้าง One-stop Platform สำหรับการค้นหาและลงประกาศอสังหาริมทรัพย์ และก้าวสู่การเป็นแพลตฟอร์มอสังหาริมทรัพย์ดิจิทัลชั้นนำและน่าเชื่อถือของประเทศไทย",
+      ],
+      // รูปวางใต้ย่อหน้า Business Goal (เหนือหัวข้อ UX Challenge)
+      // ⚠️ ต้นฉบับ export มาพื้นหลังโปร่งใส (มุมดำ) — ไฟล์นี้เทพื้นขาวทับแล้ว อย่าเอาตัวโปร่งใสมาทับ
+      goalImage: {
+        src: "/uploads/propertyhub-branch-map.png",
+        label: "จากรับประกาศคอนโดมิเนียมประเภทเดียว สู่ One-stop Platform ที่ครอบคลุมทรัพย์ทุกประเภท",
+        w: 2720,
+        h: 1360,
+      },
+      // หมายเหตุ: หัวข้อย่อย "UX Challenge" (body + field matrix) ถูกย้ายไปเป็น Decision 1
+      // ตามคำสั่ง user 13 ส.ค. 2026 — section Business Goal เหลือย่อหน้าเป้าหมาย + รูป branch map
+    },
+    // แต่ละข้อผูกกลับไปที่ decision ด้านบน 1:1 — ข้อ 1–3 มาจาก Decision 1 (จัดหน้า Project Detail)
+    // ข้อ 4 มาจาก Decision 2 (ลดการพึ่งพาหน้าเก่า) · แก้ decision เมื่อไหร่ต้องไล่แก้ตรงนี้ด้วย
+    solution: {
+      intro:
+        "การตัดสินใจทั้งสองข้อด้านบนถูกแปลงออกมาเป็นงานออกแบบจริงในสองหน้าหลักของ flow คือหน้า Project Detail ที่ทำหน้าที่พาผู้ใช้ไปยังประกาศที่ตรงความต้องการ และหน้า Listing Detail ที่ทำหน้าที่ให้ดูประกาศต่อได้โดยไม่หลุดจากสิ่งที่กำลังดูอยู่",
+      points: [
+        {
+          title: "ย้ายข้อมูลเชิงลึกเข้า tab",
+          body: "จาก Decision 1 สิ่งอำนวยความสะดวก ผังห้อง และรีวิว ถูกจัดเข้า tab เพื่อให้หน้าสั้นลงและเส้นทางหลักไม่ถูกกลบด้วยเนื้อหาที่ยาว",
+        },
+        {
+          title: "ยกปุ่มเช่าและขายขึ้นมาไว้ส่วนบนสุด",
+          body: "เมื่อหน้าสั้นลงแล้ว ทางเลือกหลักต้องเห็นทันที ผู้ใช้เข้ามาด้วย intent คนละแบบ จึงให้เลือกเส้นทางได้โดยไม่ต้องเลื่อนหา heatmap ยืนยันว่าปุ่มนี้กับแกลเลอรีรูปคือจุดที่ถูกคลิกมากที่สุดของหน้า",
+        },
+        {
+          title: "ดึงประกาศจริงในโครงการมาไว้ในหน้าเดียวกัน",
+          body: "แสดงประกาศเช่าและขายที่มีอยู่จริงในโครงการต่อจากข้อมูลโครงการเลย ผู้ใช้ไม่ต้องย้อนกลับไปค้นหาใหม่",
+        },
+        {
+          title: "ปุ่ม “ดูทั้งหมด” ที่ pre-filter ตามประกาศที่กำลังดู",
+          body: "จาก Decision 2 หน้า Listing Detail ได้ปุ่มที่เปิดประกาศทั้งโครงการโดยไม่พาผู้ใช้ออกจากหน้าเดิม และกรองผลลัพธ์ให้ตรงกับประกาศที่กำลังดูอยู่ตั้งแต่แรก เช่น ประกาศเช่า 1 ห้องนอน ก็จะเห็นเฉพาะห้องเช่า 1 ห้องนอนในโครงการเดียวกัน",
+        },
+      ],
+    },
+    // ข้อความตามที่ user เขียนเอง (13 ส.ค. 2026) — 3 ย่อหน้า ห้ามเรียบเรียงใหม่
+    reflection: {
+      body: [
+        "เปลี่ยนบทบาทของตัวเองไปในทาง Product มากขึ้น โดยไม่ใช่ออกแบบอย่างเดียว ใช้ Data เพื่อหาช่องทางหรือโอกาสในการยกระดับ Product ของบริษัท",
+        "งานช่วงต้นเน้นความเร็วจนมองข้าม Auto Layout และ component หลังปรับให้วางตาม logic ที่ dev นำไปใช้จริง การ hand-off หน้า Project Detail แทบไม่ต้องอธิบายเพิ่ม บทเรียนคือการส่งต่อที่ดีเริ่มตั้งแต่โครงสร้างไฟล์",
+        "เดิมสรุปทิศทางกับหัวหน้าเป็นหลัก เมื่อเริ่มคุยกับ Business และ Sales มากขึ้น จึงได้มุมจากลูกค้าจริงที่นำไปสู่ทางเลือกการออกแบบที่หลากหลายกว่าเดิม",
+      ],
+    },
     ctxBusiness:
       "Propertyhub ทำเงินจากการที่ user กด contact agent — critical path คือ traffic เข้า → เจอทรัพย์ที่ตรง intent → ติดต่อ agent หน้า Project page เป็นจุดที่ traffic เข้ามาเยอะและกระจายต่อไปยัง listing",
     ctxProblem:
@@ -222,59 +319,110 @@ export const projects = {
       "Contact agent rate ต้องไม่ลด (revenue signal)",
       "Bounce rate ต้องไม่เพิ่ม",
     ],
-    decisionsIntro:
-      "ผมเลือกเล่า 3 decision ที่ยากที่สุดใน redesign นี้ — แต่ละอันมี trade-off ที่ยอม และ option ที่ตัดออก",
+    decisionsIntro: "",
     decisions: [
       {
-        title: "[ ชื่อ decision 1 — action verb ]",
+        // ย้ายมาจากหัวข้อย่อย "UX Challenge" ใน section Business Goal (13 ส.ค. 2026)
+        // ยังไม่มี trade-off / validation ของขั้นนี้ — เว้นเป็นค่าว่างไว้ ตัว render จะซ่อนหัวข้อนั้นเอง
+        title:
+          "ออกแบบ Data Architecture ให้รองรับทรัพย์ทุกประเภท โดยแยกโครงสร้าง Input ของแต่ละประเภทออกจากกัน",
         reasoning:
-          "[ อธิบาย data/insight ที่ทำให้ตัดสินใจแบบนี้ — อ้างอิง Clarity heatmap, GA event หรือ session recording ]",
-        tradeoff: "[ บอกตรง ๆ ว่ายอมเสียอะไร ]",
-        cut: "[ option อื่นที่พิจารณาแล้วตัดออก + เหตุผล ]",
+          "ไม่มีข้อมูลของอสังหาริมทรัพย์ประเภทอื่น ๆ สำหรับการลงประกาศ ต้องออกแบบ Data Architecture ใหม่ เพราะก่อนหน้านั้นสามารถลงประกาศได้แค่คอนโดมิเนียม ปัญหาคือไม่รู้ข้อมูล input ต่าง ๆ ว่าต้องมีอะไรบ้าง",
+        reasoningImage: {
+          src: "/uploads/propertyhub-field-matrix.png",
+          label: "Field matrix ข้อมูลที่แต่ละประเภทต้องกรอก (required / optional / ไม่มี field นี้) กดดูเต็มได้",
+          w: 3120,
+          h: 4245,
+          crop: true,
+        },
+        reasoningImageFirst: true,
+        // ข้อความตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
+        tradeoff:
+          "การออกแบบ input แต่ละเว็บไซต์มีความแตกต่างกันออกไปอย่างสิ้นเชิง ยิ่งกรอก field มากเท่าไหร่ ข้อมูลก็ยิ่งครบและค้นหาได้ละเอียดขึ้น แต่ในมุมของผู้ลงประกาศยิ่ง field เยอะยิ่งใช้เวลากรอกนาน จำเป็นต้องตัดสินใจเลือก field ที่จำเป็นก่อน และบาง field ถ้าไม่จำเป็นในมุมของการค้นหาก็ให้เป็น optional ไป",
+        outcome:
+          "หลังจากใช้งานยังไม่มี feedback จาก user ตอนนี้ประกาศทั้งหมดของ Propertyhub มีประมาณ 300,000 ประกาศ และ 85% ของประกาศทั้งหมดคือคอนโดมิเนียม ซึ่งจะเป็น behavior เดิมของ user",
       },
       {
-        title: "[ ชื่อ decision 2 — action verb ]",
-        reasoning: "[ อธิบาย data/insight ที่ทำให้ตัดสินใจแบบนี้ ]",
-        tradeoff: "[ บอกตรง ๆ ว่ายอมเสียอะไร ]",
-        cut: "[ option อื่นที่พิจารณาแล้วตัดออก + เหตุผล ]",
+        title: "จัดข้อมูลหน้า Project Detail จาก long-scroll เป็น tab",
+        reasoning:
+          "ก่อนหน้าที่จะ redesign หน้า project detail มีปัญหาหนึ่งคือ design เก่าเป็นการเรียงข้อมูลตั้งแต่บนลงล่าง แล้วตอน scroll ก็จะมี navigation นำทางให้เพื่อไปแต่ละ section ข้อดีคือ user จะเห็นทั้งหมดในหน้าเดียวแล้วค่อย ๆ ลงไปข้างล่าง ปัญหาคือหน้ายาวมาก",
+        tradeoff:
+          "สิ่งที่ต้อง trade-off คือ ลดความยาวของหน้าได้แต่ user จะไม่เห็นภาพรวมทั้งหมดในหน้าเดียว ต้องกดดูทีละ tab ก่อนถึงจะเห็นข้อมูลในแต่ละส่วน แต่เนื้อหาบางส่วนที่สำคัญก็ยังคงอยู่",
+        outcome:
+          "หลังจาก launch ก็ใช้ Clarity ดู Heatmap เพื่อดู Behavior การกดของ user ว่ามีคนกด tab ไหม และสามารถพา user ไปยังหน้าที่ต้องการได้หรือเปล่า",
+        outcomeImage: {
+          src: "/uploads/ph-clarity-heatmap.jpg",
+          label: "Clarity heatmap หน้า Project Detail หลัง launch",
+          w: 2400,
+          h: 1170,
+        },
+        before: {
+          src: "/uploads/propertyhub-project-before.jpg",
+          label: "Before",
+          w: 4320,
+          h: 20283,
+        },
+        after: {
+          src: "/uploads/propertyhub-project-detail.jpg",
+          label: "After",
+          w: 1600,
+          h: 5106,
+        },
       },
       {
-        title: "[ ชื่อ decision 3 — action verb ]",
-        reasoning: "[ อธิบาย data/insight ที่ทำให้ตัดสินใจแบบนี้ ]",
-        tradeoff: "[ บอกตรง ๆ ว่ายอมเสียอะไร ]",
-        cut: "[ option อื่นที่พิจารณาแล้วตัดออก + เหตุผล ]",
+        // เนื้อหาปรับมาจาก section "From Data to Decision" ของหน้า /work/data-analysis
+        // (Session Explorer + What I Changed) — user สั่งให้ยกมาใช้เป็น decision 2
+        title:
+          "เพิ่มปุ่มดูประกาศทั้งหมดของโครงการนั้น ในหน้า Listing Detail เพื่อเพิ่ม engagement depth และ user ยังคงอยู่ใน context เดิม",
+        mock: "listing-dialog",
+        reasoning:
+          "ตอนนี้ในหน้า Listing Detail จะแสดงประกาศจากโครงการเดียวกันเพียงบางส่วน หาก user ต้องการดูประกาศทั้งหมดในโครงการเดียวกัน จะต้องไปที่หน้า “ประกาศเช่า” หรือ “ประกาศขาย” ของโครงการนั้น ซึ่งปัจจุบันยังเป็นหน้าเก่าอยู่ โดยเหตุผลที่ยังต้องพา user ไปหน้าเก่าเพราะหน้านั้นมี traffic สูงและติด SEO บน Google ในการค้นหา ดังนั้นสิ่งที่เราจะทำคือพยายามพึ่งพาหน้าเก่าให้น้อยที่สุด โดยไม่ให้ user หลุดออกจาก context เดิมของประกาศที่กำลังดูอยู่ ซึ่งคาดว่าจะช่วยเพิ่ม engagement depth ได้",
+        reasoningImage: {
+          src: "/uploads/ph-zimple-session.jpg",
+          label:
+            "Zimple Analytics Session Explorer: สัดส่วน session ตาม engagement depth เทียบกับ contact rate ของแต่ละกลุ่ม",
+          w: 2400,
+          h: 1167,
+        },
+        // ข้อความตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
+        tradeoff:
+          "ลดการไปหน้าเก่าที่เป็นหน้า traffic หลัก แต่เลือกสิ่งที่ตรง intent ของ user มากกว่าในการเลือกดู listing และคาดว่าการพยายามให้ user วนอยู่กับหน้าประกาศที่ดูอยู่จะเจอสิ่งที่ต้องการมากกว่าการเข้าไปหน้า “ประกาศเช่า” หรือ “ประกาศขาย”",
+        outcome:
+          "อยู่ระหว่างการพัฒนาและรอวัดผล โดยจะกลับมาวัดด้วยข้อมูลชุดเดิมที่ใช้ตั้งโจทย์ คือสัดส่วน session ที่ดูมากกว่าหนึ่งประกาศ และ contact rate ของแต่ละกลุ่ม engagement depth",
       },
+      // decision 3 (การ์ด pending "รอเนื้อหาจริง") ถูกเอาออกตามคำสั่ง user 13 ส.ค. 2026
+      // ถ้าจะเพิ่ม decision ใหม่ ใส่ object ต่อท้ายได้เลย
     ],
     measure: {
-      goal: "เป้าหมายหลักของหน้า Project page คือ ส่งผู้ใช้ต่อไปยังหน้า listing เช่า/ขายคอนโด (/เช่าคอนโด · /ขายคอนโด) ให้ได้มากที่สุด — ยิ่งพาไปเจอ listing ที่ตรง intent มากเท่าไหร่ ยิ่งมีโอกาสกด contact agent ซึ่งเป็น revenue signal ของ Propertyhub",
+      goal: "เป้าหมายหลักของหน้า Project page คือ ส่งผู้ใช้ต่อไปยังหน้า listing เช่า/ขายคอนโด (/เช่าคอนโด · /ขายคอนโด) ให้ได้มากที่สุด ยิ่งพาไปเจอ listing ที่ตรง intent มากเท่าไหร่ ยิ่งมีโอกาสกด contact agent ซึ่งเป็น revenue signal ของ Propertyhub",
       steps: [
         {
           title: "วิธีวัดผลหลัง redesign หน้า Project Detail",
-          body: "การวัดผลหลังปล่อย design ใหม่ใช้เครื่องมือ 3 ตัวประกอบกัน — GA4 Funnel Exploration สำหรับติดตาม conversion ตลอด funnel · Microsoft Clarity สำหรับอ่านพฤติกรรมการใช้งานจริง · และ Zimple Analytics สำหรับยืนยันผลและกำหนดเป้าหมายถัดไป",
+          body: "การวัดผลหลังปล่อย design ใหม่ใช้เครื่องมือ 3 ตัวประกอบกัน GA4 Funnel Exploration สำหรับติดตาม conversion ตลอด funnel · Microsoft Clarity สำหรับอ่านพฤติกรรมการใช้งานจริง · และ Zimple Analytics สำหรับยืนยันผลและกำหนดเป้าหมายถัดไป",
           images: [
-            { src: "/uploads/propertyhub-project-detail.jpg", caption: "หน้า Project Detail ที่ redesign ใหม่ — จุดตั้งต้นของการวัดผล", w: 1600, h: 5106 },
+            { src: "/uploads/propertyhub-project-detail.jpg", caption: "หน้า Project Detail ที่ redesign ใหม่ จุดตั้งต้นของการวัดผล", w: 1600, h: 5106 },
           ],
         },
         {
-          title: "วัดผลด้วย GA4 — Funnel Exploration",
-          body: "ตั้ง Funnel Exploration ใน GA4 เอง 4 ขั้น (เข้าหน้าโครงการ → ไปหน้า listing result → เข้าหน้า listing detail → กด contact agent) เพื่อดูว่าหน้า Project ใหม่ยังทำงานได้ดีหรือแย่ลงเมื่อเทียบกับ design เก่า ในช่วงเวลาใกล้เคียงกัน — จากรูป ขั้นแรก session ของ design เก่าจะสูงกว่าราวเท่าตัว เพราะเรื่อง consent การกด Accept cookies ของเว็บ แต่ช่วงกลางและปลาย funnel session ใกล้เคียงกันมาก การวิเคราะห์จึงโฟกัสที่ช่วงกลางถึงปลาย funnel ซึ่งเทียบกันได้ตรงกว่า และพบว่า design ใหม่ส่งผู้ใช้ไปถึงขั้นที่ 4 (กด contact agent) ซึ่งเป็น conversion หลักของแพลตฟอร์ม ได้ในสัดส่วนที่สูงกว่า — จาก 1.6% เป็น 3.0% ของ session",
+          title: "วัดผลด้วย GA4 Funnel Exploration",
+          body: "ตั้ง Funnel Exploration ใน GA4 เอง 4 ขั้น (เข้าหน้าโครงการ → ไปหน้า listing result → เข้าหน้า listing detail → กด contact agent) เพื่อดูว่าหน้า Project ใหม่ยังทำงานได้ดีหรือแย่ลงเมื่อเทียบกับ design เก่า ในช่วงเวลาใกล้เคียงกัน จากรูป ขั้นแรก session ของ design เก่าจะสูงกว่าราวเท่าตัว เพราะเรื่อง consent การกด Accept cookies ของเว็บ แต่ช่วงกลางและปลาย funnel session ใกล้เคียงกันมาก การวิเคราะห์จึงโฟกัสที่ช่วงกลางถึงปลาย funnel ซึ่งเทียบกันได้ตรงกว่า และพบว่า design ใหม่ส่งผู้ใช้ไปถึงขั้นที่ 4 (กด contact agent) ซึ่งเป็น conversion หลักของแพลตฟอร์ม ได้ในสัดส่วนที่สูงกว่า จาก 1.6% เป็น 3.0% ของ session",
           images: [
-            { src: "/uploads/ph-ga4-funnel.jpg", caption: "GA4 Funnel Exploration — 4 ขั้น เทียบ design เก่า (ฟ้า) กับใหม่ (ม่วง) ช่วงเวลาใกล้เคียงกัน", w: 2400, h: 1122 },
+            { src: "/uploads/ph-ga4-funnel.jpg", caption: "GA4 Funnel Exploration 4 ขั้น เทียบ design เก่า (ฟ้า) กับใหม่ (ม่วง) ช่วงเวลาใกล้เคียงกัน", w: 2400, h: 1122 },
           ],
         },
         {
           title: "ดู Behavior จาก Microsoft Clarity",
-          body: "วัด behavior ของผู้ใช้หลังเปลี่ยน design ใหม่ — ดูว่าคนกดตรงไหนมากที่สุด (heatmap), scroll ลึกแค่ไหน (scroll depth) และกดปุ่ม เช่า/ขาย ที่เราต้องการหรือไม่ ช่วยให้เห็นภาพรวมว่าคนใช้งานหน้านี้จริงอย่างไร ไม่ใช่แค่ตัวเลข conversion",
+          body: "วัด behavior ของผู้ใช้หลังเปลี่ยน design ใหม่ ดูว่าคนกดตรงไหนมากที่สุด (heatmap), scroll ลึกแค่ไหน (scroll depth) และกดปุ่ม เช่า/ขาย ที่เราต้องการหรือไม่ ช่วยให้เห็นภาพรวมว่าคนใช้งานหน้านี้จริงอย่างไร ไม่ใช่แค่ตัวเลข conversion",
           images: [
-            { src: "/uploads/ph-clarity-1.jpg", caption: "Clarity heatmap — ส่วนบนของหน้า: คนคลิกที่แกลเลอรีรูปและปุ่มเช่า/ขายมากที่สุด", w: 2400, h: 1166 },
-            { src: "/uploads/ph-clarity-2.jpg", caption: "Clarity heatmap — ส่วน listing ในโครงการ: การคลิกดูประกาศเช่า/ขายจริง", w: 2400, h: 1166 },
+            { src: "/uploads/ph-clarity-1.jpg", caption: "Clarity heatmap ส่วนบนของหน้า: คนคลิกที่แกลเลอรีรูปและปุ่มเช่า/ขายมากที่สุด", w: 2400, h: 1166 },
+            { src: "/uploads/ph-clarity-2.jpg", caption: "Clarity heatmap ส่วน listing ในโครงการ: การคลิกดูประกาศเช่า/ขายจริง", w: 2400, h: 1166 },
           ],
         },
         {
           title: "ใช้ Zimple Analytics เพื่อยืนยันและหา Goal ต่อไป",
-          body: "ใช้ Dashboard Navigation Summary ของ Zimple Analytics ยืนยันผลและวิเคราะห์ว่าจะทำอะไรต่อได้ — จากรูป เมื่อเลือก Current Selection เป็น project_detail จะเห็นว่า Next Page เกือบ 50% ของ session ไปหน้า “ประกาศเช่า” ซึ่งตรงกับ goal ของหน้านี้พอดี ยืนยันว่าหน้า Project ใหม่ยังทำงานได้ดี และชี้ทางว่าจะไป optimize ต่อตรงไหน",
+          body: "ใช้ Dashboard Navigation Summary ของ Zimple Analytics ยืนยันผลและวิเคราะห์ว่าจะทำอะไรต่อได้ จากรูป เมื่อเลือก Current Selection เป็น project_detail จะเห็นว่า Next Page เกือบ 50% ของ session ไปหน้า “ประกาศเช่า” ซึ่งตรงกับ goal ของหน้านี้พอดี ยืนยันว่าหน้า Project ใหม่ยังทำงานได้ดี และชี้ทางว่าจะไป optimize ต่อตรงไหน",
           images: [
-            { src: "/uploads/ph-zimple-projectdetail.jpg", caption: "Zimple Analytics — Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 2400, h: 1168 },
+            { src: "/uploads/ph-zimple-projectdetail.jpg", caption: "Zimple Analytics Navigation Summary ของ project_detail: Next Page เกือบ 50% ไปหน้าประกาศเช่า", w: 2400, h: 1168 },
           ],
         },
       ],
@@ -306,7 +454,7 @@ export const projects = {
     surprised:
       "[ เล่า insight ที่ไม่คาดคิด — เช่น device ไหน improvement มากสุดทั้งที่ traffic น้อยกว่า ]",
     limitation:
-      "Session count Before/After ไม่เท่ากัน เพราะไม่ได้ setup event tracking ตั้งแต่ launch — เริ่มเก็บ event หลังจากนั้น แต่ conversion rate เทียบกันได้ตรง ๆ เพราะเป็น % ของ session",
+      "Session count Before/After ไม่เท่ากัน เพราะไม่ได้ setup event tracking ตั้งแต่ launch เริ่มเก็บ event หลังจากนั้น แต่ conversion rate เทียบกันได้ตรง ๆ เพราะเป็น % ของ session",
     reflectChallenge:
       "[ hypothesis ข้อไหนที่ตอนนั้นเชื่อเร็วเกินไป และควร challenge ด้วย data มากกว่านี้ก่อนลงมือ design ]",
     reflectTrack: [
@@ -347,11 +495,21 @@ export const projects = {
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
     tools: ["Figma"],
+    // ย่อหน้า 1 = ทำอะไร ให้ใคร · ย่อหน้า 2 = duration / role / team (โครงเดียวกับ propertyhub)
+    // ⚠️ ย่อหน้า 2 เป็นร่างจาก AI — user ยังไม่ได้ยืนยันระยะเวลาและรายชื่อทีมจริง
     overview: [
       "RentHub คือเว็บไซต์รวมประกาศหอพัก อพาร์ทเม้นท์ และห้องเช่าทั่วประเทศไทยกว่า 20,000 แห่ง ทั้งแบบรายเดือน รายวัน โรงแรม และที่พักเลี้ยงสัตว์ได้ ผู้ใช้ค้นหาตามแนวรถไฟฟ้า มหาวิทยาลัย จังหวัด ถนน ห้างฯ หรือนิคมอุตสาหกรรม ดูภาพและทัวร์เสมือน 360° พร้อมแชทถามห้องว่างกับเจ้าของได้ ส่วนเจ้าของหอลงประกาศฟรี",
+      "โปรเจกต์นี้เป็นเว็บไซต์หลักของบริษัทที่พัฒนาต่อเนื่อง จึงไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off จนถึงตรวจงานก่อน Deploy",
     ],
+    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    // (แทนที่ ctxProblem/ctxBusiness เดิมที่เป็นข้อความสมมติและมี em dash)
+    problem: {
+      statement: [
+        "รวมประกาศห้องเช่าทั่วประเทศไว้ในที่เดียว ให้ผู้เช่าค้นหาห้องที่ตรงเงื่อนไขได้จากจุดอ้างอิงที่ใช้จริงในชีวิตประจำวัน ทั้งแนวรถไฟฟ้า มหาวิทยาลัย จังหวัด ถนน ห้างสรรพสินค้า และนิคมอุตสาหกรรม แล้วตัดสินใจได้เร็วขึ้นด้วยภาพจริงและทัวร์เสมือน 360° ก่อนติดต่อเจ้าของโดยตรง ฝั่งเจ้าของหอลงประกาศได้ฟรี เพื่อให้จำนวนประกาศบนแพลตฟอร์มเติบโตต่อเนื่อง",
+      ],
+    },
     ctxBusiness:
-      "Renthub ทำเงินจากการเชื่อมผู้เช่ากับเจ้าของห้อง — critical path คือ ค้นหา → เปรียบเทียบ → นัดดูห้อง",
+      "Renthub ทำเงินจากการเชื่อมผู้เช่ากับเจ้าของห้อง critical path คือ ค้นหา → เปรียบเทียบ → นัดดูห้อง",
     ctxProblem: "ผู้เช่าเทียบหลายห้องพร้อมกันได้ยาก ทำให้ลังเลและออกก่อนนัดดูห้อง",
     constraints: [
       "Solo designer — ไม่มีทีม design",
@@ -367,12 +525,12 @@ export const projects = {
       "Secondary: จำนวนห้องที่ถูกเปรียบเทียบต่อ session",
     ],
     guardrailMetrics: ["Lead quality ต้องไม่ลด", "Bounce rate ต้องไม่เพิ่ม"],
-    decisionsIntro:
-      "ผมเลือกเล่า 3 decision ที่ยากที่สุดใน redesign นี้ — แต่ละอันมี trade-off ที่ยอม และ option ที่ตัดออก",
+    decisionsIntro: "",
+    // section Process & Key Decisions โครงเดียวกับ propertyhub — เปิดไว้รอเนื้อหาจริง
+    // (user สั่ง 14 ส.ค. 2026) · พอมีเรื่องเล่าจริงให้แทน pending ด้วย title/reasoning/tradeoff/outcome
     decisions: [
-      { title: "[ ชื่อ decision 1 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
-      { title: "[ ชื่อ decision 2 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
-      { title: "[ ชื่อ decision 3 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
     ],
     expWhy:
       "ไม่มี A/B testing tool ผมใช้ GA4 event + Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate before/after ระหว่าง design เดิมกับ design ใหม่",
@@ -649,6 +807,28 @@ export type PlaceholderProject = {
   liveUrl?: string;
   /** เนื้อหา Overview (ย่อหน้าเดียวต่อ project) — ถ้าไม่ใส่ = empty state */
   overview?: string[];
+  /** section "Business Goal" (โครงเดียวกับหน้า propertyhub) — ไม่ใส่ = ไม่แสดง section */
+  businessGoal?: string[];
+  /** section "Process & Key Decisions" (โครงเดียวกับหน้า propertyhub · เรนเดอร์ด้วย ProcessSection)
+   *  decision ที่ยังไม่มีเนื้อหาจริงใส่ `{ pending: true }` → การ์ดเส้นประ "รอเนื้อหาจริง"
+   *  ไม่ใส่ field นี้เลย = ไม่แสดง section (ใช้กับ Archive / Data & AI Workflow) */
+  decisions?: Decision[];
+  /** ย่อหน้าใต้รูป process ของ section นี้ — ไม่ใส่ = ใช้ข้อความกลางของ ProcessSection */
+  processNote?: string;
+  /** รูปหัว section Process (เช่น บอร์ด Design Thinking) — ไม่ใส่ = ใช้แถบ 5 ขั้นมาตรฐาน */
+  processImage?: CaseImage;
+  /** ขั้นย่อยใน Process (Requirement / Research / Wireframe & Style Guide ฯลฯ)
+   *  cols > 1 = รูปของขั้นนั้นเรียงเป็นกริดคอลัมน์เท่ากัน ปล่อยความสูงตามจริง */
+  processPhases?: {
+    title: string;
+    body?: string;
+    images?: CaseImage[];
+    cols?: 1 | 2 | 3;
+    /** true = ไม่โชว์ caption ใต้รูป (รูปที่มีชื่อหัวข้ออยู่ในตัวแล้ว เช่น บอร์ด Style Guide) */
+    hideCaptions?: boolean;
+    /** true = รูปในขั้นนี้กดขยายเต็มจอไม่ได้ */
+    noZoom?: boolean;
+  }[];
   /** เครื่องมือที่ใช้ — โชว์เป็นการ์ดใน section Tools (ถ้าไม่ใส่ = empty state) */
   tools?: string[];
   /** hero แบบ present — laptop (เว็บ) + phone (แอป) วางคู่กัน · ใส่ทั้งคู่ถึงจะแสดง */
@@ -694,8 +874,94 @@ export const placeholderProjects = {
     status: "available",
     tagline:
       "แอปมือถือของ Propertyhub — ค้นหา เปรียบเทียบ และติดต่อประกาศเช่า/ขายได้ครบในมือ",
+    // โครงเดียวกับ overview ของ propertyhub (เว็บ): ทำอะไรกับโปรเจกต์ → ตัวเลขหลังเปิดตัว
+    // ข้อความทั้ง 2 ย่อหน้าตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
     overview: [
-      "PropertyHub App คือแอปพลิเคชันซื้อ ขาย และเช่าอสังหาฯ ทั่วไทย รวมคอนโด บ้าน ที่ดิน และอื่นๆ กว่า 240,000 ประกาศ จากทั้งเจ้าของและนายหน้ามืออาชีพ ค้นหาบนแผนที่หรือระบุทำเล ถนน รถไฟฟ้า ห้างฯ มหาวิทยาลัย พร้อมประกาศอัปเดตเรียลไทม์ทุกวัน บันทึกประกาศโปรด เซฟการค้นหาไว้ใช้ซ้ำ และแชทกับเจ้าของได้โดยตรง ปลอดภัยด้วยระบบยืนยันตัวตนและเครื่องหมาย Verify",
+      "แอปพลิเคชัน Propertyhub บน iOS และ Android สำหรับซื้อ ขาย และเช่าอสังหาริมทรัพย์ทั่วไทย ครอบคลุมคอนโด บ้าน ที่ดิน และประเภทอื่น ๆ กว่า 240,000 ประกาศ ผู้ใช้ค้นหาได้ทั้งบนแผนที่และตามทำเล รถไฟฟ้า ห้าง หรือมหาวิทยาลัย บันทึกประกาศโปรด เซฟการค้นหา และแชทกับผู้ลงประกาศได้โดยตรง หลังเปิดตัวครบปีแรก มียอดดาวน์โหลดกว่า 73,000 ครั้ง และการเข้าชมกว่า 18.4 ล้านหน้า",
+      "ใช้เวลาพัฒนาราว 4 เดือนก่อนปล่อยขึ้นสโตร์ รับผิดชอบในฐานะ Designer เพียงคนเดียวแบบ end-to-end ตั้งแต่ research, Design System, interface design ไปจนถึง hand-off และตรวจงานก่อน deploy ทำงานร่วมกับ PM, Business, Marketing, Sale และ Developer",
+    ],
+    // ── PROCESS & KEY DECISIONS ── แบ่งเป็นขั้นย่อย (user สั่ง 14 ส.ค. 2026)
+    // ไม่มี processNote = ไม่แสดงแถบ process 5 ขั้นด้านบน (ย่อหน้าย้ายลงไปอยู่ใน Requirement แล้ว)
+    processPhases: [
+      {
+        title: "Requirement",
+        // ข้อความตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
+        body: "การเริ่มต้นหา solution ใช้การคุยและทำ Design Thinking ร่วมกับทีม PM, Business, Marketing และ Sale เพื่อรวบรวมสิ่งที่อยากมีและสิ่งที่ user ต้องการ เพราะทีม Sale และ Marketing เป็นคนที่พูดคุยกับลูกค้ามากที่สุด",
+        // บอร์ด Design Thinking เฉพาะขั้น Empathize + Define (user เปลี่ยนรูปเป็นตัวครอปนี้
+        // 14 ส.ค. 2026 · ตัวเต็มที่มี Ideate/Prototype/Test ถูกแทนที่ไปแล้ว)
+        //
+        // ท้าย "-v2" ในชื่อไฟล์มีไว้บังคับให้เบราว์เซอร์เลิกใช้รูปเก่าที่ cache ไว้
+        // (เคยชื่อ propertyhub-app-design-thinking.jpg → Design-Thiking.jpg → ตัวนี้)
+        // ⚠️ เปลี่ยนรูปเมื่อไหร่ต้องแก้ w/h ให้ตรงขนาดจริงด้วย ไม่งั้นสัดส่วนเพี้ยน
+        // ⚠️ ไฟล์นี้กว้าง 922px ตัวหนังสือใน sticky note เลยเล็ก ถ้าอยากให้ซูมอ่านได้ชัด
+        //    ต้อง export ใหม่ที่ ~2000px
+        images: [
+          {
+            src: "/uploads/propertyhub-app-design-thinking-v2.jpg",
+            label: "บอร์ด Design Thinking ขั้น Empathize และ Define ที่ทำร่วมกับทีม",
+            w: 922,
+            h: 722,
+          },
+        ],
+      },
+      {
+        title: "Research",
+        // ⚠️ ย่อหน้านี้เป็นร่างจาก AI — user พิมพ์ค้างไว้แค่ "Research คือ " ยังไม่ได้ให้เนื้อความ
+        body: "สำรวจแอปอสังหาริมทรัพย์ที่มีอยู่ในตลาดเพื่อดูว่าแต่ละเจ้าจัดลำดับอะไรไว้บนหน้าแรก วางการค้นหาแบบไหน และพาผู้ใช้ไปถึงการติดต่อผู้ลงประกาศด้วยเส้นทางกี่ขั้น ข้อมูลชุดนี้ใช้ตรวจสอบว่ารายการฟีเจอร์ที่ได้จากขั้น Requirement อันไหนเป็นมาตรฐานที่ผู้ใช้คาดหวังอยู่แล้ว และอันไหนเป็นของที่เพิ่มมาโดยยังไม่มีใครทำ",
+        cols: 3,
+        // user สั่ง 14 ส.ค. 2026 — จอแอปในตลาดดูจากขนาดในหน้าก็พอ ไม่ต้องกดขยาย
+        noZoom: true,
+        // ⚠️ research-1 ลงท้าย "-v3" เพราะเปลี่ยนรูป/ครอปหลายรอบ แล้วเบราว์เซอร์ cache URL เดิมไว้
+        //    เปลี่ยนชื่อไฟล์ = เปลี่ยน URL = บังคับโหลดใหม่
+        // ตัว v3 ถูกครอปความสูงจาก 797 → 650 ให้อัตราส่วน (0.560) เท่ากับรูป 2 และ 3
+        //    จอในกริดจะได้สูงเท่ากันทั้งสามใบ (user สั่ง 14 ส.ค. 2026)
+        // ⚠️ ชื่อแอปในรูป 1–2 อ่านจากโลโก้ในรูปโดยตรง · รูป 3 ยังไม่ยืนยัน (ดูจากป้าย
+        //    "Curated by 99" คาดว่าเป็น 99.co) — ให้ user ยืนยันก่อนถือว่าถูก
+        images: [
+          { src: "/uploads/propertyhub-app-research-1-v3.jpg", label: "LivingInsider", w: 364, h: 650 },
+          { src: "/uploads/propertyhub-app-research-2.jpg", label: "PropertyGuru", w: 446, h: 797 },
+          { src: "/uploads/propertyhub-app-research-3.jpg", label: "99.co (สิงคโปร์)", w: 442, h: 795 },
+        ],
+      },
+      {
+        title: "Wireframe & Style Guide",
+        // ใจความตามที่ user เขียนเอง 14 ส.ค. 2026 (ปรับเป็นภาษาทางการ ไม่มีสรรพนาม)
+        body: "wireframe ที่ใช้เป็น High-Fidelity Wireframe คือลงรายละเอียด UI ไปพร้อมกับโครงหน้าในขั้นเดียว ควบคู่กับการวาง Style Guide ของแอปทั้งชุดสี ตัวอักษร และไอคอน เพื่อให้ทุกจอที่ออกแบบต่อจากนั้นใช้ของชุดเดียวกันทั้งแอป",
+        cols: 3,
+        // hideCaptions = ในรูปมีคำว่า Color / Typography / Icon อยู่แล้ว ไม่ต้องซ้ำใต้รูป
+        // (label ยังอยู่เพราะใช้เป็น alt และ caption ตอนกดดูเต็มจอ)
+        hideCaptions: true,
+        images: [
+          { src: "/uploads/propertyhub-app-ds-color.jpg", label: "Color", w: 4320, h: 4200 },
+          { src: "/uploads/propertyhub-app-ds-typography.jpg", label: "Typography", w: 4320, h: 5700 },
+          { src: "/uploads/propertyhub-app-ds-icon-v2.jpg", label: "Icon", w: 4320, h: 7818 },
+        ],
+      },
+    ],
+    decisions: [
+      {
+        // หัวข้อ = ข้อความที่ user เขียนเอง (ปรับเป็นภาษาทางการ ไม่มีสรรพนาม ความหมายเดิม)
+        // ⚠️ Problem / Trade-off / Validation เป็นร่างจาก AI — อ้างจากข้อเท็จจริงที่ user ให้มา
+        //    (เวลาพัฒนา 4 เดือน · รายการหน้าในขั้น Define · เมนูล่างตอนปล่อยครั้งแรก 3 เมนู
+        //    · ยอดดาวน์โหลด 73,000 ครั้งปีแรก) user ยังไม่ได้ยืนยันถ้อยคำ
+        title:
+          "คัดฟีเจอร์พื้นฐานให้ใช้งานได้ก่อนใน phase แรก แทนการใส่ฟีเจอร์ทุกอย่างในครั้งเดียวแล้วใช้เวลานานในการ Develop และทำให้งานเกินระยะเวลาที่กำหนด",
+        mock: "feature-phases",
+        // Problem / Trade-off / Validation = ฉบับสมบูรณ์ที่ user เขียนเอง 14 ส.ค. 2026 (เย็น)
+        // ห้ามเรียบเรียงใหม่ — เป็นถ้อยคำที่ user เคาะแล้ว
+        reasoning:
+          "การพัฒนาแอปให้ครบทุกฟีเจอร์ตั้งแต่เปิดตัวใช้เวลานาน ขณะที่ timeline การ launch มีจำกัด การฝืนทำทุกอย่างพร้อมกันเสี่ยงที่งานจะออกมาไม่เรียบร้อยและเทสไม่ทั่วถึง โจทย์จึงอยู่ที่การเลือกว่าจะโฟกัสอะไรก่อนใน launch แรก",
+        tradeoff:
+          "เลือกให้ launch แรกโฟกัสฝั่งผู้หาที่อยู่อาศัย ค้นหา ดูประกาศ และบันทึกรายการโปรด ส่วนฟีเจอร์ลงประกาศที่เป็นงานของเอเจนต์และผูกกับระบบจัดการทั้งหมด (ลงประกาศ เลื่อนประกาศ ดูสถิติ) เลื่อนไป Phase ถัดไป เพราะกลุ่มนี้ยังใช้งานผ่านเว็บได้สะดวกอยู่แล้ว",
+        outcome:
+          "การตัดสินใจนี้มองว่ามือถือคือช่องทางของผู้หาที่ต้องการค้นหาได้ทุกที่ทุกเวลา ขณะที่การลงประกาศเป็นงานที่ทำบนเดสก์ท็อปได้ดีกว่า การโฟกัสฝั่งผู้หาก่อนจึงเป็นส่วนสำคัญหลักของแอปที่ต้องส่งให้ถึงมือผู้ใช้กลุ่มใหญ่ที่สุดก่อน แล้วค่อยขยายไปฝั่งผู้ลงประกาศเมื่อพร้อม",
+      },
+      // Decision 2 (เรื่อง checklist ก่อนปล่อยงาน) ถูกตัดออกตามคำสั่ง user 14 ส.ค. 2026
+      // ถ้าจะเอากลับมา เพิ่ม object ใหม่ต่อท้ายได้เลย
+    ],
+    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    businessGoal: [
+      "ขยายแพลตฟอร์มจากเว็บไซต์มาสู่มือถือ เพื่อให้การค้นหาและติดตามประกาศเกิดขึ้นได้ทุกที่ ไม่จำกัดอยู่แค่ตอนที่ผู้ใช้นั่งอยู่หน้าคอมพิวเตอร์ โดยยกความสามารถหลักของเว็บมาให้ครบ ทั้งการค้นหาบนแผนที่ การบันทึกประกาศโปรด การเซฟการค้นหาไว้ใช้ซ้ำ และการแชทกับผู้ลงประกาศโดยตรง ซึ่งเป็นจุดที่เกิดรายได้ของแพลตฟอร์ม",
     ],
     screens: [
       { label: "Home", src: "/uploads/propertyhub-app-home.png", w: 660, h: 1320 },
@@ -710,6 +976,17 @@ export const placeholderProjects = {
       "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
     overview: [
       "RentHub App คือแอปพลิเคชันหาหอพักและอพาร์ทเม้นท์ให้เช่าทั่วไทยกว่า 16,000 แห่ง ทั้งรายเดือนและรายวัน ค้นหาที่พักใกล้ตัวหรือใกล้จุดสำคัญอย่างรถไฟฟ้า มหาวิทยาลัย และห้างฯ ดูภาพจริงและทัวร์เสมือน 360° ได้โดยไม่ต้องเดินทางไปดูเอง แชทถามห้องว่างกับเจ้าของแบบเรียลไทม์ พร้อมเครื่องหมาย Verify ยืนยันตัวตนเจ้าของหอเพื่อความน่าเชื่อถือ",
+      // ⚠️ ย่อหน้า 2 (duration / role / team) เป็นร่างจาก AI — user ยังไม่ได้ยืนยันถ้อยคำ
+      "แอปพลิเคชันตัวนี้เป็นผลิตภัณฑ์ของบริษัทที่พัฒนาต่อเนื่องทั้ง iOS และ Android จึงไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off จนถึงตรวจงานก่อนปล่อยขึ้นสโตร์",
+    ],
+    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
+    decisions: [
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+    ],
+    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    businessGoal: [
+      "นำประสบการณ์การหาห้องเช่าจากเว็บมาไว้บนมือถือ ให้ผู้เช่าค้นหาที่พักจากตำแหน่งที่ยืนอยู่จริงหรือจากจุดอ้างอิงที่ใช้ในชีวิตประจำวันอย่างรถไฟฟ้า มหาวิทยาลัย และห้างสรรพสินค้า ลดขั้นตอนการเดินทางไปดูห้องด้วยภาพจริงและทัวร์เสมือน 360° แล้วพาไปสู่การแชทกับเจ้าของหอโดยตรง โดยมีเครื่องหมาย Verify เป็นตัวสร้างความน่าเชื่อถือให้ทั้งสองฝั่ง",
     ],
     tools: ["Figma"],
     appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
@@ -786,6 +1063,18 @@ export const placeholderProjects = {
     liveUrl: "https://expathome.dev/",
     overview: [
       "Expat คือเว็บแพลตฟอร์มค้นหาที่พักให้เช่าสำหรับผู้เช่าชาวต่างชาติเป็นหลัก มุ่งเน้นอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่บริหารการตลาดและหาผู้เช่าด้วยตนเอง ซึ่งไม่ได้ลงประกาศบน RentHub โดยทีมงานเป็นผู้ติดต่อเพื่อรวบรวมข้อมูลอพาร์ตเมนต์เหล่านั้นมานำเสนอบนแพลตฟอร์ม จุดต่างสำคัญจาก RentHub อยู่ที่รูปแบบรายได้ กล่าวคือ Expat รับค่าคอมมิชชันจากอพาร์ตเมนต์โดยตรงเมื่อผู้เช่าระบุว่ามาจาก Expat ขณะที่ RentHub อาศัยให้เจ้าของลงประกาศเองและเก็บค่าโฆษณาจากผู้ที่ต้องการให้ประกาศแสดงบนหน้าแรก",
+      // ⚠️ ย่อหน้า 2 (duration / role / team) เป็นร่างจาก AI — user ยังไม่ได้ยืนยันถ้อยคำ
+      "โปรเจกต์นี้เป็นแพลตฟอร์มใหม่ของบริษัทที่อยู่ระหว่างพัฒนา จึงยังไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Style Guide, Interface Design ทั้งเว็บและมือถือ จนถึง Hand-off ให้ทีม Developer",
+    ],
+    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
+    decisions: [
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+    ],
+    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    businessGoal: [
+      "เปิดช่องทางรายได้ใหม่ที่ต่างจากโมเดลโฆษณาของ RentHub โดยจับกลุ่มอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่บริหารการตลาดและหาผู้เช่าด้วยตนเอง ซึ่งไม่ได้ลงประกาศบน RentHub อยู่แล้ว แล้วรวบรวมข้อมูลมานำเสนอกับผู้เช่าชาวต่างชาติในกรุงเทพฯ ที่มองหาที่พักระดับนี้โดยเฉพาะ",
+      "เนื่องจากรายได้มาจากค่าคอมมิชชันที่อพาร์ตเมนต์จ่ายให้เมื่อผู้เช่าระบุว่ามาจาก Expat เป้าหมายของแพลตฟอร์มจึงอยู่ที่การพาผู้เช่าไปให้ถึงขั้นติดต่ออพาร์ตเมนต์ให้ได้มากที่สุด ไม่ใช่แค่ทำให้มีคนเข้าเว็บเยอะ",
     ],
     tools: ["Figma"],
     heroWeb: "/uploads/renthub-agency-web-laptop.png",
@@ -892,6 +1181,12 @@ export const placeholderProjects = {
     status: "process",
     tagline:
       "แพลตฟอร์มรวมงานของเอเจนต์อสังหาฯ ไว้ที่เดียว — หน้านี้เล่างาน Website Builder ที่อยู่ในนั้น: ชุดธีม 3 แบบ × 3 ประเภทหน้า ที่ระบบเอาไปสร้างเว็บให้เอเจนต์ได้ในคลิกเดียว",
+    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
+    // เนื้อหาอื่นของหน้านี้อยู่ที่ data/propertyos.ts
+    decisions: [
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+      { pending: true, title: "", reasoning: "", tradeoff: "" },
+    ],
   },
   // คลังงานเก่า 2018–2020 — render ด้วย EarlyWorkView (special-case ใน work/[slug])
   "early-work": {

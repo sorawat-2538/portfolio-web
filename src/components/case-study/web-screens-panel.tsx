@@ -43,8 +43,9 @@ export function WebScreensPanel({
   screens: WebScreen[];
   /** "rail" = จอเต็มความสูงเลื่อนแนวนอน (default) · "grid" = จอในกรอบ browser crop หัวเท่ากัน 2 ต่อแถว */
   variant?: "rail" | "grid";
-  /** grid เท่านั้น — จำนวนคอลัมน์บนจอกว้าง (ใช้ 3 ตอนอยากให้เทียบกันในสายตาเดียว) */
-  cols?: 2 | 3;
+  /** grid เท่านั้น — จำนวนคอลัมน์บนจอกว้าง
+   *  1 = วางเดี่ยวเรียงลงมาเต็มความกว้าง (crop สูงกว่าเพราะกรอบกว้างขึ้น) · 3 = เทียบกันในสายตาเดียว */
+  cols?: 1 | 2 | 3;
 }) {
   const shots = screens.filter((s): s is Shot => Boolean(s.src));
   const [active, setActive] = React.useState<number | null>(null);
@@ -93,7 +94,11 @@ export function WebScreensPanel({
         /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */
         <div
           className={`grid grid-cols-1 items-start gap-4 px-[clamp(18px,3vw,30px)] min-[560px]:gap-6 ${
-            cols === 3 ? "min-[560px]:grid-cols-2 min-[820px]:grid-cols-3" : "min-[560px]:grid-cols-2"
+            cols === 1
+              ? ""
+              : cols === 3
+                ? "min-[560px]:grid-cols-2 min-[820px]:grid-cols-3"
+                : "min-[560px]:grid-cols-2"
           }`}
         >
           {shots.map((s, i) => {
@@ -116,14 +121,24 @@ export function WebScreensPanel({
                   </span>
                 </div>
 
-                {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ */}
-                <div className={"relative bg-white" + (tall ? " h-[clamp(240px,30vw,340px)] overflow-hidden" : "")}>
+                {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ
+                    cols=1 กรอบกว้างเต็มความกว้าง → crop สูงขึ้นตามสัดส่วน ไม่งั้นจะเห็นแค่แถบบางๆ */}
+                <div
+                  className={
+                    "relative bg-white" +
+                    (tall
+                      ? cols === 1
+                        ? " h-[clamp(300px,46vw,560px)] overflow-hidden"
+                        : " h-[clamp(240px,30vw,340px)] overflow-hidden"
+                      : "")
+                  }
+                >
                   <Image
                     src={s.src}
                     alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
                     width={s.w ?? 1600}
                     height={s.h ?? 5000}
-                    sizes="(max-width: 560px) 100vw, 420px"
+                    sizes={cols === 1 ? "(max-width: 900px) 100vw, 860px" : "(max-width: 560px) 100vw, 420px"}
                     quality={88}
                     unoptimized
                     className="block h-auto w-full"

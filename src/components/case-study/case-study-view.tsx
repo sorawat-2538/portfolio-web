@@ -1,7 +1,6 @@
 import Image from "next/image";
 import {
   Activity,
-  ArrowRight,
   LayoutGrid,
   Lock,
   MousePointerClick,
@@ -22,6 +21,9 @@ import { LaptopMock } from "./laptop-mock";
 import { WebScreensPanel } from "./web-screens-panel";
 import { AppScreensShowcase } from "./app-screens-showcase";
 import { MeasurementStory } from "./measurement-story";
+import { DecisionFigures } from "./decision-figures";
+import { SectionNav, type NavSection } from "./section-nav";
+import { ProcessSection, hasProcess, isPlaceholder } from "./process-section";
 import { StatusBadge } from "./status-badge";
 import { ProjectNav } from "./project-nav";
 
@@ -39,11 +41,22 @@ function H2({ children }: { children: React.ReactNode }) {
   );
 }
 
-function H3({ children }: { children: React.ReactNode }) {
+function H3({ children, bold = false }: { children: React.ReactNode; bold?: boolean }) {
   return (
-    <h3 className="text-[17px] font-normal tracking-[0.01em] text-foreground">
+    <h3
+      className={`text-[17px] tracking-[0.01em] text-foreground ${
+        bold ? "font-bold" : "font-normal"
+      }`}
+    >
       {children}
     </h3>
+  );
+}
+
+/** หัวข้อย่อยใน decision (Problem / Trade-off / Validation) — ขนาดเท่า body (17px) แต่ตัวหนา */
+function H4({ children }: { children: React.ReactNode }) {
+  return (
+    <h4 className="text-[17px] font-bold tracking-[0.01em] text-foreground">{children}</h4>
   );
 }
 
@@ -54,6 +67,43 @@ function Body({ children, className = "" }: { children: React.ReactNode; classNa
     </p>
   );
 }
+
+function Divider() {
+  return <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />;
+}
+
+
+/** isPlaceholder = ค่าที่ยังเป็น placeholder "[ ... ]" ใน data/projects.ts — ห้ามหลุดขึ้นหน้าเว็บ
+ *  ทุก section ใหม่กรองด้วยตัวนี้ ทำให้โปรเจกต์ที่ยังไม่ได้กรอกข้อมูลจริงซ่อน section นั้นไปเอง
+ *  (ย้ายไปนิยามที่ process-section.tsx เพื่อให้หน้าที่ใช้ view คนละตัวเรียกใช้ร่วมกันได้) */
+function realItems(xs?: readonly string[]) {
+  return (xs ?? []).filter((x) => !isPlaceholder(x));
+}
+
+/** ประโยคเด่น — callout ส้ม ชุดเดียวกับ Takeaway ใน propertyos-view / claude-section */
+function Callout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-6 rounded-r-xl border-l-[3px] border-amber-500 bg-amber-400/[0.12] px-[clamp(18px,2.4vw,26px)] py-[clamp(16px,2vw,22px)]">
+      <p className="text-[clamp(16px,1.8vw,19px)] leading-[1.62] text-foreground">
+        {children}
+      </p>
+    </div>
+  );
+}
+
+function BulletList({ items, className = "" }: { items: readonly string[]; className?: string }) {
+  return (
+    <ul className={"space-y-2.5 " + className}>
+      {items.map((it) => (
+        <li key={it} className="flex gap-3 text-[17px] leading-[1.8] text-muted-foreground">
+          <span className="mt-[13px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/30" />
+          <span>{it}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 
 /** Browser window mockup — chrome + address bar (URL จริง) + จอ scroll ได้ข้างใน */
 function BrowserFrame({
@@ -187,6 +237,53 @@ export function CaseStudyView({
   slug: ProjectSlug;
   project: Project;
 }) {
+  // section Solution — ปิดไว้ก่อน (user สั่ง 13 ส.ค. 2026 "เอาออกไปก่อน เก็บไว้อย่าเพิ่งลบทิ้ง")
+  // เหตุผล: เนื้อหาซ้ำกับ Decision 1/2 ที่เล่าไปแล้ว + หัวข้อย่อย "Final Design" ชนกับ section
+  // "Final User Interface" · ข้อมูล `solution` ใน projects.ts ยังอยู่ครบ เปลี่ยนเป็น true เพื่อเปิดคืน
+  const SHOW_SOLUTION = false;
+
+  // Business Goal — statement รับได้ทั้งย่อหน้าเดียว (string) และหลายย่อหน้า (string[])
+  const statement = p.problem?.statement ?? p.ctxProblem;
+  const goalParas = Array.isArray(statement) ? statement : [statement];
+
+  // ── สารบัญลอยขอบขวา ──
+  // เงื่อนไขแต่ละข้อต้องตรงกับเงื่อนไข render ของ section นั้นเป๊ะ ไม่งั้นสารบัญจะชี้ไปที่ไม่มีอยู่
+  // ตอนนี้เปิดเฉพาะ propertyhub (หน้ายาวสุด) — เอาออกจาก NAV_SLUGS ถ้าไม่อยากให้โชว์
+  const NAV_SLUGS: string[] = ["propertyhub"];
+  const navSections: NavSection[] = ([
+    { id: "s-overview", label: "Overview", show: true },
+    { id: "s-context", label: "Tools", show: true },
+    { id: "s-achievement", label: "Achievement", show: Boolean(p.achievement?.length) },
+    { id: "s-goal", label: "Business Goal", show: !isPlaceholder(goalParas[0]) },
+    {
+      id: "s-process",
+      label: "Process & Key Decisions",
+      show: hasProcess(p.decisions),
+    },
+    {
+      id: "s-solution",
+      label: "Solution",
+      show: SHOW_SOLUTION && Boolean(p.solution && p.solution.points.length > 0),
+    },
+    { id: "s-impact", label: "Impact & Results", show: !p.hideMeasure },
+    {
+      id: "s-screens",
+      label: "Final User Interface",
+      show: Boolean(p.webScreens?.length) || Boolean(p.screens?.length),
+    },
+    {
+      id: "s-reflection",
+      label: "Reflection",
+      show: Boolean(
+        p.reflection?.body.length ||
+          !isPlaceholder(p.reflectLesson) ||
+          !isPlaceholder(p.reflectChallenge),
+      ),
+    },
+  ] as (NavSection & { show: boolean })[])
+    .filter((s) => s.show)
+    .map(({ id, label }) => ({ id, label }));
+
   // host สำหรับ address bar ของ browser mockup (ตัด protocol + / ท้าย)
   const heroUrl =
     p.liveUrl && p.liveUrl !== "#"
@@ -224,6 +321,8 @@ export function CaseStudyView({
 
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {NAV_SLUGS.includes(slug) && <SectionNav sections={navSections} />}
+
       {/* ── HEADER ── */}
       <section>
         {/* availability status — badge ตาม p.status (Available / On Process / Coming Soon) */}
@@ -376,20 +475,32 @@ export function CaseStudyView({
 
       <Spacer />
 
-      {/* ── 1 · OVERVIEW ── */}
-      <section>
+      {/* ── 1 · OVERVIEW ── ทำอะไร ให้ใคร ผลลัพธ์อะไร (ตัวเลขจริง)
+          + ย่อหน้าบทบาท/ทีม (context.body) ต่อท้ายเป็นอีกย่อหน้าในหัวข้อเดียวกัน
+          14 ส.ค. 2026: เคยลองแยกเป็นบรรทัด "Duration:" / "Role:" แล้ว user สั่งกลับมาเป็นย่อหน้า */}
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
+
         <div className="mt-[22px] space-y-[18px]">
           {p.overview.map((para, i) => (
-            <Body key={i}>{para}</Body>
+            <Body key={`ov-${i}`}>{para}</Body>
+          ))}
+          {p.context?.body?.map((para, i) => (
+            <Body key={`ctx-${i}`}>{para}</Body>
           ))}
         </div>
+
+        {p.context?.responsibilities && p.context.responsibilities.length > 0 && (
+          <div className="mt-8">
+            <H3>สิ่งที่รับผิดชอบ</H3>
+            <BulletList items={p.context.responsibilities} className="mt-3.5" />
+          </div>
+        )}
       </section>
 
-      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-
-      {/* ── TOOLS ── (grid 4 คอลัมน์ → กล่องเดียวก็กว้างเท่าเดิม ไม่ยืดเต็ม) */}
-      <section>
+      {/* ── 2 · TOOLS ── section ใหญ่ของตัวเอง (grid 4 คอลัมน์ → กล่องเดียวก็กว้างเท่าเดิม ไม่ยืดเต็ม) */}
+      <Divider />
+      <section id="s-context" className="scroll-mt-24">
         <H2>Tools</H2>
         <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
           {p.tools.map((tool) => (
@@ -398,16 +509,172 @@ export function CaseStudyView({
         </div>
       </section>
 
+      {/* ── ACHIEVEMENT ── ผลลัพธ์หลังเปิดตัว วางใต้ Tools (user สั่ง 14 ส.ค. 2026)
+          ข้อความล้วน ไม่มีการ์ด/กล่อง · ไม่มี p.achievement = ไม่แสดง section */}
+      {p.achievement && p.achievement.length > 0 && (
+        <>
+          <Divider />
+          <section id="s-achievement" className="scroll-mt-24">
+            <H2>Achievement</H2>
+            <div className="mt-[22px] space-y-[18px]">
+              {p.achievement.map((para, i) => (
+                <Body key={`ach-${i}`}>{para}</Body>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── 3 · BUSINESS GOAL ──
+          statement เคยอยู่ใน callout ส้ม — ย้ายมาเป็นย่อหน้าปกติชุดเดียวกับ Overview
+          หัวข้อย่อย "UX Challenge" จะขึ้นก็ต่อเมื่อ `problem.body` มีจริงเท่านั้น
+          (propertyhub ย้าย body ไปเป็น Decision 1 แล้ว → section นี้เหลือย่อหน้าเป้าหมาย + รูป)
+          โปรเจกต์ที่ยังใช้ fallback ctxProblem/ctxBusiness จะไม่มีหัวข้อย่อย (ไม่มี p.problem) */}
+      {!isPlaceholder(goalParas[0]) && (
+        <>
+          <Divider />
+          <section id="s-goal" className="scroll-mt-24">
+            <H2>Business Goal</H2>
+
+            <div className="mt-[22px] space-y-[18px]">
+              {goalParas
+                .filter((t) => !isPlaceholder(t))
+                .map((para, i) => (
+                  <Body key={`goal-${i}`}>{para}</Body>
+                ))}
+            </div>
+
+            {/* รูปสรุปเป้าหมาย (flow ขยาย 8 ประเภท → รายได้) — วางใต้ย่อหน้า Business Goal */}
+            {p.problem?.goalImage && (
+              <div className="mt-8">
+                <DecisionFigures
+                  images={[p.problem.goalImage]}
+                  title={p.title}
+                  variant="single"
+                />
+              </div>
+            )}
+
+            {realItems(p.problem ? p.problem.body : [p.ctxBusiness]).length > 0 && (
+              <div className="mt-8">
+                {p.problem && <H3 bold>UX Challenge</H3>}
+                <div className={p.problem ? "mt-3.5 space-y-[18px]" : "space-y-[18px]"}>
+                  {realItems(p.problem ? p.problem.body : [p.ctxBusiness]).map((para, i) => (
+                    <Body key={`ch-${i}`}>{para}</Body>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* รูปประกอบปัญหา (เช่น field matrix) — แสดงเต็มความกว้าง ไม่ใส่กรอบ browser */}
+            {p.problem?.images?.map((img) => (
+              <figure key={img.src} className="mt-8">
+                <Image
+                  src={img.src}
+                  alt={`${p.title} — ${img.label ?? "รูปประกอบ"}`}
+                  width={img.w}
+                  height={img.h}
+                  sizes="(max-width: 900px) 100vw, 860px"
+                  quality={90}
+                  className="block h-auto w-full"
+                />
+                {img.label && (
+                  <figcaption className="mt-3 text-center text-[13.5px] leading-[1.6] text-muted-foreground">
+                    {img.label}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </section>
+        </>
+      )}
+
+      {/* ── 4 · PROCESS & KEY DECISIONS ──
+          โครงย้ายไปอยู่ที่ process-section.tsx แล้ว (ใช้ร่วมกับหน้างานอื่นที่ view คนละตัว)
+          Design Process (แถบ 5 ขั้น) ก่อน แล้วตามด้วย decision ทีละหัวข้อ
+          แต่ละ decision = Problem → Trade-off → Validation */}
+      {hasProcess(p.decisions) && (
+        <>
+          <Divider />
+          <ProcessSection title={p.title} decisions={p.decisions} />
+        </>
+      )}
+
+      {/* ── 5 · SOLUTION ── สิ่งที่ออกแบบออกมาจริง แต่ละข้อผูกกลับไปที่ Problem
+          แบ่งหัวข้อย่อย 2 อันตามสูตร: Final Design (ภาพรวมว่าหน้าถูกออกแบบให้ทำอะไร)
+          → Design Decisions (แต่ละข้อ = สิ่งที่เปลี่ยน + เหตุผลที่ผูกกลับไปที่โจทย์) */}
+      {SHOW_SOLUTION && p.solution && p.solution.points.length > 0 && (
+        <>
+          <Divider />
+          <section id="s-solution" className="scroll-mt-24">
+            <H2>Solution</H2>
+
+            {p.solution.intro && (
+              <div className="mt-[22px]">
+                <H3 bold>Final Design</H3>
+                <Body className="mt-3.5">{p.solution.intro}</Body>
+              </div>
+            )}
+
+            <div className="mt-8">
+              <H3 bold>Design Decisions</H3>
+            </div>
+            <div className="mt-4 flex flex-col gap-4">
+              {p.solution.points.map((pt, i) => (
+                <div key={pt.title} className="rounded-xl border border-border bg-card p-[clamp(20px,3vw,28px)]">
+                  <div className="flex gap-4">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand text-[16px] font-bold tabular-nums text-white">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-[19px] font-bold leading-snug tracking-[-0.01em] text-foreground">
+                        {pt.title}
+                      </h3>
+                      <p className="mt-2.5 text-[16px] leading-[1.75] text-muted-foreground">
+                        {pt.body}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
       {/* หมายเหตุ: section "My Work Flow" ย้ายไปหน้าแรกแล้ว (ก่อน Technical Skills)
           เพราะเป็น process กลาง ไม่ผูกกับโปรเจกต์ไหน → components/home/work-flow.tsx */}
 
-      {/* ── ALL ABOUT WORKS — the designed screens ── */}
+      {/* ── 6 · IMPACT & RESULTS ── (ซ่อนได้ด้วย hideMeasure) */}
+      {!p.hideMeasure && (
+        <>
+          <Divider />
+          {p.measure ? (
+            <div id="s-impact" className="scroll-mt-24">
+              <MeasurementStory measure={p.measure} title={p.title} />
+            </div>
+          ) : (
+            <section id="s-impact" className="scroll-mt-24">
+              <H2>Impact &amp; Results</H2>
+              {!isPlaceholder(p.expWhy) && (
+                <div className="mt-6">
+                  <H3>Why manual A/B test</H3>
+                  <Body className="mt-2.5">{p.expWhy}</Body>
+                </div>
+              )}
+            </section>
+          )}
+
+        </>
+      )}
+
+      {/* ── 7 · FINAL DESIGN — จอจริงทั้งหมดที่ออกแบบ ── */}
       {((p.webScreens && p.webScreens.length > 0) ||
         (p.screens && p.screens.length > 0)) && (
         <>
-          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
-            <H2>Screens</H2>
+          <Divider />
+          <section id="s-screens" className="scroll-mt-24">
+            <H2>Final User Interface</H2>
             {p.webScreens && p.webScreens.length > 0 ? (
               // แยกตาม category (grid) — phone category = จอมือถือ (AppScreensShowcase) · ที่เหลือ = grid เว็บ
               <div className="mt-8 flex flex-col gap-6">
@@ -419,7 +686,7 @@ export function CaseStudyView({
                       screens={c.screens.flatMap((s) => (s.src ? [{ src: s.src, label: s.label ?? "" }] : []))}
                     />
                   ) : (
-                    <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" />
+                    <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" cols={1} />
                   ),
                 )}
               </div>
@@ -459,69 +726,40 @@ export function CaseStudyView({
         </>
       )}
 
-      {/* ── HOW I MEASURED ── (ซ่อนได้ด้วย hideMeasure) */}
-      {!p.hideMeasure && (
-      <>
-      <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-      {p.measure ? (
-        <MeasurementStory measure={p.measure} title={p.title} />
-      ) : (
-      <section>
-        <H2>How I Measured</H2>
-        <div className="mt-6">
-          <H3>Why manual A/B test</H3>
-          <Body className="mt-2.5">{p.expWhy}</Body>
-        </div>
+      {/* ── 8 · REFLECTION — สิ่งที่เรียนรู้ / จะทำต่างไปถ้าได้ทำใหม่ (โชว์ growth mindset) ── */}
+      {(p.reflection?.body.length ||
+        !isPlaceholder(p.reflectLesson) ||
+        !isPlaceholder(p.reflectChallenge)) && (
+        <>
+          <Divider />
+          <section id="s-reflection" className="scroll-mt-24">
+            <H2>Reflection</H2>
 
-        <div className="mt-[26px] grid gap-px overflow-hidden rounded-lg border border-border bg-border [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
-          {[
-            { k: "Segmentation", v: p.expSegment },
-            { k: "Tracking", v: p.expTracking },
-            { k: "Duration", v: p.expDuration },
-            { k: "Sample", v: p.expSample },
-          ].map((m) => (
-            <div key={m.k} className="bg-card px-[22px] py-5">
-              <div className="text-[11.5px] uppercase tracking-[0.12em] text-faint">
-                {m.k}
+            {p.reflection?.body && p.reflection.body.length > 0 && (
+              <div className="mt-[22px] space-y-[18px]">
+                {p.reflection.body.map((para, i) => (
+                  <Body key={i}>{para}</Body>
+                ))}
               </div>
-              <div className="mt-2 text-[15px] leading-[1.5] text-foreground">
-                {m.v}
-              </div>
-            </div>
-          ))}
-        </div>
+            )}
 
-        {/* segmentation flow diagram */}
-        <div className="mt-[22px] rounded-xl border border-border bg-card px-[clamp(22px,3vw,34px)] py-[clamp(22px,3vw,34px)]">
-          <div className="mb-[22px] text-[11.5px] uppercase tracking-[0.12em] text-faint">
-            Manual segmentation flow
-          </div>
-          <div className="flex flex-col items-stretch gap-3.5 min-[560px]:flex-row min-[560px]:items-center min-[560px]:gap-4">
-            <div className="flex-1 rounded-[11px] border border-border bg-hover px-3.5 py-4 text-center min-[560px]:min-w-[120px]">
-              <div className="text-[14px] text-foreground">ผู้ใช้เข้าเว็บ</div>
-              <div className="mt-[5px] text-[12px] text-faint">assign by user ID</div>
-            </div>
-            <ArrowRight className="mx-auto h-[26px] w-[26px] shrink-0 rotate-90 text-faint min-[560px]:rotate-0" strokeWidth={1.5} />
-            <div className="flex flex-1 flex-col gap-3 min-[560px]:min-w-[120px]">
-              <div className="rounded-[11px] border border-border bg-card px-3.5 py-3.5 text-center">
-                <div className="text-[14px] text-foreground">Variant A</div>
-                <div className="mt-1 text-[12px] text-faint">design เดิม</div>
+            {!isPlaceholder(p.reflectChallenge) && (
+              <div className="mt-8">
+                <H3>สมมติฐานที่ควร challenge ให้หนักกว่านี้</H3>
+                <Body className="mt-2.5">{p.reflectChallenge}</Body>
               </div>
-              <div className="rounded-[11px] border border-foreground bg-card px-3.5 py-3.5 text-center">
-                <div className="text-[14px] text-foreground">Variant B</div>
-                <div className="mt-1 text-[12px] text-faint">design ใหม่</div>
+            )}
+
+            {realItems(p.reflectTrack).length > 0 && (
+              <div className="mt-8">
+                <H3>สิ่งที่จะเก็บข้อมูลเพิ่มในรอบถัดไป</H3>
+                <BulletList items={realItems(p.reflectTrack)} className="mt-3.5" />
               </div>
-            </div>
-            <ArrowRight className="mx-auto h-[26px] w-[26px] shrink-0 rotate-90 text-faint min-[560px]:rotate-0" strokeWidth={1.5} />
-            <div className="flex-1 rounded-[11px] border border-border bg-hover px-3.5 py-4 text-center min-[560px]:min-w-[120px]">
-              <div className="text-[14px] text-foreground">GA4 + Clarity</div>
-              <div className="mt-[5px] text-[12px] text-faint">track &amp; เทียบ conversion</div>
-            </div>
-          </div>
-        </div>
-      </section>
-      )}
-      </>
+            )}
+
+            {!isPlaceholder(p.reflectLesson) && <Callout>{p.reflectLesson}</Callout>}
+          </section>
+        </>
       )}
 
       {/* ── footer nav (prev / next) — ลำดับอิงเมนู sidebar ── */}

@@ -7,7 +7,7 @@ export const profile = {
   name: "S.Tunaram", // ชื่อสั้น (โลโก้/header/footer)
   fullName: "Sorawat Tunaram", // ชื่อเต็ม (author credit ในหน้า case study)
   role: "UX/UI & Product Designer",
-  headline: "UX/UI Designer", // ตำแหน่งใหญ่ในการ์ด About
+  headline: "UX/UI Designer", // ตำแหน่งใหญ่ในการ์ด About + byline ทุกหน้า case study
   email: "sorawat.tun@gmail.com",
   phone: "095 575 1594",
   lineId: "sorawat2538",

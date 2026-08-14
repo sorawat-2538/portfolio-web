@@ -1,0 +1,263 @@
+// ProcessSection — section "Process & Key Decisions" ที่ใช้ร่วมกันทุกหน้างาน
+//
+// เดิมโค้ดชุดนี้อยู่ใน case-study-view.tsx ที่เดียว (มีแค่หน้า propertyhub ที่ได้ใช้)
+// ย้ายออกมาเป็น component กลาง เพื่อให้หน้างานที่ใช้ view คนละตัว
+// (PlaceholderView / PropertyhubAppView / PropertyosView) ใช้โครงเดียวกันได้
+//
+// โครง: Design Process (แถบ 5 ขั้น + ย่อหน้าอธิบาย) → Decision 1..n
+//        แต่ละ decision = ชื่อ (callout ส้ม) → Problem → Trade-off → Validation
+//
+// เนื้อหาแก้ที่ `decisions` ใน data/projects.ts — decision ที่ยังไม่มีข้อมูลจริง
+// ใส่ `{ pending: true }` ไว้ จะขึ้นเป็นการ์ดเส้นประ "รอเนื้อหาจริง"
+
+import Image from "next/image";
+import type { CaseImage, Decision } from "@/data/projects";
+import { DecisionFigures } from "./decision-figures";
+import { ListingDialogMock } from "./listing-dialog-mock";
+import { FeaturePhaseFlow } from "./feature-phase-flow";
+
+/** ค่าที่ยังเป็น placeholder "[ ... ]" ใน data/projects.ts — ห้ามหลุดขึ้นหน้าเว็บ
+ *  (นิยามอยู่ที่ไฟล์นี้ไฟล์เดียว · case-study-view.tsx import ไปใช้ต่อ) */
+export function isPlaceholder(s?: string) {
+  return !s || s.includes("[ ");
+}
+
+/** true = โปรเจกต์นี้มี decision ที่แสดงได้จริง (ใช้ตัดสินว่าจะขึ้น section ไหม) */
+export function hasProcess(decisions?: readonly Decision[]) {
+  return Boolean(decisions?.some((d) => d.pending || !isPlaceholder(d.title)));
+}
+
+/** ขั้นย่อยใน Process (เช่น Requirement / Research / Wireframe & Style Guide)
+ *  วางต่อจากแถบ process ก่อนถึงส่วน Decision — ไม่ใส่ = ไม่มีขั้นย่อย */
+export type ProcessPhase = {
+  title: string;
+  body?: string;
+  images?: CaseImage[];
+  /** จำนวนคอลัมน์ของรูปในขั้นนี้ (default 1 = รูปเดียวเต็มความกว้าง) */
+  cols?: 1 | 2 | 3;
+  /** true = ไม่โชว์ caption ใต้รูป (เช่น Style Guide ที่ในรูปมีชื่อหัวข้ออยู่แล้ว) */
+  hideCaptions?: boolean;
+  /** true = รูปในขั้นนี้กดขยายไม่ได้ (เช่น จอแอปในตลาดขั้น Research) */
+  noZoom?: boolean;
+};
+
+/** ย่อหน้าอธิบาย Design Process ที่ใช้เป็นค่าตั้งต้นทุกโปรเจกต์
+ *  แต่ละงานเขียนของตัวเองได้โดยส่ง prop `note` เข้ามาทับ */
+const DEFAULT_NOTE =
+  "สิ่งที่ยากที่สุดใน design process ไม่ใช่การออกแบบ แต่คือ research ที่อยู่ตรงรอยต่อระหว่าง requirement กับ wireframe งานตรงนี้คือการแปลความต้องการของธุรกิจให้กลายเป็นไอเดียที่ตอบโจทย์ผู้ใช้จริง และต้องกล้าตัดสินใจว่าอะไรคือ must have อะไรเป็นแค่ nice to have";
+
+function H2({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
+      {children}
+    </h2>
+  );
+}
+
+/** หัวข้อของขั้นย่อยใน process (Requirement / Research / …) — ชุดเดียวกับ H3 ในหน้า case study */
+function H3({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
+      {children}
+    </h3>
+  );
+}
+
+/** หัวข้อย่อยใน decision (Problem / Trade-off / Validation) — ขนาดเท่า body (17px) แต่ตัวหนา */
+function H4({ children }: { children: React.ReactNode }) {
+  return <h4 className="text-[17px] font-bold tracking-[0.01em] text-foreground">{children}</h4>;
+}
+
+function Body({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <p className={"text-[17px] leading-[1.8] text-muted-foreground " + className}>{children}</p>
+  );
+}
+
+/** ประโยคเด่น — callout ส้ม ชุดเดียวกับ Takeaway ใน propertyos-view / claude-section */
+function Callout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-6 rounded-r-xl border-l-[3px] border-amber-500 bg-amber-400/[0.12] px-[clamp(18px,2.4vw,26px)] py-[clamp(16px,2vw,22px)]">
+      <p className="text-[clamp(16px,1.8vw,19px)] leading-[1.62] text-foreground">{children}</p>
+    </div>
+  );
+}
+
+export function ProcessSection({
+  title,
+  decisions,
+  note,
+  image,
+  phases,
+  validationLabel,
+}: {
+  /** ชื่อโปรเจกต์ — ใช้ใน alt ของรูป */
+  title: string;
+  decisions: readonly Decision[];
+  /** ย่อหน้าใต้รูป process (ไม่ใส่ = ใช้ข้อความกลาง) */
+  note?: string;
+  /** รูปหัว section (เช่น บอร์ด Design Thinking ของ Propertyhub App)
+   *  ไม่ใส่ = ใช้แถบ 5 ขั้นมาตรฐาน · รูปสูง (crop:true) จะกดดูเต็มจอได้ */
+  image?: CaseImage;
+  /** ขั้นย่อยของ process (Requirement / Research / Wireframe & Style Guide ฯลฯ)
+   *  วางระหว่างแถบ process กับส่วน Decision */
+  phases?: readonly ProcessPhase[];
+  /** ชื่อหัวข้อท่อนที่ 3 ของ decision — default "Validation"
+   *  หน้า Propertyhub App ใช้ "Why this works" เพราะเป็นเหตุผลของการเดิมพัน ไม่ใช่ผลที่วัดมาแล้ว
+   *  (user สั่ง 14 ส.ค. 2026 · เฉพาะหน้านั้นหน้าเดียว) */
+  validationLabel?: string;
+}) {
+  return (
+    <section id="s-process" className="scroll-mt-24">
+      <H2>Process &amp; Key Decisions</H2>
+
+      {/* ── Design Process (บล็อกนำ) ── แถบ 5 ขั้น (Research ถูกไฮไลต์) + ย่อหน้าอธิบายว่าทำไม
+          ขั้น Research คือขั้นที่ยากที่สุด · แทนที่การ์ด bento 8 ใบ (WorkflowProcess)
+          และตัวอย่าง 3 เฟส (ProcessPhases) ที่เคยวางเทียบกันไว้ — user เลือกแบบนี้
+          หมายเหตุ: WorkflowProcess ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉย ๆ
+
+          ⚠️ โปรเจกต์ที่มี `phases` (เล่าทีละขั้นอยู่แล้ว) จะไม่แสดงบล็อกนำนี้ เพราะแถบ 5 ขั้น
+          กับหัวข้อย่อยด้านล่างเป็นเรื่องเดียวกัน — user สั่ง 14 ส.ค. 2026 ให้ย้ายย่อหน้า
+          Design Thinking ของ Propertyhub App ลงไปอยู่ในขั้น Requirement แทน
+          (ยังบังคับให้แสดงได้ด้วยการส่ง prop `image` หรือ `note` มาพร้อม phases) */}
+      {(!phases?.length || note || image) && (
+        <div className="mt-7">
+          {image ? (
+            <DecisionFigures images={[image]} title={title} variant="single" />
+          ) : (
+            <Image
+              src="/uploads/propertyhub-process-bar.png"
+              alt={`${title} — ขั้นตอนการออกแบบ Requirement → Research → Wireframe → UI → Hand-off`}
+              width={2040}
+              height={240}
+              sizes="(max-width: 900px) 100vw, 860px"
+              // 90 = ค่าสูงสุดที่ตั้งไว้ใน images.qualities ของ next.config (92 จะขึ้น warning)
+              quality={90}
+              className="block h-auto w-full"
+            />
+          )}
+          <Body className="mt-6">{note ?? DEFAULT_NOTE}</Body>
+        </div>
+      )}
+
+      {/* ── ขั้นย่อยของ process ── หัวข้อ + ย่อหน้า + รูปของขั้นนั้น (กดดูเต็มจอได้)
+          ขั้นที่ยังไม่มีรูปจะแสดงแค่ข้อความ ไม่ขึ้นกล่องว่าง */}
+      {phases && phases.length > 0 && (
+        <div className="mt-7 flex flex-col gap-10">
+          {phases.map((ph) => (
+            <div key={ph.title}>
+              <H3>{ph.title}</H3>
+              {ph.body && <Body className="mt-3">{ph.body}</Body>}
+              {ph.images && ph.images.length > 0 && (
+                <div className="mt-6">
+                  <DecisionFigures
+                    images={ph.images}
+                    title={title}
+                    variant={ph.cols && ph.cols > 1 ? "grid" : "single"}
+                    cols={ph.cols === 2 ? 2 : 3}
+                    captions={!ph.hideCaptions}
+                    zoomable={!ph.noZoom}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-12 flex flex-col gap-10">
+        {decisions
+          .filter((d) => d.pending || !isPlaceholder(d.title))
+          .map((d, i) => (
+            <div key={i}>
+              {/* เส้นคั่นเหนือ decision แรก = แบ่ง Design Process ออกจากส่วน Decision */}
+              <div className="mb-9 h-px bg-border" />
+
+              <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
+                Decision {i + 1}
+              </h3>
+
+              {d.pending ? (
+                <div className="mt-4 rounded-xl border border-dashed border-border px-[22px] py-8 text-center text-[14px] text-faint">
+                  รอเนื้อหาจริง
+                </div>
+              ) : (
+                <>
+                  {/* ชื่อ decision = callout ส้ม ชุดเดียวกับ statement ใต้ Problem */}
+                  <Callout>{d.title}</Callout>
+
+                  {/* Before / After — วางถัดจากหัวข้อทันที ไม่มีเส้นขอบ ไม่มีมุมมน ใช้เงาแทน
+                      crop ความสูงไว้ 500px เพราะจอ before ยาวมาก · กดดูเต็มจอได้ */}
+                  {d.before && d.after && (
+                    <div className="mt-7">
+                      <DecisionFigures images={[d.before, d.after]} title={title} variant="pair" />
+                    </div>
+                  )}
+
+                  {/* fake-UI / diagram ประกอบ decision — ไม่ใช่ screenshot */}
+                  {d.mock === "listing-dialog" && (
+                    <div className="mt-7">
+                      <ListingDialogMock />
+                    </div>
+                  )}
+                  {d.mock === "feature-phases" && (
+                    <div className="mt-7">
+                      <FeaturePhaseFlow />
+                    </div>
+                  )}
+
+                  {/* รูปหลักฐาน (เฉพาะข้อที่ตั้ง reasoningImageFirst) — วางใต้หัวข้อ decision
+                      ทันที ตำแหน่งเดียวกับ before/after และ mock แล้วค่อยตามด้วย Problem */}
+                  {d.reasoningImage && d.reasoningImageFirst && (
+                    <div className="mt-7">
+                      <DecisionFigures images={[d.reasoningImage]} title={title} variant="single" />
+                    </div>
+                  )}
+
+                  {!isPlaceholder(d.reasoning) && (
+                    <div className="mt-8">
+                      <H4>Problem</H4>
+                      <Body className="mt-2">{d.reasoning}</Body>
+                      {/* ค่าปกติ — รูปหลักฐานอยู่ใต้ย่อหน้า Problem */}
+                      {d.reasoningImage && !d.reasoningImageFirst && (
+                        <div className="mt-5">
+                          <DecisionFigures
+                            images={[d.reasoningImage]}
+                            title={title}
+                            variant="single"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {!isPlaceholder(d.tradeoff) && (
+                    <div className="mt-6">
+                      <H4>Trade-off</H4>
+                      <Body className="mt-2">{d.tradeoff}</Body>
+                    </div>
+                  )}
+
+                  {!isPlaceholder(d.outcome) && (
+                    <div className="mt-6">
+                      <H4>{validationLabel ?? "Validation"}</H4>
+                      <Body className="mt-2">{d.outcome}</Body>
+                      {d.outcomeImage && (
+                        <div className="mt-5">
+                          <DecisionFigures
+                            images={[d.outcomeImage]}
+                            title={title}
+                            variant="single"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+      </div>
+    </section>
+  );
+}

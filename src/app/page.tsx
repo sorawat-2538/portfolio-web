@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, Briefcase, ChevronRight, GraduationCap, Trophy } from "lucide-react";
 import { projectSlugs } from "@/data/projects";
 import { SkillsGrid } from "@/components/home/skills-grid";
-import { WorkflowProcess as WorkFlow } from "@/components/home/work-flow";
 import { AboutMe } from "@/components/home/about-me";
 import { ContactMe } from "@/components/home/contact-me";
 import { Reveal } from "@/components/reveal";
@@ -161,19 +160,9 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* MY WORK FLOW — process กลางของผม (ย้ายมาจากหน้า case study Propertyhub
-          เพราะไม่ผูกกับโปรเจกต์ไหน + ทุกคนที่เข้าเว็บควรได้เห็น)
-          */}
-      <Reveal>
-        <section>
-          <SectionHeading>My Work Flow</SectionHeading>
-          <div className="mt-8">
-            <WorkFlow />
-          </div>
-        </section>
-      </Reveal>
-
-      <Divider />
+      {/* หมายเหตุ: section "My Work Flow" (การ์ด bento 8 ขั้น) ถูกเอาออกจากหน้าแรก
+          ตามคำสั่ง user 13 ส.ค. 2026 — component `WorkflowProcess` ยังอยู่ที่
+          components/home/work-flow.tsx เอากลับมาใส่ได้ตลอด */}
 
       {/* SKILLS */}
       <Reveal>

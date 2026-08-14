@@ -14,9 +14,13 @@ export const TOOL_META: Record<string, ToolMeta> = {
   Claude: { icon: "/uploads/tool-claude.svg" },
   // ขั้นตอนที่ใช้ Claude ทำงานออกแบบ (wireframe/UI) — โลโก้เดียวกับ Claude
   "Claude Design": { icon: "/uploads/tool-claude.svg" },
-  Illustrator: { mono: "Ai", bg: "#2a0e00", fg: "#FF9A00" },
-  Photoshop: { mono: "Ps", bg: "#001E36", fg: "#31A8FF" },
-  "Adobe XD": { mono: "Xd", bg: "#2b0a3d", fg: "#FF61F6" },
+  // Adobe — โลโก้จริงจาก svgl.app (app icon สีเต็ม)
+  // ⚠️ ชื่อที่ใช้ทั้งเว็บ = ชื่อสั้น ไม่มีคำว่า "Adobe" นำหน้า (user สั่ง 14 ส.ค. 2026
+  //    ให้ยึดตามหน้า Archive ที่เขียนว่า Illustrator / Photoshop) ยกเว้น "Adobe XD"
+  //    ที่หน้า Archive เขียนเต็มมาแต่เดิม
+  Illustrator: { icon: "/uploads/tool-illustrator.svg" },
+  Photoshop: { icon: "/uploads/tool-photoshop.svg" },
+  "Adobe XD": { icon: "/uploads/tool-adobe-xd.svg" },
   "Looker Studio": { mono: "Lo", bg: "#4285F4", fg: "#ffffff" },
   "Tailwind CSS": { mono: "Tw", bg: "#0b2b36", fg: "#38BDF8" },
   "Zimple Analytics": { mono: "Zi", bg: "#1a1a18", fg: "#ffffff" },

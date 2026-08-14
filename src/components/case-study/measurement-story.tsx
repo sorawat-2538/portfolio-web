@@ -2,67 +2,13 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { ProjectRedesign } from "./project-redesign";
+import { Lightbox } from "./image-lightbox";
 
 type Img = { src: string; caption: string; w: number; h: number };
 type Measure = NonNullable<Project["measure"]>;
-
-/** Fullscreen, scrollable view of a single image. */
-function Lightbox({
-  img,
-  title,
-  onClose,
-}: {
-  img: Img;
-  title: string;
-  onClose: () => void;
-}) {
-  React.useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex flex-col bg-black/80 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div className="flex shrink-0 items-center justify-between gap-4 px-5 py-4 text-white">
-        <span className="min-w-0 truncate text-sm font-medium">
-          {title} — {img.caption}
-        </span>
-        <button
-          type="button"
-          aria-label="ปิด"
-          onClick={onClose}
-          className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:bg-white/10"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto px-4 pb-8" onClick={(e) => e.stopPropagation()}>
-        <div className="mx-auto max-w-4xl overflow-hidden rounded-lg">
-          <Image
-            src={img.src}
-            alt={`${title} — ${img.caption}`}
-            width={img.w}
-            height={img.h}
-            sizes="(max-width: 1024px) 100vw, 900px"
-            unoptimized
-            className="block h-auto w-full"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /** One framed, clickable screenshot (crops tall shots). */
 function Shot({
@@ -197,7 +143,8 @@ function Slider({
   );
 }
 
-/** "How I Measured?" — goal callout + numbered timeline with clickable images. */
+/** "Impact & Results" — goal callout + numbered timeline with clickable images.
+ *  (เดิมชื่อ section "How I Measured?" — เปลี่ยนหัวข้อให้สื่อผลลัพธ์ ไม่ใช่แค่วิธีวัด) */
 export function MeasurementStory({
   measure,
   title,
@@ -210,12 +157,12 @@ export function MeasurementStory({
   return (
     <section>
       <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
-        How I Measured?
+        Impact &amp; Results
       </h2>
 
       {/* goal — callout like Hypothesis */}
-      <div className="mt-6 rounded-r-xl border-l-[3px] border-foreground bg-hover px-[26px] py-6">
-        <p className="text-[clamp(18px,2vw,21px)] leading-[1.62] text-foreground">
+      <div className="mt-6 rounded-r-xl border-l-[3px] border-amber-500 bg-amber-400/[0.12] px-[clamp(18px,2.4vw,26px)] py-[clamp(16px,2vw,22px)]">
+        <p className="text-[clamp(16px,1.8vw,19px)] leading-[1.62] text-foreground">
           {measure.goal}
         </p>
       </div>
