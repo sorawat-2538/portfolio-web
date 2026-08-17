@@ -5,7 +5,7 @@
 // แกะจาก CompleteScreenFlowWebBuilder.md ส่วน 🚀 Onboarding Flow ทีละสเต็ป:
 //   1) ตั้งชื่อเว็บ + โชว์ URL ที่จะได้ทันที   2) เลือกธีม (progress 2/2)
 //   3) หน้าโหลดที่บอกว่าระบบกำลังทำอะไรอยู่   4) หน้าสำเร็จ + ลิงก์ + สิ่งที่เตรียมให้แล้ว
-// ธีมในสเต็ป 2 ดึงจาก data/website-builder.ts ตรง ๆ (สี accent จริงของแต่ละธีม)
+// ธีมในสเต็ป 2 ดึงจาก data/website-builder.ts ตรงๆ (สี accent จริงของแต่ละธีม)
 //
 // fake UI (ไม่ใช่ screenshot) · token-based สีสว่าง เข้าชุดกับ mock อื่นในเว็บ
 // ⚠️ ข้อความในจอเป็นภาษาอังกฤษ + ฟอนต์ Inter ทั้งหมด ตามที่ user สั่ง
@@ -13,7 +13,7 @@
 import { Check, Copy, Link2, Share2 } from "lucide-react";
 import { propertyos as po } from "@/data/propertyos";
 
-/** กรอบหนึ่งสเต็ป — dialog ตัวเดียวพร้อมคำอธิบายใต้ภาพ (ใช้เดี่ยว ๆ ใต้ step ในไทม์ไลน์) */
+/** กรอบหนึ่งสเต็ป — dialog ตัวเดียวพร้อมคำอธิบายใต้ภาพ (ใช้เดี่ยวๆ ใต้ step ในไทม์ไลน์) */
 function StepFrame({
   caption,
   children,
@@ -62,7 +62,7 @@ function Tick({ children, done = true }: { children: React.ReactNode; done?: boo
 export function OnboardingScreen({ step }: { step: 1 | 2 | 3 | 4 }) {
   if (step === 1) {
     return (
-      <StepFrame caption="Step 1 — ถามแค่ชื่อเว็บ แล้วโชว์ URL ที่จะได้ทันทีระหว่างพิมพ์">
+      <StepFrame caption="Step 1 · ถามแค่ชื่อเว็บ แล้วโชว์ URL ที่จะได้ทันทีระหว่างพิมพ์">
         <Progress value={50} />
         <div className="mt-3 text-[12px] font-bold text-foreground">Name your website</div>
 
@@ -95,7 +95,7 @@ export function OnboardingScreen({ step }: { step: 1 | 2 | 3 | 4 }) {
 
   if (step === 2) {
     return (
-      <StepFrame caption="Step 2 — เลือกธีม ดู preview ได้ก่อนตัดสินใจ (เปลี่ยนทีหลังได้)">
+      <StepFrame caption="Step 2 · เลือกธีม ดู preview ได้ก่อนตัดสินใจ (เปลี่ยนทีหลังได้)">
         <Progress value={100} />
         <div className="mt-3 text-[12px] font-bold text-foreground">Choose the theme that fits you</div>
 
@@ -140,7 +140,7 @@ export function OnboardingScreen({ step }: { step: 1 | 2 | 3 | 4 }) {
 
   if (step === 3) {
     return (
-      <StepFrame caption="Step 3 — ระหว่างรอ บอกให้รู้ว่าระบบกำลังทำอะไรอยู่ ไม่ใช่แค่หมุน ๆ">
+      <StepFrame caption="Step 3 · ระหว่างรอ บอกให้รู้ว่าระบบกำลังทำอะไรอยู่ ไม่ใช่แค่ตัวหมุนรอโหลด">
         <div className="flex flex-col items-center justify-center py-2 text-center">
           <div className="text-[12px] font-bold text-foreground">Building your website...</div>
 
@@ -162,7 +162,7 @@ export function OnboardingScreen({ step }: { step: 1 | 2 | 3 | 4 }) {
   }
 
   return (
-    <StepFrame caption="Step 4 — จบด้วยทางแยก: แชร์ลิงก์ได้เลย หรือเข้า editor ไปปรับต่อ">
+    <StepFrame caption="Step 4 · จบด้วยทางแยก: แชร์ลิงก์ได้เลย หรือเข้า editor ไปปรับต่อ">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-white">
             <Check className="h-3 w-3" />

@@ -7,7 +7,7 @@
 // กล่องสูงคงที่ เลื่อนอ่านแนวตั้งอย่างเดียว (ไม่มี scroll แนวนอน — บรรทัดยาวตัดขึ้นบรรทัดใหม่
 // และเนื้อหาเขียนให้สั้นพอในหนึ่งบรรทัดอยู่แล้ว) เนื้อหาเป็นสเปกจริงทั้งไฟล์
 // แก้สเปก = แก้ string SPEC ด้านล่างอย่างเดียว
-// ไฮไลต์ syntax ด้วย tokenizer เล็ก ๆ ท้ายไฟล์ (heading / **bold** / `code`)
+// ไฮไลต์ syntax ด้วย tokenizer เล็กๆ ท้ายไฟล์ (heading / **bold** / `code`)
 
 const SPEC = `# Dev Spec — Same Project Listings Optimization
 ## Sprint scope: listing_detail (Mobile + Desktop)
@@ -138,7 +138,7 @@ const C = {
   dim: "text-slate-500",
 };
 
-/** แบ่งบรรทัดเป็นชิ้น ๆ ตาม `code` และ **bold** แล้วย้อมสี */
+/** แบ่งบรรทัดเป็นชิ้นๆ ตาม `code` และ **bold** แล้วย้อมสี */
 function tokenize(line: string, base: string) {
   return line
     .split(/(`[^`]+`|\*\*[^*]+\*\*)/g)
@@ -229,7 +229,7 @@ export function SpecHandoffMock() {
       </div>
 
       <p className="mt-3 text-center text-[12.5px] text-muted-foreground">
-        เลื่อนอ่านในหน้าต่างได้ — สเปกจริงที่ส่งให้ทีม dev ตั้งแต่กติกาที่ใช้ร่วมกันจนถึง event
+        เลื่อนอ่านในหน้าต่างได้ คือสเปกจริงที่ส่งให้ทีม dev ตั้งแต่กติกาที่ใช้ร่วมกันจนถึง event
         ทุกตัว ส่งคู่กับ standalone HTML จาก Claude Design ที่กดเล่นได้จริงในไฟล์เดียว
       </p>
     </div>

@@ -29,7 +29,7 @@ export function SkillsConstellation() {
           <br />Work
         </h2>
         <p className="mt-5 max-w-md text-[16px] leading-[1.7] text-muted-foreground">
-          เครื่องมือที่ผมใช้จริงในการออกแบบ
+          เครื่องมือที่ใช้จริงในการออกแบบ
           <br />
           และสร้างผลงาน ตั้งแต่ Design จนถึง AI และ Code
         </p>

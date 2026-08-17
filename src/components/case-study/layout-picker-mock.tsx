@@ -5,7 +5,7 @@
 // แกะจาก CompleteScreenFlowWebBuilder.md ส่วน 🎯 Layout Selection Dialog (Universal):
 // เลือกได้ทีละแบบ · แต่ละตัวเลือกมีพรีวิวใหญ่ + บรรทัด "Best for" บอกว่าเหมาะกับอะไร
 //
-// fake UI · token-based สีสว่าง · พรีวิวเป็นบล็อกเปล่า ๆ เพราะจุดสนใจคือ "โครง" ไม่ใช่รูป
+// fake UI · token-based สีสว่าง · พรีวิวเป็นบล็อกเปล่าๆ เพราะจุดสนใจคือ "โครง" ไม่ใช่รูป
 
 import { Check } from "lucide-react";
 

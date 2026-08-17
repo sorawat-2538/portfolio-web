@@ -254,7 +254,7 @@ function useTyping(ref: React.RefObject<HTMLElement | null>) {
   const [started, setStarted] = React.useState(false);
   const [line, setLine] = React.useState(TOTAL);
   const [seg, setSeg] = React.useState(0);
-  // พิมพ์จบแล้วยังไม่ "นิ่ง" ทันที — บรรทัดท้าย ๆ ยังสไลด์จาก translateX(8px) กลับเข้าที่
+  // พิมพ์จบแล้วยังไม่ "นิ่ง" ทันที — บรรทัดท้ายๆ ยังสไลด์จาก translateX(8px) กลับเข้าที่
   // อีก 0.24s (ดู .ascii-line ใน globals.css) ซึ่งพื้นที่ที่ถูก transform ยังนับเป็น
   // scroll area อยู่ → ถ้าเปิด overflow-x ตอนนั้นจะเห็น scrollbar แวบนึงแล้วหาย
   const [settled, setSettled] = React.useState(true);
@@ -353,7 +353,7 @@ export function AsciiScreenMock() {
 
         {/* ── ไฟล์ ── */}
         <div className="px-[clamp(10px,1.8vw,18px)] pb-[clamp(12px,2vw,18px)] pt-3">
-          {/* breadcrumb — รายละเอียดเล็ก ๆ ที่ทำให้ดูเป็น editor จริง */}
+          {/* breadcrumb — รายละเอียดเล็กๆ ที่ทำให้ดูเป็น editor จริง */}
           <div className="mb-2 truncate font-mono text-[10.5px] text-slate-600">
             propertyos <span className="text-slate-700">›</span> ASCII Design.txt{" "}
             <span className="text-slate-700">›</span> Plain Text

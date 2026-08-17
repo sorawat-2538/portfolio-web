@@ -9,6 +9,7 @@ import { PropertyosView } from "@/components/case-study/propertyos-view";
 import {
   getPlaceholder,
   getProject,
+  navOrderSlugs,
   placeholderSlugs,
   projectSlugs,
   type ProjectSlug,
@@ -28,9 +29,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = getProject(slug) ?? getPlaceholder(slug);
   if (!project) return {};
+  // งานที่ไม่ได้อยู่ในเมนู sidebar (ai-copilot / brand / market-insight / rentos / baandee)
+  // ยังเปิดด้วย URL ตรงได้เหมือนเดิม แต่ไม่ต้องให้ search engine เก็บไปแสดง
+  // เพราะเนื้อหายังเป็นร่างที่ยังไม่ได้ตรวจ — เอา noindex ออกเมื่อพร้อมเปิดจริง
+  const inMenu = navOrderSlugs.includes(slug);
   return {
     title: `${project.title} — S.Tunaram`,
     description: project.tagline,
+    ...(inMenu ? {} : { robots: { index: false, follow: false } }),
   };
 }
 

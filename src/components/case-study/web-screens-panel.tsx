@@ -3,10 +3,10 @@
 // WebScreensPanel — 1 category = พื้นเทา + header(ชื่อ category) + จอเรียง scroll แนวนอนเป็นราง
 // (treatment เดียวกับ AppScreensShowcase · เอาแค่รูป ไม่มี caption/กรอบ)
 // ปกติ 1 จอ = 1 สล็อตในราง · แต่ถ้าจอไหนมี `group` เดียวกัน จะถูกซ้อนลงมาในสล็อตเดียว
-//   → ใช้กับ section Home ที่มีจอ Home ยาว ๆ + จอย่อย (dropdown / step) ให้จอย่อยเรียงลงมา
+//   → ใช้กับ section Home ที่มีจอ Home ยาวๆ + จอย่อย (dropdown / step) ให้จอย่อยเรียงลงมา
 //     เป็น 3 สล็อต (Home | dropdown | step) แทนที่จะกางเป็นรางยาว
 // กดที่จอ → เปิดดูรูปใหญ่เต็มจอ (lightbox + เลื่อน prev/next ในหมวดนั้น) เหมือน ScreenGallery เดิม
-// category ที่ยังไม่มีรูป (screens: []) → โชว์ป้าย "เร็ว ๆ นี้"
+// category ที่ยังไม่มีรูป (screens: []) → โชว์ป้าย "เร็วๆ นี้"
 
 import * as React from "react";
 import Image from "next/image";
@@ -95,9 +95,9 @@ export function WebScreensPanel({
       )}
 
       {shots.length === 0 ? (
-        /* category ที่ยังไม่มีรูป — ป้าย "เร็ว ๆ นี้" */
+        /* category ที่ยังไม่มีรูป — ป้าย "เร็วๆ นี้" */
         <div className="mx-[clamp(18px,3vw,30px)] flex items-center justify-center rounded-xl border border-dashed border-border/70 py-10 text-[14px] text-muted-foreground">
-          รูปกำลังจะมา — เร็ว ๆ นี้
+          รูปกำลังจะมา — เร็วๆ นี้
         </div>
       ) : variant === "grid" ? (
         /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */

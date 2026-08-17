@@ -131,7 +131,7 @@ export function ProcessSection({
           เดิม: แถบ 5 ขั้น (Research ถูกไฮไลต์) + ย่อหน้าอธิบายว่าทำไม
           ขั้น Research คือขั้นที่ยากที่สุด · แทนที่การ์ด bento 8 ใบ (WorkflowProcess)
           และตัวอย่าง 3 เฟส (ProcessPhases) ที่เคยวางเทียบกันไว้ — user เลือกแบบนี้
-          หมายเหตุ: WorkflowProcess ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉย ๆ
+          หมายเหตุ: WorkflowProcess ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉยๆ
 
           ⚠️ โปรเจกต์ที่มี `phases` (เล่าทีละขั้นอยู่แล้ว) จะไม่แสดงบล็อกนำนี้ เพราะแถบ 5 ขั้น
           กับหัวข้อย่อยด้านล่างเป็นเรื่องเดียวกัน — user สั่ง 14 ส.ค. 2026 ให้ย้ายย่อหน้า
@@ -211,17 +211,22 @@ export function ProcessSection({
           phases?.length || flow?.lanes.length || note || image ? "mt-12" : "mt-7"
         }`}
       >
-        {decisions
-          .filter((d) => d.pending || !isPlaceholder(d.title))
-          .map((d, i) => (
+        {(() => {
+          const shown = decisions.filter((d) => d.pending || !isPlaceholder(d.title));
+          // มี decision ข้อเดียว = ไม่ต้องขึ้นหัวว่า "Decision 1" เพราะเลข 1 ที่ไม่มี 2 ตามมา
+          // ทำให้ดูเหมือนเนื้อหาหาย (user สั่ง 17 ส.ค. 2026 — ตอนนี้เข้าเงื่อนไขเฉพาะ Renthub App)
+          const numbered = shown.length > 1;
+          return shown.map((d, i) => (
             <div key={i}>
               {/* เส้นคั่นระหว่าง decision — ข้อแรกไม่ต้องมี เพราะบล็อก Design Process เหนือมันถูกเอาออกแล้ว
-                  (17 ส.ค. 2026 — เส้นลอยอยู่ใต้หัวข้อ section เฉย ๆ) */}
+                  (17 ส.ค. 2026 — เส้นลอยอยู่ใต้หัวข้อ section เฉยๆ) */}
               {i > 0 && <div className="mb-9 h-px bg-border" />}
 
-              <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
-                Decision {i + 1}
-              </h3>
+              {numbered && (
+                <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
+                  Decision {i + 1}
+                </h3>
+              )}
 
               {d.pending ? (
                 <div className="mt-4 rounded-xl border border-dashed border-border px-[22px] py-8 text-center text-[14px] text-faint">
@@ -315,7 +320,8 @@ export function ProcessSection({
                 </>
               )}
             </div>
-          ))}
+          ));
+        })()}
       </div>
     </section>
   );

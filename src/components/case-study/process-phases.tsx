@@ -65,7 +65,7 @@ function PhaseCard({ phase }: { phase: Phase }) {
       </h4>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{phase.caption}</p>
 
-      {/* ขั้นย่อยของเฟสนี้ — chip เล็ก ๆ (ชื่อเดิมจาก 8 ขั้น ไม่ได้หายไปไหน) */}
+      {/* ขั้นย่อยของเฟสนี้ — chip เล็กๆ (ชื่อเดิมจาก 8 ขั้น ไม่ได้หายไปไหน) */}
       <div className="mt-4 flex flex-wrap gap-1.5">
         {phase.steps.map((s) => (
           <span

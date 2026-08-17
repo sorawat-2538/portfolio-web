@@ -70,7 +70,7 @@ export function ClaudeInstructionsMock() {
       </div>
 
       <p className="mt-3 text-center text-[12.5px] text-muted-foreground">
-        instruction จริงของ project PropertyOS — เขียนครั้งเดียว ทุกแชตในโปรเจกต์รู้บริบทเอง
+        instruction จริงของ project PropertyOS เขียนครั้งเดียว ทุกแชตในโปรเจกต์รู้บริบทเอง
       </p>
     </div>
   );

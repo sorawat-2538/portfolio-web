@@ -2,7 +2,7 @@
 
 // เนื้อหาหลักของหน้า Data & AI Workflow — Tools + ทุก section ใน data
 //
-// ทุก section ใช้โครงเดียวกับ "How I Measured?" ของ case study เป๊ะ ๆ:
+// ทุก section ใช้โครงเดียวกับ "How I Measured?" ของ case study เป๊ะๆ:
 // H2 → goal callout (เทา เส้นซ้ายหนา) → step มีเลขกำกับ + เส้นเชื่อม
 // เพิ่ม/สลับ section = แก้ `sections` ใน data/data-analysis.ts ไม่ต้องแตะไฟล์นี้
 //
@@ -49,7 +49,7 @@ const FLOW_ICON: Record<
 };
 
 /** รูปหลักฐานที่กดซูมได้ (caption จัดกลางใต้รูป)
- *  treatment เดียวกับรูปใน How I Measured? ของ Propertyhub เป๊ะ ๆ:
+ *  treatment เดียวกับรูปใน How I Measured? ของ Propertyhub เป๊ะๆ:
  *  ไม่มีปุ่ม "เต็มจอ" ตอน hover และไม่มีกรอบ focus สีน้ำเงินค้างหลังกด Esc ปิด lightbox
  *  (outline-none บน <button> — โฟกัสกลับมาที่ปุ่มก็ไม่เห็นวงแหวน) */
 function EvidenceShot({

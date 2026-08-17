@@ -1,7 +1,7 @@
 // BuilderScreenMock — หน้าจอ Home Page Editor ของ Website Builder แบบ "หน้าจอจริง"
 // hero ของหน้า /work/propertyos
 //
-// ทุกอย่างในนี้แกะมาจาก CompleteScreenFlowWebBuilder.md ตรง ๆ (ส่วน 🏠 Home Page Editor):
+// ทุกอย่างในนี้แกะมาจาก CompleteScreenFlowWebBuilder.md ตรงๆ (ส่วน 🏠 Home Page Editor):
 //   · แถบบน: Save / Preview / Publish + โดเมนของเอเจนต์ + สถานะบันทึก
 //   · Panel 1 — section ของหน้า Home แบ่งเป็นกลุ่ม ACTIVE (8) / INACTIVE (2: Services, Testimonials)
 //     ต่อด้วยหน้าอื่นที่เป็น layout-based (Listing Detail / Property Listing / About Us / Contact)
@@ -63,7 +63,7 @@ function SectionRow({
   );
 }
 
-/** หัวข้อกลุ่มเล็ก ๆ ใน Panel 1 / Panel 3 */
+/** หัวข้อกลุ่มเล็กๆ ใน Panel 1 / Panel 3 */
 function GroupLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-[9.5px] uppercase tracking-[0.12em] text-muted-foreground">

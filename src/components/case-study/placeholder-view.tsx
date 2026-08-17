@@ -58,7 +58,7 @@ function ToolCard({ name }: { name: string }) {
 const NOTE: Record<ProjectStatus, { icon: LucideIcon; text: string }> = {
   available: {
     icon: FileText,
-    text: "โปรเจกต์นี้เผยแพร่จริงแล้ว — กำลังเรียบเรียง case study ฉบับเต็ม เนื้อหาจะตามมาเร็ว ๆ นี้",
+    text: "โปรเจกต์นี้เผยแพร่จริงแล้ว — กำลังเรียบเรียง case study ฉบับเต็ม เนื้อหาจะตามมาเร็วๆ นี้",
   },
   process: {
     icon: Hammer,
@@ -66,7 +66,7 @@ const NOTE: Record<ProjectStatus, { icon: LucideIcon; text: string }> = {
   },
   coming: {
     icon: Clock,
-    text: "โปรเจกต์นี้ยังไม่เปิดให้ชม — เร็ว ๆ นี้จะมี case study มาให้ดูแบบเต็ม ๆ",
+    text: "โปรเจกต์นี้ยังไม่เปิดให้ชม — เร็วๆ นี้จะมี case study มาให้ดูแบบเต็มๆ",
   },
   archived: {
     icon: FileText,
@@ -74,7 +74,7 @@ const NOTE: Record<ProjectStatus, { icon: LucideIcon; text: string }> = {
   },
 };
 
-/** empty state box กลาง ๆ สำหรับ section ที่ยังไม่มีเนื้อหา */
+/** empty state box กลางๆ สำหรับ section ที่ยังไม่มีเนื้อหา */
 function EmptyState({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-hover/40 px-6 py-12 text-center">
@@ -307,14 +307,16 @@ export function PlaceholderView({
               ))}
             </div>
 
-            {/* รูปสรุปเป้าหมาย/โมเดลธุรกิจ — วางใต้ย่อหน้า กดดูเต็มจอได้
-                (treatment เดียวกับ problem.goalImage ของหน้า Propertyhub) */}
+            {/* รูปสรุปเป้าหมาย/โมเดลธุรกิจ วางใต้ย่อหน้า
+                (treatment เดียวกับ problem.goalImage ของหน้า Propertyhub)
+                businessGoalImageNoZoom = ปิดการกดดูเต็มจอ (Expat) */}
             {p.businessGoalImage && (
               <div className="mt-8">
                 <DecisionFigures
                   images={[p.businessGoalImage]}
                   title={p.title}
                   variant="single"
+                  zoomable={!p.businessGoalImageNoZoom}
                 />
               </div>
             )}
@@ -381,6 +383,7 @@ export function PlaceholderView({
                       variant="grid"
                       cols={3}
                       captions={false}
+                      zoomable={!p.wireframesNoZoom}
                     />
                   )}
                 </div>

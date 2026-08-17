@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { CaseImage } from "@/data/projects";
 import { Lightbox, type LightboxImg } from "./image-lightbox";
 
-/** คลาสกริดของ variant "grid" — เขียนเต็มเพราะ Tailwind ต้องเห็นชื่อคลาสตรง ๆ */
+/** คลาสกริดของ variant "grid" — เขียนเต็มเพราะ Tailwind ต้องเห็นชื่อคลาสตรงๆ */
 const GRID_COLS: Record<2 | 3, string> = {
   2: "grid gap-5 min-[560px]:grid-cols-2",
   3: "grid gap-5 min-[560px]:grid-cols-2 min-[820px]:grid-cols-3",
@@ -14,7 +14,7 @@ const GRID_COLS: Record<2 | 3, string> = {
 /** รูปประกอบใน Decision — กดดูเต็มจอได้ (ชุดเดียวกับรูปใน Impact & Results)
  *  variant "pair"   = before/after 2 คอลัมน์ · crop สูงไม่เกิน 500px เพราะจอ before ยาวมาก
  *  variant "single" = รูปเดียวเต็มความกว้าง (เช่น heatmap ประกอบ Validation)
- *  variant "grid"   = หลายรูปเรียงเป็นคอลัมน์เท่า ๆ กัน ปล่อยความสูงตามจริง
+ *  variant "grid"   = หลายรูปเรียงเป็นคอลัมน์เท่าๆ กัน ปล่อยความสูงตามจริง
  *                     (ใช้กับบอร์ด Style Guide 3 ใบใน Process — user สั่ง 14 ส.ค. 2026)
  *
  *  ⚠️ ห้ามใส่ focus-visible:ring บนปุ่มรูป — กด Esc ปิด lightbox แล้วกรอบจะค้าง */

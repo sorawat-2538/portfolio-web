@@ -165,7 +165,7 @@ export function ListingDialogMock() {
       </div>
 
       <p className="mt-3 text-center text-[12.5px] text-muted-foreground">
-        ปุ่มสีน้ำเงินคือสิ่งที่เพิ่มเข้าไปใน sidebar กดดู dialog ที่เสนอได้
+        ปุ่มที่ไฮไลต์คือส่วนที่เพิ่มเข้าไปใน sidebar กดเพื่อดู dialog ที่ออกแบบไว้ได้
       </p>
 
       {/* DIALOG — รวมประกาศทั้งโครงการ (เช่า/ขาย) ไว้ในหน้าเดียว */}

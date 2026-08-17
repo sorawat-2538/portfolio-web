@@ -57,13 +57,14 @@ const MAIN_GROUPS: { title: string; screens: Shot[] }[] = [
     ],
   },
   {
-    // เดิมชื่อ "Detail" — user เปลี่ยน wording เป็น "Related"
+    // เดิมชื่อ "Detail" → "Related" → "Supporting Screens" (17 ส.ค. 2026)
+    // ความหมายที่ user ต้องการคือ "หน้าอื่นที่เกี่ยวข้อง" ซึ่ง Related เดี่ยว ๆ สื่อไม่ถึง
     // ตัดจอลำดับที่ 4,6,8,9 ของกลุ่มนี้ออก (นับจาก 9 จอที่แสดงอยู่ ไม่ใช่ลิสต์ตั้งต้น 11 จอ
     // — user ระบุว่า "เรียกชื่อ screen เป็นตัวเลขเฉพาะใน section นี้"):
     //   1 detail · 2 search-results · 3 search-map · [4 detail-contact] · 5 project
     //   [6 new-projects] · 7 agent · [8 assetbank] · [9 assetbank-kbank]
     // จอสุดท้ายย้ายมาจาก section Listings ที่ถูกยุบทิ้ง
-    title: "Related",
+    title: "Supporting Screens",
     screens: [
       S("propertyhub-app-detail.png", "รายละเอียดประกาศ"),
       S("propertyhub-app-search-results.png", "ผลการค้นหา"),

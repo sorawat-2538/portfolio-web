@@ -28,9 +28,9 @@ const A = (label: string, sub: string, ...names: string[]): ArchiveItem => ({
 
 export const earlyWork = {
   title: "Early Work",
-  years: "2018 – 2020",
+  years: "2018 - 2020",
   overview:
-    "รวมผลงานช่วงปี 2018–2020 ครอบคลุมงานออกแบบที่หลากหลาย ทั้งงานออกแบบแอปพลิเคชัน เว็บไซต์และระบบหลังบ้าน การวาง design system ตลอดจนงานกราฟิกสำหรับสื่อต่างๆ โดยหลายชิ้นอยู่ในสายก่อสร้างและอสังหาริมทรัพย์ ได้แก่ Builk, INSITE และ Site Report รวมถึงงานฟรีแลนซ์ที่รับทำในช่วงเวลาดังกล่าว สะท้อนขอบเขตงานที่ผ่านมาตั้งแต่การออกแบบ interface การจัดระบบงานดีไซน์ ไปจนถึงงานสื่อสารด้วยภาพ เก็บรวบรวมไว้เป็นคลังอ้างอิงถึงจุดเริ่มต้นของเส้นทางการทำงาน",
+    "รวมผลงานช่วงปี 2018 - 2020 ครอบคลุมงานออกแบบที่หลากหลาย ทั้งงานออกแบบแอปพลิเคชัน เว็บไซต์และระบบหลังบ้าน การวาง design system ตลอดจนงานกราฟิกสำหรับสื่อต่างๆ โดยหลายชิ้นอยู่ในสายก่อสร้างและอสังหาริมทรัพย์ ได้แก่ Builk, INSITE และ Site Report รวมถึงงานฟรีแลนซ์ที่รับทำในช่วงเวลาดังกล่าว สะท้อนขอบเขตงานที่ผ่านมาตั้งแต่การออกแบบ interface การจัดระบบงานดีไซน์ ไปจนถึงงานสื่อสารด้วยภาพ เก็บรวบรวมไว้เป็นคลังอ้างอิงถึงจุดเริ่มต้นของเส้นทางการทำงาน",
   tools: ["Figma", "Adobe XD", "Illustrator", "Photoshop"],
   /** รูปเด่นโชว์เป็น preview ในหน้าต่าง hero (ArchiveWindow) — 3 ชิ้น */
   featured: [
@@ -40,7 +40,7 @@ export const earlyWork = {
   ],
   groups: [
     {
-      title: "App design",
+      title: "App Design",
       items: [
         { ...A("Kwanjai Next", "แอปหาห้อง/อสังหาฯ", "kwanjai-next", "kwanjai-next-2", "kwanjai-next-3", "kwanjai-next-4", "kwanjai-next-5"), appStore: "https://apps.apple.com/th/app/kwanjai-next/id1476012866?l=th" },
         { ...A("INSITE for Construction", "แอปจัดการงานก่อสร้าง", "insite-construction", "insite-construction-2", "insite-construction-3"), appStore: "https://apps.apple.com/th/app/builk-insite/id1544700237?l=th" },

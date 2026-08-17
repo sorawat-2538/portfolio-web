@@ -2,7 +2,7 @@
 // ใช้ในขั้นที่ 2 ของ section "Set Workflow by Claude"
 //
 // จุดที่อยากให้เห็น: ผลของการคุยไม่ได้หายไปกับ chat history แต่ถูกสรุปเป็นไฟล์
-// เก็บไว้ใน project กลายเป็น knowledge base ที่แชตถัด ๆ ไปหยิบไปใช้ต่อได้
+// เก็บไว้ใน project กลายเป็น knowledge base ที่แชตถัดๆ ไปหยิบไปใช้ต่อได้
 // ไฟล์ทั้งหมดเป็นของจริงจาก project PropertyOS · static ทั้งหมด
 
 import { Plus } from "lucide-react";
@@ -70,7 +70,7 @@ export function ClaudeFilesMock() {
       </div>
 
       <p className="mt-3 text-center text-[12.5px] text-muted-foreground">
-        ผลของการคุยถูกสรุปเป็นไฟล์เก็บไว้ใน project — persona, feature phase 1, user flow, IA และโครงราคา
+        ผลของการคุยถูกสรุปเป็นไฟล์เก็บไว้ใน project ทั้ง persona, feature phase 1, user flow, IA และโครงราคา
       </p>
     </div>
   );

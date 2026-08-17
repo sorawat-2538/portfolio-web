@@ -9,7 +9,7 @@ import { ScrollRail } from "./scroll-rail";
 
 type Shot = { src: string; label: string };
 
-/** หัวข้อของ panel / ของแต่ละกลุ่มในนั้น — ตัวหนา + ขีด accent สั้น ๆ ใต้ชื่อ */
+/** หัวข้อของ panel / ของแต่ละกลุ่มในนั้น — ตัวหนา + ขีด accent สั้นๆ ใต้ชื่อ */
 function GroupHeading({ children }: { children: React.ReactNode }) {
   return (
     <div>
@@ -80,10 +80,10 @@ export function AppScreensShowcase({
         <GroupHeading>{title}</GroupHeading>
       </div>
 
-      {/* section ที่ยังไม่มีรูป — ป้าย "เร็ว ๆ นี้" (แทน rail ว่าง) */}
+      {/* section ที่ยังไม่มีรูป — ป้าย "เร็วๆ นี้" (แทน rail ว่าง) */}
       {list.length === 0 ? (
         <div className="mx-[clamp(18px,3vw,30px)] flex items-center justify-center rounded-xl border border-dashed border-border/70 py-10 text-[14px] text-muted-foreground">
-          รูปกำลังจะมา — เร็ว ๆ นี้
+          รูปกำลังจะมา — เร็วๆ นี้
         </div>
       ) : variant === "grid" ? (
         /* grid — 3 จอต่อแถว กว้างเท่ากันทุกจอ เกินแล้วขึ้นแถวใหม่ ไม่มี scroll แนวนอน

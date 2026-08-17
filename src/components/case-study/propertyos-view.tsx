@@ -182,7 +182,7 @@ function StepTimeline({
   );
 }
 
-/** แท็กเล็ก ๆ โทนน้ำเงิน (--brand) — "Panel 1" / "Layout 2" ที่ไม่ต้องตะโกนเป็นตัวใหญ่ */
+/** แท็กเล็กๆ โทนน้ำเงิน (--brand) — "Panel 1" / "Layout 2" ที่ไม่ต้องตะโกนเป็นตัวใหญ่ */
 function Tag({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex shrink-0 items-center rounded-full border border-brand/25 bg-brand/[0.08] px-2.5 py-1 text-[11.5px] font-semibold text-brand">
@@ -290,7 +290,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── ทำอะไรให้โปรเจกต์นี้บ้าง — การ์ด image + title + description
-             ช่องรูปคือหน้าต่าง editor ของงานนั้น ๆ ย่อลงมาทั้งอัน (ไม่ใช่ screenshot) ── */}
+             ช่องรูปคือหน้าต่าง editor ของงานนั้นๆ ย่อลงมาทั้งอัน (ไม่ใช่ screenshot) ── */}
       <section id="s-contribution" className="scroll-mt-24">
         <H2>{po.contribution.title}</H2>
 
@@ -404,7 +404,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
             ))}
           </div>
 
-          {/* dialog เลือก layout — ต้องมีบรรทัดเกริ่นก่อน ไม่งั้นมันโผล่มาเฉย ๆ
+          {/* dialog เลือก layout — ต้องมีบรรทัดเกริ่นก่อน ไม่งั้นมันโผล่มาเฉยๆ
               และเป็นตัวเชื่อมไปยังบล็อก layout ด้านล่าง */}
           <p className="mt-7 text-[17px] leading-[1.8] text-muted-foreground">
             {po.screenFlow.layoutPicker}

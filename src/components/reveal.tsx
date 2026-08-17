@@ -39,7 +39,7 @@ export function Reveal({
           io.disconnect();
         }
       },
-      // threshold 0 = ปลอดภัยกับ section ที่สูงกว่าจอมาก ๆ
+      // threshold 0 = ปลอดภัยกับ section ที่สูงกว่าจอมากๆ
       // (ถ้าใช้ค่าอื่นเช่น 0.12 section ที่สูงเกิน ~8 เท่าของจอจะไม่มีวันถึงเกณฑ์ แล้วค้างซ่อนถาวร)
       { threshold: 0, rootMargin: "0px 0px -12% 0px" },
     );

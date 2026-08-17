@@ -82,7 +82,7 @@ export type DeviceRow = {
 };
 
 /** สถานะโปรเจกต์ — โชว์เป็น badge บนหน้า project detail
- *  available = พร้อมดู/ใช้งานจริง · process = กำลังทำ · coming = ยังไม่เปิด (เร็ว ๆ นี้)
+ *  available = พร้อมดู/ใช้งานจริง · process = กำลังทำ · coming = ยังไม่เปิด (เร็วๆ นี้)
  *  archived = งานเก่าเก็บเข้าคลัง (ไม่ได้ active แล้ว) */
 export type ProjectStatus = "available" | "process" | "coming" | "archived";
 
@@ -117,7 +117,7 @@ export type Project = {
   screensFull?: boolean;
   /** Screens แยกตาม category (โครงเดียวกับ placeholder webScreens) — ถ้ามี จะ render แทน flat `screens`
    *  แต่ละ category = panel เทา + header(ชื่อ) + grid จอในกรอบ browser (กดดูเต็ม)
-   *  phone:true → AppScreensShowcase (จอมือถือ) · category ที่ screens:[] → ป้าย "เร็ว ๆ นี้" */
+   *  phone:true → AppScreensShowcase (จอมือถือ) · category ที่ screens:[] → ป้าย "เร็วๆ นี้" */
   webScreens?: { category: string; phone?: boolean; screens: { src?: string; label?: string; group?: string; w?: number; h?: number }[] }[];
   /** การ์ด stat ลอยบน hero (portpro-style) — ไม่ใส่ก็ได้, โชว์เฉพาะที่มีข้อมูล */
   heroBadges?: { icon: string; value: string; label: string }[];
@@ -161,7 +161,7 @@ export type Project = {
     role: string;
     /** ย่อหน้าเล่าบริบท — ทำงานกับใคร ขอบเขตงานมาจากไหน */
     body?: string[];
-    /** หน้าที่ที่รับผิดชอบจริง — bullet สั้น ๆ ให้สแกนได้เร็ว */
+    /** หน้าที่ที่รับผิดชอบจริง — bullet สั้นๆ ให้สแกนได้เร็ว */
     responsibilities?: string[];
   };
 
@@ -223,13 +223,13 @@ export const projects = {
   propertyhub: {
     title: "Propertyhub",
     category: "Digital Product",
-    year: "2021 – ปัจจุบัน",
+    year: "2021 - ปัจจุบัน",
     status: "available",
     heroImage: "/uploads/Home.jpg",
     heroMock: "product", // หน้า case study โชว์ fake product-UI แทน screenshot จริง
     heroWeb: "/uploads/propertyhub-hero-web.png",
     heroPhone: "/uploads/propertyhub-hero-phone-v2.png",
-    // Screens แยกตาม category (grid) — category ที่ยังไม่มีรูป = screens:[] → โชว์ "เร็ว ๆ นี้"
+    // Screens แยกตาม category (grid) — category ที่ยังไม่มีรูป = screens:[] → โชว์ "เร็วๆ นี้"
     webScreens: [
       {
         // จอเว็บทั้งหมดอยู่ใน panel เดียว พื้นหลังเดียวกัน ไม่แยก category ต่อหน้าแล้ว
@@ -240,10 +240,10 @@ export const projects = {
         screens: [
           { label: "Home", src: "/uploads/propertyhub-home-full-v2.jpg", w: 1600, h: 7403 },
           { label: "Listing Detail", src: "/uploads/propertyhub-listing-detail.jpg", w: 4320, h: 15296 },
-          { label: "Listing Result", src: "/uploads/propertyhub-listing-result.jpg", w: 4320, h: 15016 },
-          { label: "Project Detail", src: "/uploads/propertyhub-detail-overview.jpg", w: 4320, h: 13665 },
-          { label: "New Project", src: "/uploads/propertyhub-new-projects.jpg", w: 4320, h: 13750 },
-          { label: "Asset Bank", src: "/uploads/propertyhub-assetbank-home.jpg", w: 4320, h: 15903 },
+          { label: "Listing Result", src: "/uploads/propertyhub-listing-result.jpg", w: 1600, h: 5561 },
+          { label: "Project Detail", src: "/uploads/propertyhub-detail-overview.jpg", w: 1600, h: 5061 },
+          { label: "New Project", src: "/uploads/propertyhub-new-projects.jpg", w: 1600, h: 5092 },
+          { label: "Asset Bank", src: "/uploads/propertyhub-assetbank-home.jpg", w: 1600, h: 5890 },
         ],
       },
       // หมายเหตุ: category "Mobile (Responsive)" (phone:true → AppScreensShowcase) ถูกเอาออก
@@ -255,9 +255,9 @@ export const projects = {
       { icon: "Activity", value: "A/B tested", label: "GA4 + Clarity" },
     ],
     tagline:
-      "PropertyHub คือแพลตฟอร์มที่ช่วยให้การหาบ้านหรือคอนโดเป็นเรื่องง่าย ไม่ว่าจะซื้อหรือเช่า ก็สามารถค้นหา ดูรายละเอียด และติดต่อผู้ลงประกาศได้สะดวกในที่เดียว พร้อมเครื่องมือที่ช่วยให้เลือกที่อยู่อาศัยได้ตรงกับความต้องการมากขึ้น",
+      "รีดีไซน์หน้าหลักของ Propertyhub ทั้ง Home, Listing Result, Listing Detail และ Project Page เพื่อขยายจากแพลตฟอร์มประกาศคอนโดมิเนียม สู่แพลตฟอร์มอสังหาริมทรัพย์ครบทุกประเภท",
     metaRole: "Sole Product Designer",
-    metaTimeline: "[ MMM YYYY – MMM YYYY ]",
+    metaTimeline: "[ MMM YYYY - MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
     tools: ["Figma", "Illustrator", "Google Analytics", "Microsoft Clarity"],
@@ -265,8 +265,8 @@ export const projects = {
     overview: [
       "ออกแบบหน้าเว็บไซต์หลักของ Propertyhub ใหม่ ได้แก่ Home, Listing Result, Listing Detail และ Project Page จากเดิมที่เป็นเว็บไซต์ลงประกาศสำหรับคอนโดมิเนียมอย่างเดียว ให้รองรับการลงประกาศอสังหาริมทรัพย์ประเภทอื่นได้ครบในเว็บไซต์เดียว หลังเปิดตัวในปี 2024 จำนวนผู้ใช้งานเติบโตจาก 5.5M เป็น 7.9M ในปี 2025 หรือเพิ่มขึ้นกว่า 43%",
     ],
-    // duration / team / role = metadata เฉย ๆ ไม่ได้เรนเดอร์ (เคยลองแยกเป็นบรรทัด
-    // "Duration:" / "Role:" อยู่ช่วงสั้น ๆ 14 ส.ค. 2026 แล้ว user สั่งกลับมาเป็นย่อหน้าเดียว)
+    // duration / team / role = metadata เฉยๆ ไม่ได้เรนเดอร์ (เคยลองแยกเป็นบรรทัด
+    // "Duration:" / "Role:" อยู่ช่วงสั้นๆ 14 ส.ค. 2026 แล้ว user สั่งกลับมาเป็นย่อหน้าเดียว)
     // ตัวที่ขึ้นหน้าเว็บจริงคือ body ด้านล่าง = ย่อหน้าที่ 2 ของ Overview
     context: {
       duration: "ไม่มีระยะเวลากำหนด เป็นแพลตฟอร์มของบริษัท",
@@ -277,11 +277,8 @@ export const projects = {
         "โปรเจกต์นี้เป็นแพลตฟอร์มหลักของบริษัทที่พัฒนาต่อเนื่องตามการเติบโตของธุรกิจ รับผิดชอบในฐานะ UX/UI Designer เพียงคนเดียวแบบ end-to-end ตั้งแต่ research และ design ไปจนถึง hand-off และตรวจงานก่อน deploy โดยทำงานร่วมกับทีม PM, Business, Marketing และ Developer",
       ],
     },
-    // ── ACHIEVEMENT ── section ใต้ Tools (user สั่ง 14 ส.ค. 2026)
-    // ข้อความล้วน ไม่มีการ์ด/กล่องตัวเลข (user สั่งตรง ๆ "มีแค่ text ไม่ต้องมีกล่องอะไร")
-    achievement: [
-      "หลังเปิดตัวในปี 2024 จำนวนผู้ใช้งานเติบโตจาก 5.5M เป็น 7.9M ในปี 2025 หรือเพิ่มขึ้นกว่า 43%",
-    ],
+    // ── ACHIEVEMENT ── user สั่งเอา section นี้ออก 17 ส.ค. 2026 เพราะข้อความซ้ำกับ
+    // ประโยคสุดท้ายของ Overview คำต่อคำ · field `achievement` ยังอยู่ใน type ใส่กลับมาได้ตลอด
     problem: {
       // เดิมเป็นประโยคเดียวใน callout ส้ม — ขยายเป็น 3 ย่อหน้าและย้ายมาเป็นเนื้อความปกติ
       // ตัวอย่าง field ที่ยกมาอ้างอิงจาก field matrix (รูปด้านล่างของ section นี้)
@@ -361,10 +358,10 @@ export const projects = {
         title:
           "ออกแบบ Input Field ให้รองรับทรัพย์ทุกประเภท โดยแยกโครงสร้าง Input ของแต่ละประเภทออกจากกัน",
         reasoning:
-          "ไม่มีข้อมูลของอสังหาริมทรัพย์ประเภทอื่น ๆ สำหรับการลงประกาศ ต้องออกแบบ Input Field ใหม่ เพราะก่อนหน้านั้นสามารถลงประกาศได้แค่คอนโดมิเนียม ปัญหาคือไม่รู้ข้อมูล input ต่าง ๆ ว่าต้องมีอะไรบ้าง",
+          "ไม่มีข้อมูลของอสังหาริมทรัพย์ประเภทอื่นๆ สำหรับการลงประกาศ ต้องออกแบบ Input Field ใหม่ เพราะก่อนหน้านั้นสามารถลงประกาศได้แค่คอนโดมิเนียม ปัญหาคือไม่รู้ข้อมูล input ต่างๆ ว่าต้องมีอะไรบ้าง",
         reasoningImage: {
           src: "/uploads/propertyhub-field-matrix.png",
-          label: "Field matrix ข้อมูลที่แต่ละประเภทต้องกรอก (required / optional / ไม่มี field นี้) กดดูเต็มได้",
+          label: "Field matrix ข้อมูลที่แต่ละประเภทต้องกรอก (required / optional / ไม่มี field นี้)",
           w: 3120,
           h: 4245,
           crop: true,
@@ -379,7 +376,7 @@ export const projects = {
       {
         title: "จัดข้อมูลหน้า Project Detail จาก long-scroll เป็น tab",
         reasoning:
-          "ก่อนหน้าที่จะ redesign หน้า project detail มีปัญหาหนึ่งคือ design เก่าเป็นการเรียงข้อมูลตั้งแต่บนลงล่าง แล้วตอน scroll ก็จะมี navigation นำทางให้เพื่อไปแต่ละ section ข้อดีคือ user จะเห็นทั้งหมดในหน้าเดียวแล้วค่อย ๆ ลงไปข้างล่าง ปัญหาคือหน้ายาวมาก",
+          "ก่อนหน้าที่จะ redesign หน้า project detail มีปัญหาหนึ่งคือ design เก่าเป็นการเรียงข้อมูลตั้งแต่บนลงล่าง แล้วตอน scroll ก็จะมี navigation นำทางให้เพื่อไปแต่ละ section ข้อดีคือ user จะเห็นทั้งหมดในหน้าเดียวแล้วค่อยๆ ลงไปข้างล่าง ปัญหาคือหน้ายาวมาก",
         tradeoff:
           "สิ่งที่ต้อง trade-off คือ ลดความยาวของหน้าได้แต่ user จะไม่เห็นภาพรวมทั้งหมดในหน้าเดียว ต้องกดดูทีละ tab ก่อนถึงจะเห็นข้อมูลในแต่ละส่วน แต่เนื้อหาบางส่วนที่สำคัญก็ยังคงอยู่",
         outcome:
@@ -488,7 +485,7 @@ export const projects = {
     surprised:
       "[ เล่า insight ที่ไม่คาดคิด — เช่น device ไหน improvement มากสุดทั้งที่ traffic น้อยกว่า ]",
     limitation:
-      "Session count Before/After ไม่เท่ากัน เพราะไม่ได้ setup event tracking ตั้งแต่ launch เริ่มเก็บ event หลังจากนั้น แต่ conversion rate เทียบกันได้ตรง ๆ เพราะเป็น % ของ session",
+      "Session count Before/After ไม่เท่ากัน เพราะไม่ได้ setup event tracking ตั้งแต่ launch เริ่มเก็บ event หลังจากนั้น แต่ conversion rate เทียบกันได้ตรงๆ เพราะเป็น % ของ session",
     reflectChallenge:
       "[ hypothesis ข้อไหนที่ตอนนั้นเชื่อเร็วเกินไป และควร challenge ด้วย data มากกว่านี้ก่อนลงมือ design ]",
     reflectTrack: [
@@ -506,7 +503,7 @@ export const projects = {
   renthub: {
     title: "Renthub",
     category: "Digital Product",
-    year: "2021 – 2023",
+    year: "2021 - 2023",
     status: "available",
     liveUrl: "https://www.renthub.in.th/",
     heroWeb: "/uploads/renthub-web-laptop.png",
@@ -525,22 +522,22 @@ export const projects = {
       },
     ],
     tagline:
-      "มาร์เก็ตเพลสหอพักและคอนโดให้เช่า — redesign flow เปรียบเทียบและนัดดูห้อง เพื่อให้ผู้เช่าตัดสินใจเร็วขึ้นและเจ้าของได้ lead ที่ตรงกลุ่ม",
+      "รีดีไซน์หน้า Home Page ของ Renthub แพลตฟอร์มรวมประกาศหอพักและห้องเช่าทั่วไทยกว่า 20,000 แห่ง ให้รองรับหลาย section และพาผู้ใช้เข้าสู่เส้นทางการค้นหาได้เร็วขึ้น",
     metaRole: "Sole Product Designer",
-    metaTimeline: "[ MMM YYYY – MMM YYYY ]",
+    metaTimeline: "[ MMM YYYY - MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
     tools: ["Figma", "Illustrator"],
     // ย่อหน้า 1 = ทำอะไร ให้ใคร · ย่อหน้า 2 = duration / role / team (โครงเดียวกับ propertyhub)
     // ข้อความจาก user โดยตรง (14 ส.ค. 2026) — ไม่ใช่ร่างจาก AI แล้ว
     overview: [
-      "ออกแบบหน้า Home Page ของ RentHub ใหม่ ซึ่งเป็นแพลตฟอร์มรวมประกาศหอพัก อพาร์ทเมนต์ และห้องเช่าทั่วประเทศไทยกว่า 20,000 แห่ง ครอบคลุมทั้งที่พักรายเดือนและรายวัน ช่วยให้ผู้ใช้งานสามารถค้นหาที่พักที่ตรงกับความต้องการได้ง่ายและสะดวกยิ่งขึ้น ไม่ว่าจะค้นหาตามทำเล ใกล้สถานศึกษา หรือใกล้สถานีรถไฟฟ้า",
+      "ออกแบบหน้า Home Page ของ Renthub ใหม่ ซึ่งเป็นแพลตฟอร์มรวมประกาศหอพัก อพาร์ทเม้นท์ และห้องเช่าทั่วประเทศไทยกว่า 20,000 แห่ง ครอบคลุมทั้งที่พักรายเดือนและรายวัน ช่วยให้ผู้ใช้งานสามารถค้นหาที่พักที่ตรงกับความต้องการได้ง่ายและสะดวกยิ่งขึ้น ไม่ว่าจะค้นหาตามทำเล ใกล้สถานศึกษา หรือใกล้สถานีรถไฟฟ้า",
       "การ Redesign หน้านี้ใช้เวลาประมาณ 2 เดือน รับผิดชอบงานออกแบบหน้า Home แบบ end-to-end ทำงานร่วมกับทีม Business และ Marketing โดยงานภาพบนหน้ามาจากทั้งที่ออกแบบเองและกราฟิกที่ได้รับจากฝั่ง Business",
     ],
     // ข้อความจาก user โดยตรง (14 ส.ค. 2026)
     problem: {
       statement: [
-        "โจทย์จากธุรกิจคือการปรับ Home Page ให้รองรับ Section ที่หลากหลายมากขึ้น จากเดิมที่เน้นการแสดง Apartment List เป็นหลัก สู่หน้าที่ช่วยนำผู้ใช้เข้าสู่เส้นทางการค้นหาที่ตรงกับความต้องการได้รวดเร็วยิ่งขึ้น พร้อมรองรับการขยายและเพิ่ม Section ใหม่ ๆ ของธุรกิจในอนาคต",
+        "โจทย์จากธุรกิจคือการปรับ Home Page ให้รองรับ Section ที่หลากหลายมากขึ้น จากเดิมที่เน้นการแสดง Apartment List เป็นหลัก สู่หน้าที่ช่วยนำผู้ใช้เข้าสู่เส้นทางการค้นหาที่ตรงกับความต้องการได้รวดเร็วยิ่งขึ้น พร้อมรองรับการขยายและเพิ่ม Section ใหม่ๆ ของธุรกิจในอนาคต",
       ],
     },
     ctxBusiness:
@@ -567,7 +564,7 @@ export const projects = {
     //   อยากได้เพิ่มค่อยตัดจากไฟล์เต็มด้วยพิกัดนี้
     // ⚠️ ตัด crop ใหม่ = ตั้งชื่อไฟล์ใหม่ (v2, v3, …) อย่าทับชื่อเดิม ไม่งั้น next/image เสิร์ฟรูปเก่าค้าง
     // body ทั้ง 5 บล็อกเป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) ห้ามเรียบเรียงใหม่
-    // ส่วน title เป็นภาษาอังกฤษสั้น ๆ ที่ AI ตั้งให้ (user สั่งให้คิดให้) เปลี่ยนได้ตามต้องการ
+    // ส่วน title เป็นภาษาอังกฤษสั้นๆ ที่ AI ตั้งให้ (user สั่งให้คิดให้) เปลี่ยนได้ตามต้องการ
     craft: {
       // intro ถูกเอาออกตามคำสั่ง user (14 ส.ค. 2026) — ให้เข้าบล็อกแรกเลย
       items: [
@@ -612,7 +609,7 @@ export const projects = {
     // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ (14 ส.ค. 2026) · ใส่ decision กลับมาเมื่อไหร่ section ก็ขึ้นเอง
     decisions: [],
     expWhy:
-      "ไม่มี A/B testing tool ผมใช้ GA4 event + Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate before/after ระหว่าง design เดิมกับ design ใหม่",
+      "เก็บพฤติกรรมจริงด้วย GA4 event ร่วมกับ Microsoft Clarity แล้วเทียบ conversion rate แบบ before/after ระหว่าง design เดิมกับ design ใหม่",
     expSegment: "[ วิธีแบ่ง variant ]",
     expTracking: "GA4 event + Microsoft Clarity",
     expDuration: "[ __ สัปดาห์ ]",
@@ -647,18 +644,18 @@ export const projects = {
   "ai-copilot": {
     title: "AI Listing Assistant",
     category: "AI Digital Product",
-    year: "2024 – ปัจจุบัน",
+    year: "2024 - ปัจจุบัน",
     status: "available",
     liveUrl: "#",
     tagline:
       "ผู้ช่วย AI ในระบบลงประกาศ ที่ช่วยเอเจนต์ร่างคำบรรยาย แนะนำราคา และจัดเรียงรูป — ออกแบบให้โปร่งใสและควบคุมผลลัพธ์ได้",
     metaRole: "Sole Product Designer",
-    metaTimeline: "[ MMM YYYY – ปัจจุบัน ]",
+    metaTimeline: "[ MMM YYYY - ปัจจุบัน ]",
     metaMethod: "Hypothesis-driven + Usage analytics",
     metaScale: "[ __,000+ ] listings created",
     tools: ["Figma", "Claude", "Google Analytics", "Microsoft Clarity"],
     overview: [
-      "AI Listing Assistant เป็นฟีเจอร์ที่ฝังในระบบลงประกาศ ช่วยร่างคำบรรยายทรัพย์ แนะนำช่วงราคา และจัดเรียงรูปอัตโนมัติ โจทย์คือทำให้ AI เป็นผู้ช่วยที่โปร่งใส ตรวจสอบได้ และผู้ใช้ยังคุมผลลัพธ์ได้เต็มที่ ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่ pattern การ suggest/edit/accept จนถึง measure การใช้งานจริง",
+      "AI Listing Assistant เป็นฟีเจอร์ที่ฝังในระบบลงประกาศ ช่วยร่างคำบรรยายทรัพย์ แนะนำช่วงราคา และจัดเรียงรูปอัตโนมัติ โจทย์คือทำให้ AI เป็นผู้ช่วยที่โปร่งใส ตรวจสอบได้ และผู้ใช้ยังคุมผลลัพธ์ได้เต็มที่ รับผิดชอบในฐานะ designer คนเดียวตั้งแต่ pattern การ suggest/edit/accept จนถึง measure การใช้งานจริง",
     ],
     ctxBusiness:
       "revenue signal คือจำนวนประกาศที่ลงสำเร็จและคุณภาพเนื้อหาที่ทำให้ทรัพย์ถูกค้นเจอ",
@@ -680,14 +677,14 @@ export const projects = {
       "อัตราการลงประกาศสำเร็จต้องไม่ลด",
       "คุณภาพเนื้อหา (reject/edit rate) ต้องไม่แย่ลง",
     ],
-    decisionsIntro: "ผมเลือกเล่า 3 decision ที่ยากที่สุดในการออกแบบ AI experience นี้",
+    decisionsIntro: "3 decision ที่ยากที่สุดในการออกแบบ AI experience นี้",
     decisions: [
       { title: "[ ชื่อ decision 1 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
       { title: "[ ชื่อ decision 2 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
       { title: "[ ชื่อ decision 3 ]", reasoning: "[ data/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
     ],
     expWhy:
-      "ผมวัดผลจาก usage analytics จริง (GA4 event + Clarity) เทียบเวลาและ accept rate ระหว่าง flow เดิมกับ flow ที่มี AI",
+      "วัดผลจาก usage analytics จริง (GA4 event + Clarity) เทียบเวลาและ accept rate ระหว่าง flow เดิมกับ flow ที่มี AI",
     expSegment: "[ วิธีแบ่ง variant ]",
     expTracking: "GA4 event + Microsoft Clarity",
     expDuration: "[ __ สัปดาห์ ]",
@@ -722,18 +719,18 @@ export const projects = {
   brand: {
     title: "Brand & Graphic Works",
     category: "Visual",
-    year: "2018 – ปัจจุบัน",
+    year: "2018 - ปัจจุบัน",
     status: "available",
     liveUrl: "#",
     tagline:
       "งานออกแบบกราฟิกและภาพประกอบสำหรับแคมเปญการตลาดและสื่อภายในองค์กร — ทำควบคู่กับงาน product เพื่อให้ภาพลักษณ์แบรนด์สอดคล้องกัน",
     metaRole: "Designer",
-    metaTimeline: "2018 – ปัจจุบัน",
+    metaTimeline: "2018 - ปัจจุบัน",
     metaMethod: "Brief → Explore → Refine → Deliver",
     metaScale: "[ __+ ] ชิ้นงาน",
     tools: ["Figma", "Illustrator", "Photoshop"],
     overview: [
-      "รวมงาน visual ที่ทำควบคู่กับงาน product ตั้งแต่ key visual แคมเปญ สื่อโซเชียล ไปจนถึง illustration และ guideline เล็ก ๆ โจทย์คือทำให้การสื่อสารของแบรนด์ดูเป็นอันหนึ่งอันเดียวกันในทุกช่องทาง และผลิตงานได้เร็วขึ้นด้วยชุด template ผมรับผิดชอบตั้งแต่รับ brief จากทีมการตลาด จนถึงส่งมอบไฟล์พร้อมใช้",
+      "รวมงาน visual ที่ทำควบคู่กับงาน product ตั้งแต่ key visual แคมเปญ สื่อโซเชียล ไปจนถึง illustration และ guideline เล็กๆ โจทย์คือทำให้การสื่อสารของแบรนด์ดูเป็นอันหนึ่งอันเดียวกันในทุกช่องทาง และผลิตงานได้เร็วขึ้นด้วยชุด template รับผิดชอบตั้งแต่รับ brief จากทีมการตลาด จนถึงส่งมอบไฟล์พร้อมใช้",
     ],
     ctxBusiness:
       "สื่อของแบรนด์ต้องดูสอดคล้องกันในทุกช่องทางเพื่อสร้างการจดจำ และผลิตซ้ำได้เร็ว",
@@ -751,7 +748,7 @@ export const projects = {
       "Secondary: จำนวนชิ้นงานที่ reuse template",
     ],
     guardrailMetrics: ["คุณภาพงานต้องไม่ลด", "ความสอดคล้องของแบรนด์ต้องไม่แย่ลง"],
-    decisionsIntro: "ผมเลือกเล่า 3 decision ด้าน visual system ที่มีผลต่อความเร็วและความสอดคล้อง",
+    decisionsIntro: "3 decision ด้าน visual system ที่มีผลต่อความเร็วและความสอดคล้อง",
     decisions: [
       { title: "[ ชื่อ decision 1 ]", reasoning: "[ เหตุผล/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
       { title: "[ ชื่อ decision 2 ]", reasoning: "[ เหตุผล/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
@@ -792,18 +789,18 @@ export const projects = {
   "market-insight": {
     title: "Market Insight Dashboard",
     category: "Analytics",
-    year: "2022 – 2023",
+    year: "2022 - 2023",
     status: "available",
     liveUrl: "#",
     tagline:
       "แดชบอร์ดสรุปแนวโน้มตลาดอสังหาฯ ที่เปลี่ยนข้อมูลจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ในไม่กี่วินาที",
     metaRole: "Sole Product Designer",
-    metaTimeline: "2022 – 2023",
+    metaTimeline: "2022 - 2023",
     metaMethod: "Hypothesis-driven + Comprehension test",
     metaScale: "[ __+ ] ผู้ใช้ภายใน",
     tools: ["Figma", "Looker Studio", "Google Analytics"],
     overview: [
-      "Market Insight Dashboard เปลี่ยนข้อมูลตลาดจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ ผู้ใช้หลักคือทีมขายและลูกค้าองค์กร โจทย์คือจัดลำดับข้อมูลให้เริ่มจากภาพรวมแล้วเจาะลึกได้ตามทำเลและประเภททรัพย์ ผมเป็น designer คนเดียว รับผิดชอบตั้งแต่คัด metric สำคัญ จนถึงทดสอบการตีความข้อมูล",
+      "Market Insight Dashboard เปลี่ยนข้อมูลตลาดจำนวนมากให้อ่านง่ายและนำไปตัดสินใจได้ ผู้ใช้หลักคือทีมขายและลูกค้าองค์กร โจทย์คือจัดลำดับข้อมูลให้เริ่มจากภาพรวมแล้วเจาะลึกได้ตามทำเลและประเภททรัพย์ รับผิดชอบในฐานะ designer คนเดียวตั้งแต่คัด metric สำคัญ จนถึงทดสอบการตีความข้อมูล",
     ],
     ctxBusiness:
       "ทีมขายและลูกค้าต้องการข้อมูลตลาดที่เชื่อถือได้เพื่อประกอบการตัดสินใจ — value คือความเร็วในการเข้าใจข้อมูล",
@@ -821,7 +818,7 @@ export const projects = {
       "Secondary: ความถูกต้องในการตีความ",
     ],
     guardrailMetrics: ["อัตราการเข้าใช้ซ้ำต้องไม่ลด", "ความเชื่อมั่นในข้อมูลต้องไม่ลด"],
-    decisionsIntro: "ผมเลือกเล่า 3 decision ด้านการจัดลำดับและ visualize ข้อมูล",
+    decisionsIntro: "3 decision ด้านการจัดลำดับและ visualize ข้อมูล",
     decisions: [
       { title: "[ ชื่อ decision 1 ]", reasoning: "[ เหตุผล/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
       { title: "[ ชื่อ decision 2 ]", reasoning: "[ เหตุผล/insight ]", tradeoff: "[ ยอมเสียอะไร ]", cut: "[ option ที่ตัดออก ]" },
@@ -890,6 +887,8 @@ export type PlaceholderProject = {
   businessGoal?: string[];
   /** รูปประกอบใต้ย่อหน้า Business Goal (กดดูเต็มจอได้) — เทียบเท่า problem.goalImage ของหน้า project จริง */
   businessGoalImage?: CaseImage;
+  /** true = รูป Business Goal กดขยายเต็มจอไม่ได้ (Expat — user สั่ง 17 ส.ค. 2026) */
+  businessGoalImageNoZoom?: boolean;
   /** section "Process & Key Decisions" (โครงเดียวกับหน้า propertyhub · เรนเดอร์ด้วย ProcessSection)
    *  decision ที่ยังไม่มีเนื้อหาจริงใส่ `{ pending: true }` → การ์ดเส้นประ "รอเนื้อหาจริง"
    *  ไม่ใส่ field นี้เลย = ไม่แสดง section (ใช้กับ Archive / Data & AI Workflow) */
@@ -934,10 +933,10 @@ export type PlaceholderProject = {
   /** รูปปกของเดโม (screenshot หน้าเว็บ) — โชว์ในกรอบ browser ให้กดเปิด demoUrl */
   demoCover?: string;
   /** จอแอปแยกตาม section (โชว์แบบ Propertyhub App — phone บนพื้นเทา, เลื่อนแนวนอน)
-   *  section ที่ยังไม่มีรูป = ปล่อย screens: [] ไว้ → โชว์ป้าย "เร็ว ๆ นี้" */
+   *  section ที่ยังไม่มีรูป = ปล่อย screens: [] ไว้ → โชว์ป้าย "เร็วๆ นี้" */
   appScreens?: { title: string; screens: { src: string; label: string }[] }[];
   /** หน้าเว็บแยกตาม category (โชว์แบบเดียวกับ App — พื้นเทา + header + จอเรียง scroll แนวนอน)
-   *  category ที่ยังไม่มีรูป = ปล่อย screens: [] → โชว์ป้าย "เร็ว ๆ นี้" */
+   *  category ที่ยังไม่มีรูป = ปล่อย screens: [] → โชว์ป้าย "เร็วๆ นี้" */
   /** phone: true = เรนเดอร์ด้วย AppScreensShowcase (จอมือถือขนาดเท่า App projects · ไม่มี lightbox) แทน rail เว็บ */
   webScreens?: { category: string; phone?: boolean; screens: { src?: string; label?: string; group?: string; w?: number; h?: number }[] }[];
   /** Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มความกว้างเรียงลงมา)
@@ -950,6 +949,8 @@ export type PlaceholderProject = {
   /** มีค่านี้ = wireframe เรียงเป็นแถวเดียวเลื่อนแนวนอนแทนกริด ("phone" = สล็อตแคบสำหรับจอมือถือ)
    *  Renthub App ใช้ "phone" · Expat ไม่ใส่ (จอเว็บ ใช้กริด 3 คอลัมน์) */
   wireframesRail?: "wide" | "phone";
+  /** true = จอ wireframe กดขยายเต็มจอไม่ได้ (Renthub App — user สั่ง 17 ส.ค. 2026) */
+  wireframesNoZoom?: boolean;
   /** ── USER FLOW ── ผังการใช้งานจากจอที่ออกแบบไว้ (จอไหน → ไปจอไหน)
    *  แสดงใน section Process & Key Decisions ก่อนขั้นย่อยของ process
    *  1 lane = 1 เส้นทาง · step ใช้ path รูปจอเดียวกับที่อยู่ใน appScreens */
@@ -971,7 +972,7 @@ export const placeholderProjects = {
     category: "Digital Product",
     status: "available",
     tagline:
-      "วิเคราะห์ data ของ product เองด้วย Claude + MCP — ต่อเข้ากับ GA4 / Clarity / Zimple ขุด insight แล้วต่อยอดเป็น idea และ mockup ได้โดยไม่ต้องรอทีม data",
+      "วิเคราะห์ data ของ product เองด้วย Claude + MCP ต่อเข้ากับ GA4 / Clarity / Zimple ขุด insight แล้วต่อยอดเป็น idea และ mockup ได้โดยไม่ต้องรอทีม data",
     tools: ["Claude", "Google Analytics", "Microsoft Clarity", "Figma"],
   },
   "propertyhub-app": {
@@ -979,7 +980,7 @@ export const placeholderProjects = {
     category: "Digital Product",
     status: "available",
     tagline:
-      "แอปมือถือของ Propertyhub — ค้นหา เปรียบเทียบ และติดต่อประกาศเช่า/ขายได้ครบในมือ",
+      "แอปมือถือของ Propertyhub บน iOS และ Android ค้นหา เปรียบเทียบ และติดต่อประกาศเช่า/ขายได้ครบในมือ",
     // โครงเดียวกับ overview ของ propertyhub (เว็บ): ทำอะไรกับโปรเจกต์ → ตัวเลขหลังเปิดตัว
     // ข้อความทั้ง 2 ย่อหน้าตามที่ user เขียนเอง (แก้ล่าสุด 17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
@@ -992,7 +993,7 @@ export const placeholderProjects = {
       {
         title: "Requirement",
         // ข้อความตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
-        body: "การเริ่มต้นหา solution ใช้การคุยและทำ Design Thinking ร่วมกับทีม PM, Business, Marketing และ Sale เพื่อรวบรวมสิ่งที่อยากมีและสิ่งที่ user ต้องการ เพราะทีม Sale และ Marketing เป็นคนที่พูดคุยกับลูกค้ามากที่สุด",
+        body: "การเริ่มต้นหา solution ใช้การคุยและทำ Design Thinking ร่วมกับทีม PM, Business, Marketing และ Sales เพื่อรวบรวมสิ่งที่อยากมีและสิ่งที่ user ต้องการ เพราะทีม Sales และ Marketing เป็นคนที่พูดคุยกับลูกค้ามากที่สุด",
         // บอร์ด Design Thinking เฉพาะขั้น Empathize + Define (user เปลี่ยนรูปเป็นตัวครอปนี้
         // 14 ส.ค. 2026 · ตัวเต็มที่มี Ideate/Prototype/Test ถูกแทนที่ไปแล้ว)
         //
@@ -1032,7 +1033,7 @@ export const placeholderProjects = {
       {
         title: "Wireframe & Style Guide",
         // ใจความตามที่ user เขียนเอง 14 ส.ค. 2026 (ปรับเป็นภาษาทางการ ไม่มีสรรพนาม)
-        body: "wireframe ที่ใช้เป็น High-Fidelity Wireframe คือลงรายละเอียด UI ไปพร้อมกับโครงหน้าในขั้นเดียว ควบคู่กับการวาง Style Guide ของแอปทั้งชุดสี ตัวอักษร และไอคอน เพื่อให้ทุกจอที่ออกแบบต่อจากนั้นใช้ของชุดเดียวกันทั้งแอป",
+        body: "Wireframe ที่ใช้เป็นแบบ High-Fidelity คือลงรายละเอียด UI ไปพร้อมกับโครงหน้าในขั้นเดียว ควบคู่กับการวาง Style Guide ของแอปทั้งชุดสี ตัวอักษร และไอคอน เพื่อให้ทุกจอที่ออกแบบต่อจากนั้นใช้ของชุดเดียวกันทั้งแอป",
         cols: 3,
         // hideCaptions = ในรูปมีคำว่า Color / Typography / Icon อยู่แล้ว ไม่ต้องซ้ำใต้รูป
         // (label ยังอยู่เพราะใช้เป็น alt และ caption ตอนกดดูเต็มจอ)
@@ -1067,7 +1068,7 @@ export const placeholderProjects = {
         // เป็นของ user โดยตรง 17 ส.ค. 2026 ห้ามเรียบเรียงใหม่
         // (Decision 2 เดิมเรื่อง checklist ก่อนปล่อยงาน ถูกตัดไปแล้ว 14 ส.ค. 2026)
         title:
-          "เปลี่ยน Input Form ยาวๆเป็นแบบทีละสเต็ป แบ่งข้อมูลการลงประกาศเป็นหน้าย่อย เพื่อลดความรู้สึกซับซ้อนและน่าเบื่อของผู้ใช้งาน เพราะการลงประกาศข้อมูลค่อนข้างเยอะ",
+          "เปลี่ยน Input Form ยาวๆ เป็นแบบทีละสเต็ป แบ่งข้อมูลการลงประกาศเป็นหน้าย่อย เพื่อลดความรู้สึกซับซ้อนและน่าเบื่อของผู้ใช้งาน เพราะการลงประกาศข้อมูลค่อนข้างเยอะ",
         // จอจริงของฟอร์มลงประกาศ — เห็นแถบบอกขั้นตอนด้านบนและปุ่ม "บันทึกแบบ" ที่พูดถึงใน Validation
         // user เปลี่ยนเป็นชุด screenshot ไม่มีกรอบเครื่อง 17 ส.ค. 2026
         // (ต้นฉบับ Downloads/S__31686661_0.jpg, S__31686662_0.jpg, S__31686663_0.jpg)
@@ -1101,11 +1102,11 @@ export const placeholderProjects = {
     category: "Digital Product",
     status: "available",
     tagline:
-      "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
+      "ออกแบบแอป Renthub บน iOS และ Android สำหรับค้นหาหอพักและอพาร์ทเม้นท์ให้เช่าทั่วไทย พร้อมค้นหาบนแผนที่ เปรียบเทียบที่พัก และแชทกับเจ้าของโดยตรง",
     // ข้อความทั้ง 2 ย่อหน้าจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
-      "ออกแบบแอปพลิเคชัน RentHub บน iOS และ Android สำหรับค้นหาหอพักและอพาร์ทเมนต์ให้เช่าทั่วไทยกว่า 20,000 แห่ง ทั้งรายเดือนและรายวัน พร้อมฟีเจอร์ค้นหาตามทำเลและจุดสำคัญ เปรียบเทียบหอพัก ดูภาพและ Virtual Tour 360° รวมถึงแชทกับเจ้าของแบบเรียลไทม์ และ Verify เพื่อเพิ่มความน่าเชื่อถือของประกาศ โดยในปี 2025 แพลตฟอร์มมีผู้ใช้งานกว่า 10 ล้านคน, 106 ล้าน Pageviews และยอดดาวน์โหลดแอปกว่า 770,000 ครั้งบน iOS และ Android",
-      "ใช้เวลาพัฒนาประมาณ 3–5 เดือน ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off ไปจนถึงตรวจงานก่อนปล่อยขึ้นสโตร์",
+      "ออกแบบแอปพลิเคชัน Renthub บน iOS และ Android สำหรับค้นหาหอพักและอพาร์ทเม้นท์ให้เช่าทั่วไทยกว่า 20,000 แห่ง ทั้งรายเดือนและรายวัน พร้อมฟีเจอร์ค้นหาตามทำเลและจุดสำคัญ เปรียบเทียบหอพัก ดูภาพและ Virtual Tour 360° รวมถึงแชทกับเจ้าของแบบเรียลไทม์ และ Verify เพื่อเพิ่มความน่าเชื่อถือของประกาศ โดยในปี 2025 แพลตฟอร์มมีผู้ใช้งานกว่า 10 ล้านคน, 106 ล้าน Pageviews และยอดดาวน์โหลดแอปกว่า 770,000 ครั้งบน iOS และ Android",
+      "ใช้เวลาพัฒนาประมาณ 3 - 5 เดือน ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off ไปจนถึงตรวจงานก่อนปล่อยขึ้นสโตร์",
     ],
     // section "Key Decision" — เนื้อหาทั้งหมดเป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) ห้ามเรียบเรียงใหม่
     decisions: [
@@ -1114,10 +1115,10 @@ export const placeholderProjects = {
           "เปลี่ยนการแสดงผลบนแผนที่จากหมุดไอคอนเป็นป้ายราคา เพื่อเพิ่มการค้นหาราคาที่ตรงกับความต้องการของผู้ใช้งานมากขึ้น",
         // รูปเทียบก่อน/หลัง — ใช้ figures (กริด 2 คอลัมน์) ไม่ใช้ before/after
         // เพราะ variant pair จะ crop ความสูงไว้ 500px ซึ่งตัดจอมือถือขาดครึ่ง
-        // ไฟล์ user วางไว้ใน public/uploads เองแล้ว (RentHub_Map_UI_Before / _After)
+        // ไฟล์ user วางไว้ใน public/uploads เองแล้ว (Renthub_Map_UI_Before / _After)
         figures: [
-          { src: "/uploads/RentHub_Map_UI_Before.jpg", label: "Before", w: 1125, h: 2436 },
-          { src: "/uploads/RentHub_Map_UI_After.jpg", label: "After", w: 868, h: 1887 },
+          { src: "/uploads/Renthub_Map_UI_Before.jpg", label: "Before", w: 1125, h: 2436 },
+          { src: "/uploads/Renthub_Map_UI_After.jpg", label: "After", w: 868, h: 1887 },
         ],
         // ขนาดรูปเท่าตอนวาง 3 รูป แต่จัดไว้กลาง (user สั่ง 17 ส.ค. 2026)
         figuresCols: 3,
@@ -1127,7 +1128,7 @@ export const placeholderProjects = {
         tradeoff:
           "สิ่งที่ได้มาคือผู้ใช้เปรียบเทียบราคาในทำเลเดียวกันได้ทันที สแกนหาห้องพักที่อยู่ในงบได้เร็วขึ้น แต่สิ่งที่ต้องแลกมาคือ ความแออัดของหน้าจอ (UI Cluttering) ป้ายราคาใช้พื้นที่บนจอมากกว่าหมุดไอคอนปกติ หากมีหอพักในบริเวณนั้นหนาแน่น ป้ายจะซ้อนทับกันจนอ่านไม่ออก รวมถึงการดึงข้อมูลและเรนเดอร์ตัวเลขราคาจำนวนมากพร้อมกันบนแผนที่ อาจทำให้แอปกระตุกหรือโหลดช้าลง",
         outcome:
-          "จากการทำ Usability Testing พบว่าผู้ทดสอบสามารถมองหาและจิ้มเลือกห้องพักที่อยู่ในงบประมาณของตัวเองได้ทันทีในครั้งแรก โดยไม่มีใครสุ่มกดหมุดก่อนเพื่อดูราคาในการ์ดด้านล่างเหมือนใน UI เก่า",
+          "จากการทำ Usability Testing พบว่าผู้ทดสอบสามารถมองหาและเลือกห้องพักที่อยู่ในงบประมาณของตัวเองได้ทันทีในครั้งแรก โดยไม่มีผู้ทดสอบคนใดสุ่มกดหมุดก่อนเพื่อดูราคาในการ์ดด้านล่างเหมือนใน UI เก่า",
       },
     ],
     // หมายเหตุ: เคยมี `userFlow` (ผังจอ 3 เส้นทาง) ตรงนี้ — user สั่งเอาออก 17 ส.ค. 2026
@@ -1140,6 +1141,8 @@ export const placeholderProjects = {
     // ชุดเดิม renthub-app-wireframe*.png ไม่ได้ใช้แล้ว แต่ยังอยู่ในโฟลเดอร์
     // เหลือ 3 จอ วางเป็นกริด 3 คอลัมน์กว้างเท่ากัน (user สั่ง 17 ส.ค. 2026)
     // จอที่ 4 "รายการที่พัก" (Renthub-Wirefram-4.jpg) ถูกตัดออก ไฟล์ยังอยู่ในโฟลเดอร์
+    // user สั่ง 17 ส.ค. 2026 — จอ wireframe ดูจากขนาดในหน้าก็พอ ไม่ต้องกดขยาย
+    wireframesNoZoom: true,
     wireframes: [
       { label: "หน้าแรก", src: "/uploads/Renthub-Wirefram-1.jpg", w: 374, h: 820 },
       { label: "รายละเอียดที่พัก", src: "/uploads/Renthub-Wirefram-2.jpg", w: 319, h: 701 },
@@ -1147,7 +1150,7 @@ export const placeholderProjects = {
     ],
     // ข้อความจาก user โดยตรง (17 ส.ค. 2026)
     businessGoal: [
-      "สร้าง Mobile App เพื่อขยายการเข้าถึงผู้ใช้งานบนมือถือ และรองรับพฤติกรรมการค้นหาที่พักที่ต้องการความสะดวกและรวดเร็วมากขึ้น โดยสร้างประสบการณ์ตั้งแต่การค้นหาที่พักตามตำแหน่งและทำเล ไปจนถึงการดูรายละเอียดและติดต่อเจ้าของหอโดยตรง เพื่อเพิ่ม Engagement และโอกาสในการเปลี่ยนผู้ค้นหาให้เป็นผู้เช่า",
+      "สร้าง Mobile App เพื่อขยายการเข้าถึงผู้ใช้งานบนมือถือ และรองรับพฤติกรรมการค้นหาที่พักที่ต้องการความสะดวกและรวดเร็วมากขึ้น โดยสร้างประสบการณ์ตั้งแต่การค้นหาที่พักตามตำแหน่งและทำเล ไปจนถึงการดูรายละเอียดและติดต่อเจ้าของหอพักโดยตรง เพื่อเพิ่ม Engagement และโอกาสในการเปลี่ยนผู้ค้นหาให้เป็นผู้เช่า",
     ],
     tools: ["Figma"],
     appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
@@ -1194,11 +1197,11 @@ export const placeholderProjects = {
     category: "Digital Product",
     status: "process",
     tagline:
-      "เว็บแพลตฟอร์มหาที่พักให้เช่าสำหรับชาวต่างชาติในกรุงเทพฯ — ค้นหา เปรียบเทียบ และติดต่อเอเจนต์ได้ในที่เดียว",
+      "เว็บแพลตฟอร์มหาที่พักให้เช่าสำหรับชาวต่างชาติในกรุงเทพฯ ค้นหา เปรียบเทียบ และติดต่อเอเจนต์ได้ในที่เดียว",
     liveUrl: "https://expathome.dev/",
     // ข้อความทั้ง 2 ย่อหน้าจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
-      "ออกแบบเว็บไซต์ Expat แพลตฟอร์มค้นหาที่พักให้เช่าสำหรับชาวต่างชาติ โดยรวบรวมอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่ไม่ได้ลงประกาศบน RentHub มานำเสนอในรูปแบบที่เหมาะกับกลุ่มผู้เช่าต่างชาติ ครอบคลุมทั้งประสบการณ์บน Web และ Mobile",
+      "ออกแบบเว็บไซต์ Expat แพลตฟอร์มค้นหาที่พักให้เช่าสำหรับชาวต่างชาติ โดยรวบรวมอพาร์ทเม้นท์ระดับราคาค่าเช่าสูงที่ไม่ได้ลงประกาศบน Renthub มานำเสนอในรูปแบบที่เหมาะกับกลุ่มผู้เช่าต่างชาติ ครอบคลุมทั้งประสบการณ์บน Web และ Mobile",
       "ใช้เวลาพัฒนาประมาณ 3 เดือน ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่ Requirement, Research, Wireframe, Style Guide, Interface Design ทั้ง Web และ Mobile ไปจนถึง Hand-off ให้ทีม Developer",
     ],
     // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ก่อน (17 ส.ค. 2026)
@@ -1207,6 +1210,8 @@ export const placeholderProjects = {
     // ข้อความจาก user โดยตรง (17 ส.ค. 2026) — ยุบจาก 2 ย่อหน้าเหลือย่อหน้าเดียว
     // รูปสรุปโมเดลรายได้ (โฆษณา → คอมมิชชัน + funnel ที่ต้องพาไปให้ถึงการติดต่อ)
     // user ส่งไฟล์มา 17 ส.ค. 2026 (Downloads/renthub_expat_commission.png)
+    // user สั่ง 17 ส.ค. 2026 — รูปนี้ดูจากขนาดในหน้าก็พอ ไม่ต้องกดขยาย
+    businessGoalImageNoZoom: true,
     businessGoalImage: {
       src: "/uploads/expat-commission-flow.png",
       label: "Business Model การสร้างรายได้ของ Expat",
@@ -1214,51 +1219,61 @@ export const placeholderProjects = {
       h: 2264,
     },
     businessGoal: [
-      "เปิดช่องทางรายได้ใหม่ที่แตกต่างจากโมเดลโฆษณาของ RentHub โดยเจาะกลุ่มอพาร์ตเมนต์ระดับราคาค่าเช่าสูงและผู้เช่าชาวต่างชาติในกรุงเทพฯ เน้นสร้าง Conversion จากผู้ค้นหาไปสู่การติดต่ออพาร์ตเมนต์ เนื่องจากรายได้หลักมาจากค่าคอมมิชชันเมื่อผู้เช่าระบุว่ามาจาก Expat",
+      "เปิดช่องทางรายได้ใหม่ที่แตกต่างจากโมเดลโฆษณาของ Renthub โดยเจาะกลุ่มอพาร์ทเม้นท์ระดับราคาค่าเช่าสูงและผู้เช่าชาวต่างชาติในกรุงเทพฯ เน้นสร้าง Conversion จากผู้ค้นหาไปสู่การติดต่ออพาร์ทเม้นท์ เนื่องจากรายได้หลักมาจากค่าคอมมิชชันเมื่อผู้เช่าระบุว่ามาจาก Expat",
     ],
     tools: ["Figma"],
-    heroWeb: "/uploads/renthub-agency-web-laptop.png",
+    // hero ตัวใหม่ 17 ส.ค. 2026 — user ส่ง Downloads/Hero-Expat.jpg มาแบบพื้นหลังดำ (export โปร่งใสแล้วเซฟ JPG)
+    // ลบพื้นหลังด้วย flood fill จากขอบภาพเฉพาะพิกเซลที่มืดจัด แล้ว trim ขอบว่างออก
+    // (สัดส่วนเท่าไฟล์เดิมพอดี 1.649 — ไม่ต้องแก้ w/h ที่ placeholder-view)
+    heroWeb: "/uploads/expat-hero-laptop.png",
     heroPhone: "/uploads/renthub-agency-app-home.png",
     // ── CRAFT SHOWCASE ── ผ่าหน้า Home ของ Expat ออกเป็น 6 บล็อก (โครงเดียวกับ renthub)
-    // crop จาก renthub-agency-home.jpg (1600×6807) ด้วย sharp ที่พิกัด y:
+    // crop จาก renthub-agency-home-v3.jpg (1600×6808) ด้วย sharp ที่พิกัด y:
     //   hero 0-1194 · neighborhood 1206-2563 · destination 2572-3263
     //   recommend 3266-4978 · steps 4980-5508 · contact 5510-6252
     //   (เลี่ยงเส้นคั่นของหน้าที่ y=1200 กับ 2567 และรอยต่อพื้นหลังแต่ละ section)
-    // body ทั้ง 6 เป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
+    // body ทั้ง 6 เป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) ห้ามเรียบเรียงใหม่
+    //
+    // capture หน้า Home ถูกอัปเดต 2 รอบใน 17 ส.ค. 2026 (ตั้งชื่อ v2/v3 กัน next/image cache ค้าง)
+    //   v2 = section Find My Home แก้ step 1 จาก Bedroom เป็น Information
+    //        และการ์ดทั้ง 4 ใบมีคำบรรยายของตัวเอง (เดิมซ้ำกันหมด)
+    //   v3 = เปลี่ยนแบรนด์ในหน้าจาก "Houser" เป็น "Expat" (หัวข้อ Find My Home, ท้ายฟอร์ม Contact
+    //        และในรูป hero) · ไฟล์ v1/v2 ถูกลบทิ้งแล้วเพราะไม่มีอะไรอ้างถึง
+    // ถ้าจะตัด crop ใหม่: ย่อ capture เป็นกว้าง 1600px ก่อน แล้วใช้พิกัด y ข้างบน
     craft: {
       items: [
         {
           title: "Search & Mass Transit",
           body: "Hero Section ที่ผสาน Value Proposition เข้ากับ Search Bar เพื่อให้ผู้ใช้สามารถเริ่มค้นหาที่พักได้ทันที โดยรองรับการค้นหาตามจุดหมาย ช่วงราคา และประเภทห้อง พร้อม Explore by BTS/MRT สำหรับค้นหาที่พักตามสถานีรถไฟฟ้ายอดนิยม เหมาะสำหรับผู้ใช้ที่เดินทางด้วยระบบขนส่งสาธารณะเป็นหลัก",
-          src: "/uploads/expat-craft-v1-hero.jpg",
+          src: "/uploads/expat-craft-v3-hero.jpg",
           w: 1600,
           h: 1194,
         },
         {
           title: "Bangkok Neighborhoods",
           body: "นำเสนอย่านยอดนิยมในกรุงเทพฯ เช่น Thonglor, Silom, Sathorn และ Asoke ผ่าน Visual Grid ขนาดใหญ่ ช่วยให้ผู้ใช้สามารถสำรวจและเลือกทำเลที่สนใจได้ง่ายขึ้น โดยไม่จำเป็นต้องเริ่มต้นจากการค้นหาด้วยตัวเอง",
-          src: "/uploads/expat-craft-v1-neighborhood.jpg",
+          src: "/uploads/expat-craft-v3-neighborhood.jpg",
           w: 1600,
           h: 1357,
         },
         {
           title: "Top Destinations",
-          body: "ขยายการค้นหาไปยังจุดหมายปลายทางยอดนิยม เช่น Phuket, Pattaya และ Chonburi ผ่าน Carousel เพื่อให้ผู้ใช้สามารถสำรวจตัวเลือกที่พักในพื้นที่ต่าง ๆ ได้อย่างรวดเร็ว",
-          src: "/uploads/expat-craft-v1-destination.jpg",
+          body: "ขยายการค้นหาไปยังจุดหมายปลายทางยอดนิยม เช่น Phuket, Pattaya และ Chonburi ผ่าน Carousel เพื่อให้ผู้ใช้สามารถสำรวจตัวเลือกที่พักในพื้นที่ต่างๆ ได้อย่างรวดเร็ว",
+          src: "/uploads/expat-craft-v3-destination.jpg",
           w: 1600,
           h: 691,
         },
         {
           title: "Recommended Apartments",
-          body: "แสดงรายการอพาร์ตเมนต์แนะนำในรูปแบบ Card โดยรวบรวมข้อมูลสำคัญสำหรับการตัดสินใจไว้ในจุดเดียว ทั้งราคาเริ่มต้น รีวิว และสิ่งอำนวยความสะดวก พร้อม CTA “Check Availability” สำหรับดูรายละเอียดและติดต่ออพาร์ตเมนต์",
-          src: "/uploads/expat-craft-v1-recommend.jpg",
+          body: "แสดงรายการอพาร์ทเม้นท์แนะนำในรูปแบบ Card โดยรวบรวมข้อมูลสำคัญสำหรับการตัดสินใจไว้ในจุดเดียว ทั้งราคาเริ่มต้น รีวิว และสิ่งอำนวยความสะดวก พร้อม CTA “Check Availability” สำหรับดูรายละเอียดและติดต่ออพาร์ทเม้นท์",
+          src: "/uploads/expat-craft-v3-recommend.jpg",
           w: 1600,
           h: 1712,
         },
         {
           title: "Find My Home in 4 Steps",
-          body: "Guided Search ที่ช่วยให้ผู้ใช้ค้นหาที่พักผ่าน 4 ขั้นตอน ได้แก่ Bedroom, Budget, Amenities และ Location โดยออกแบบให้การค้นหาเป็นลำดับและเข้าใจง่าย เหมาะสำหรับผู้ใช้ที่ยังไม่มีเกณฑ์การค้นหาที่ชัดเจน",
-          src: "/uploads/expat-craft-v1-steps.jpg",
+          body: "Guided Search ที่ช่วยให้ผู้ใช้ค้นหาที่พักผ่าน 4 ขั้นตอน ได้แก่ Information, Budget, Amenities และ Location โดยออกแบบให้การค้นหาเป็นลำดับและเข้าใจง่าย เหมาะสำหรับผู้ใช้ที่ยังไม่มีเกณฑ์การค้นหาที่ชัดเจน",
+          src: "/uploads/expat-craft-v3-steps.jpg",
           w: 1600,
           h: 528,
           // จอจริงของ flow นี้ ย้ายมาจาก webScreens category "Find My Home" (user สั่ง 17 ส.ค. 2026)
@@ -1267,39 +1282,39 @@ export const placeholderProjects = {
             // desc เป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
             screens: [
               {
-                label: "Step 1 — Contact info",
+                label: "Step 1 · Information",
                 desc: "ระบุข้อมูลเบื้องต้นเพื่อให้ง่ายในการติดต่อกลับ",
                 src: "/uploads/renthub-agency-home-step1-contact-v2.jpg",
-                w: 4320,
-                h: 3072,
+                w: 1600,
+                h: 1137,
               },
               {
-                label: "Step 2 — Budget",
+                label: "Step 2 · Budget",
                 desc: "เลือกช่วงราคา รูปแบบห้อง ระยะเวลาการเข้าพัก วันพร้อมเข้าอยู่ เพื่อให้ได้ห้องที่ตรงความต้องการ",
                 src: "/uploads/renthub-agency-home-step2-budget-v2.jpg",
-                w: 4320,
-                h: 3072,
+                w: 1600,
+                h: 1137,
               },
               {
-                label: "Step 3 — Amenities",
+                label: "Step 3 · Amenities",
                 desc: "เลือกสิ่งอำนวยความสะดวกเพื่อให้ตรงตาม life style ของตัวเอง",
                 src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg",
-                w: 4320,
-                h: 3072,
+                w: 1600,
+                h: 1137,
               },
               {
-                label: "Step 4 — Location",
+                label: "Step 4 · Location",
                 desc: "เลือกทำเลตามความต้องการ และสามารถระบุให้มากกว่า 1 พื้นที่",
                 src: "/uploads/renthub-agency-home-step4-location-v2.jpg",
-                w: 4320,
-                h: 3072,
+                w: 1600,
+                h: 1137,
               },
               {
                 label: "Well done",
                 desc: "รอระบบคัดกรองอพาร์ทเม้นท์มาให้ตรงตามความต้องการ",
                 src: "/uploads/renthub-agency-home-welldone.jpg",
-                w: 4320,
-                h: 3072,
+                w: 1600,
+                h: 1137,
               },
             ],
           },
@@ -1307,7 +1322,7 @@ export const placeholderProjects = {
         {
           title: "Contact & Lead Capture",
           body: "Contact Form สำหรับผู้ใช้ที่ต้องการคำแนะนำเพิ่มเติม โดยเก็บข้อมูลพื้นฐาน ได้แก่ Name, Email และ Phone เพื่อให้สามารถติดต่อและให้คำแนะนำเกี่ยวกับที่พักที่เหมาะสมได้",
-          src: "/uploads/expat-craft-v1-contact.jpg",
+          src: "/uploads/expat-craft-v3-contact.jpg",
           w: 1600,
           h: 742,
         },
@@ -1316,14 +1331,14 @@ export const placeholderProjects = {
     // Wireframe + Style Guide = section เดียวกัน "Wireframe & Style Guide" (user สั่ง 17 ส.ค. 2026)
     // wireframes ย้ายมาจาก webScreens category "Wireframe" เดิม
     wireframes: [
-      { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 4320, h: 12396 },
-      { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 4320, h: 10824 },
-      { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 4320, h: 15072 },
+      { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 1600, h: 4591 },
+      { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 1600, h: 4009 },
+      { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 1600, h: 5582 },
     ],
     styleGuide: [
-      { label: "Color", src: "/uploads/renthub-agency-ds-color.jpg", w: 6000, h: 6000 },
-      { label: "Font", src: "/uploads/renthub-agency-ds-font.jpg", w: 6000, h: 6000 },
-      { label: "Icon", src: "/uploads/renthub-agency-ds-icon.jpg", w: 6000, h: 6000 },
+      { label: "Color", src: "/uploads/renthub-agency-ds-color.jpg", w: 1600, h: 1600 },
+      { label: "Font", src: "/uploads/renthub-agency-ds-font.jpg", w: 1600, h: 1600 },
+      { label: "Icon", src: "/uploads/renthub-agency-ds-icon.jpg", w: 1600, h: 1600 },
     ],
     // Screens ของ Expat — แยกตาม category
     // เอาออกแล้ว: "Wireframe" (ย้ายไป field wireframes) · "Sign Up / Sign In" (user สั่งตัดทิ้ง 17 ส.ค. 2026
@@ -1336,11 +1351,11 @@ export const placeholderProjects = {
         // "Find My Home" ถูกย้ายไปเป็น drawer ของ Craft Showcase บล็อก 05 แล้ว
         category: "Main Screen",
         screens: [
-          { label: "Home", src: "/uploads/renthub-agency-home.jpg", w: 1600, h: 6807 },
-          { label: "Listing result", src: "/uploads/renthub-agency-listing-result.jpg", w: 4320, h: 10839 },
-          { label: "Listing result — map view", src: "/uploads/renthub-agency-listing-map.jpg", w: 4320, h: 3072 },
-          { label: "Listing detail", src: "/uploads/renthub-agency-detail-renthub.jpg", w: 4320, h: 15942 },
-          { label: "Shortlist", src: "/uploads/renthub-agency-shortlist-main.jpg", w: 4320, h: 5454 },
+          { label: "Home", src: "/uploads/renthub-agency-home-v3.jpg", w: 1600, h: 6808 },
+          { label: "Listing result", src: "/uploads/renthub-agency-listing-result.jpg", w: 1600, h: 4014 },
+          { label: "Listing result · map view", src: "/uploads/renthub-agency-listing-map.jpg", w: 1600, h: 1137 },
+          { label: "Listing detail", src: "/uploads/renthub-agency-detail-renthub.jpg", w: 1600, h: 5904 },
+          { label: "Shortlist", src: "/uploads/renthub-agency-shortlist-main.jpg", w: 1600, h: 2020 },
         ],
       },
       {
@@ -1361,24 +1376,24 @@ export const placeholderProjects = {
     title: "RentOS",
     category: "Digital Product",
     status: "process",
-    tagline: "รายละเอียดเร็ว ๆ นี้",
+    tagline: "รายละเอียดเร็วๆ นี้",
   },
   baandee: {
     title: "Baandee",
     category: "AI Product",
     status: "process",
-    tagline: "แพลตฟอร์มผู้ช่วยด้านที่อยู่อาศัย — เดโมหน้าเว็บที่สร้างด้วย AI (กดเปิดเล่นได้จริง)",
+    tagline: "แพลตฟอร์มผู้ช่วยด้านที่อยู่อาศัย เดโมหน้าเว็บที่สร้างด้วย AI (กดเปิดเล่นได้จริง)",
     demoUrl: "/demos/baandee.html",
     demoCover: "/uploads/baandee-cover.jpg",
   },
   // PropertyOS — โปรเจกต์เดียวของหมวด AI Product (Website Builder อยู่ใต้ตัวนี้)
-  // เนื้อหาเต็มอยู่ที่ data/website-builder.ts — render ด้วย WebsiteBuilderView
+  // เนื้อหาเต็มอยู่ที่ data/propertyos.ts · render ด้วย PropertyosView
   propertyos: {
     title: "PropertyOS",
     category: "AI Product",
     status: "process",
     tagline:
-      "แพลตฟอร์มรวมงานของเอเจนต์อสังหาฯ ไว้ที่เดียว — หน้านี้เล่างาน Website Builder ที่อยู่ในนั้น: ชุดธีม 3 แบบ × 3 ประเภทหน้า ที่ระบบเอาไปสร้างเว็บให้เอเจนต์ได้ในคลิกเดียว",
+      "แพลตฟอร์มรวมงานของเอเจนต์อสังหาฯ ไว้ที่เดียว หน้านี้เล่างาน Website Builder ที่อยู่ในนั้น: ชุดธีม 3 แบบ × 3 ประเภทหน้า ที่ระบบเอาไปสร้างเว็บให้เอเจนต์ได้ในคลิกเดียว",
     // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ (17 ส.ค. 2026)
     // ใส่ decision กลับเข้ามาเมื่อไหร่ section ก็ขึ้นเอง (propertyos-view เช็คด้วย hasProcess)
     // เนื้อหาอื่นของหน้านี้อยู่ที่ data/propertyos.ts
@@ -1390,7 +1405,7 @@ export const placeholderProjects = {
     category: "Archive",
     status: "archived",
     tagline:
-      "คลังงานออกแบบช่วงปี 2018–2020 — แอป เว็บ/หลังบ้าน design system และงานกราฟิก จาก portfolio เล่มเดิม",
+      "คลังงานออกแบบช่วงปี 2018 - 2020 ทั้งแอป เว็บ/หลังบ้าน design system และงานกราฟิก จาก portfolio เล่มเดิม",
   },
 } satisfies Record<string, PlaceholderProject>;
 
@@ -1443,7 +1458,7 @@ export function getProjectNav(slug: string): {
 /** label ไทยของแต่ละ status (ใช้บน badge) */
 export const STATUS_LABEL: Record<ProjectStatus, string> = {
   available: "Available",
-  process: "On Process",
+  process: "In Progress",
   coming: "Coming Soon",
-  archived: "Old work",
+  archived: "Archived",
 };

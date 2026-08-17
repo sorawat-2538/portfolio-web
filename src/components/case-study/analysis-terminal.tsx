@@ -1,7 +1,7 @@
 // Hero ของหน้า Data & AI Workflow — mockup หน้าต่าง "เครื่องมือวิเคราะห์"
 // (สีเดียวกับ code editor ที่ Contact Me: navy + mono + traffic lights)
-// แต่เนื้อในไม่ใช่ข้อความยาว ๆ — เป็นโครงแบบ IDE จริง: rail แหล่งข้อมูลด้านซ้าย
-// + เซลล์คำสั่งสั้น ๆ + พาเนล output ที่เป็น "ชาร์ตจริง" ให้เห็นผลวิเคราะห์ทันที
+// แต่เนื้อในไม่ใช่ข้อความยาวๆ — เป็นโครงแบบ IDE จริง: rail แหล่งข้อมูลด้านซ้าย
+// + เซลล์คำสั่งสั้นๆ + พาเนล output ที่เป็น "ชาร์ตจริง" ให้เห็นผลวิเคราะห์ทันที
 //
 // ตัวเลขทุกตัวเป็นของจริงจาก Zimple Analytics ของ Propertyhub (ชุดเดียวกับที่
 // โชว์เป็นหลักฐานใน Workflow 1 ด้านล่างของหน้า) — ไม่ใช่ตัวเลขสมมติ
@@ -108,7 +108,7 @@ export function AnalysisTerminal() {
               <span className="truncate text-slate-400">contact_rate × depth</span>
             </div>
 
-            {/* plot — gridline จาง ๆ + แท่งวางบนเส้นฐาน */}
+            {/* plot — gridline จางๆ + แท่งวางบนเส้นฐาน */}
             <div className="relative mt-3 h-[clamp(104px,15vw,138px)]">
               {[25, 12.5, 0].map((tick) => (
                 <div
