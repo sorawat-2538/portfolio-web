@@ -199,11 +199,12 @@ const SECTION_ID: Record<string, string> = {
 };
 
 /** "Layout 1 — Sidebar filter" → แท็ก "Layout 1" + ชื่อ "Sidebar filter" */
+/** แยก "Layout 1 · Sidebar filter" เป็นแท็ก "Layout 1" + หัวข้อ "Sidebar filter"
+ *  ⚠️ รับทั้ง "·" และ "—" — 17 ส.ค. 2026 ตอนกวาด em dash ออกทั้งเว็บ ข้อมูลเปลี่ยนจาก "—" เป็น "·"
+ *  แต่ตัวนี้ยังแยกด้วย "—" อยู่ ทำให้แท็กหายและคำว่า "Layout N ·" ไหลไปอยู่ในหัวข้อจนตัวหนังสือตกบรรทัด */
 function splitName(name: string) {
-  const [tag, ...rest] = name.split("—");
-  return rest.length
-    ? { tag: tag.trim(), title: rest.join("—").trim() }
-    : { tag: "", title: name };
+  const [tag, ...rest] = name.split(/\s[·—]\s/);
+  return rest.length ? { tag: tag.trim(), title: rest.join(" · ").trim() } : { tag: "", title: name };
 }
 
 export function PropertyosView({ project: p }: { project: PlaceholderProject }) {
@@ -431,6 +432,9 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
             <WebScreensPanel
               title="Home"
               variant="grid"
+              // cols=1 = เรียงลงมาแถวละจอ เต็มความกว้าง เหมือน Final User Interface ของ propertyhub
+              // (user สั่ง 18 ส.ค. 2026 · เดิมเป็น 2 คอลัมน์ ทำให้จอที่ 3 ตกไปอยู่แถวล่างลำพัง)
+              cols={1}
               screens={po.themes.map((t) => ({
                 src: t.home.src,
                 label: t.name,
@@ -493,18 +497,18 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
               })}
             </ol>
 
-            <div className="mt-7 flex flex-col gap-4">
-              {po.themes.map((t) => {
-                const shots: Record<string, WBShot[]> = set.shots;
-                return (
-                  <WebScreensPanel
-                    key={t.key}
-                    title={t.name}
-                    variant="grid"
-                    screens={shots[t.key] ?? []}
-                  />
-                );
-              })}
+            {/* ทั้ง 3 ธีมอยู่บนพื้นเทาผืนเดียวกัน แยกด้วยหัวข้อของแต่ละธีม
+                (โครงเดียวกับ Final User Interface ของ Propertyhub App — user สั่ง 18 ส.ค. 2026
+                เดิมเป็น panel เทา 3 ผืนแยกกัน) · ธีมละ 3 จอพอดี → 3 คอลัมน์แถวเดียว */}
+            <div className="mt-7">
+              <WebScreensPanel
+                variant="grid"
+                cols={3}
+                groups={po.themes.map((t) => ({
+                  title: t.name,
+                  screens: (set.shots as Record<string, WBShot[]>)[t.key] ?? [],
+                }))}
+              />
             </div>
           </div>
         ))}

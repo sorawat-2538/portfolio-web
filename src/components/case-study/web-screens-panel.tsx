@@ -33,16 +33,34 @@ function buildColumns(shots: Shot[]): { s: Shot; i: number }[][] {
   return cols;
 }
 
+/** หัวข้อของ panel / ของแต่ละกลุ่มในนั้น — ตัวหนา + ขีด accent สั้นๆ ใต้ชื่อ
+ *  (ชุดเดียวกับ GroupHeading ของ AppScreensShowcase เพื่อให้สอง component หน้าตาตรงกัน) */
+function GroupHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="text-[16px] font-semibold tracking-[-0.01em] text-foreground">{children}</h3>
+      <div className="mt-2 h-0.5 w-9 rounded-full bg-brand" />
+    </div>
+  );
+}
+
 export function WebScreensPanel({
   title,
   screens,
+  groups,
   variant = "rail",
   cols = 2,
   bare = false,
   railWidth = "wide",
 }: {
   title?: string;
-  screens: WebScreen[];
+  screens?: WebScreen[];
+  /** แยกจอเป็นกลุ่มที่มีหัวข้อของตัวเอง แต่ยังอยู่บนพื้นเทา "ผืนเดียวกัน"
+   *  โครงเดียวกับ groups ของ AppScreensShowcase (Final User Interface ของ Propertyhub App)
+   *  มีค่านี้ = ใช้แทน `screens` และต้องคู่กับ variant="grid"
+   *  lightbox ยังเลื่อน prev/next ข้ามกลุ่มได้ เพราะ index นับต่อเนื่องทั้ง panel
+   *  ใช้กับ Listing result / Listing detail ของ PropertyOS (user สั่ง 18 ส.ค. 2026) */
+  groups?: { title: string; screens: WebScreen[] }[];
   /** "rail" = จอเต็มความสูงเลื่อนแนวนอน (default) · "grid" = จอในกรอบ browser crop หัวเท่ากัน 2 ต่อแถว */
   variant?: "rail" | "grid";
   /** grid เท่านั้น — จำนวนคอลัมน์บนจอกว้าง
@@ -55,7 +73,11 @@ export function WebScreensPanel({
    *  "wide" (default) = บอร์ด/จอเว็บ · "phone" = จอมือถือ แคบลงเพราะจอสูง */
   railWidth?: "wide" | "phone";
 }) {
-  const shots = screens.filter((s): s is Shot => Boolean(s.src));
+  // มี groups = เอาจอทุกกลุ่มมาต่อกันเป็นชุดเดียว เพื่อให้ index ของ lightbox เดินข้ามกลุ่มได้
+  const grouped = groups && groups.length > 0 ? groups : null;
+  const shots = (grouped ? grouped.flatMap((g) => g.screens) : (screens ?? [])).filter(
+    (s): s is Shot => Boolean(s.src),
+  );
   const [active, setActive] = React.useState<number | null>(null);
 
   React.useEffect(() => {
@@ -83,6 +105,69 @@ export function WebScreensPanel({
 
   const columns = buildColumns(shots);
 
+  const gridClass = `grid grid-cols-1 items-start gap-4 min-[560px]:gap-6 ${
+    bare ? "" : "px-[clamp(18px,3vw,30px)]"
+  } ${
+    cols === 1
+      ? ""
+      : cols === 3
+        ? "min-[560px]:grid-cols-2 min-[820px]:grid-cols-3"
+        : "min-[560px]:grid-cols-2"
+  }`;
+
+  /** จอ 1 ใบในโหมด grid — i ต้องเป็น index ใน `shots` เพื่อให้ lightbox เปิดใบที่ถูก */
+  const gridCard = (s: Shot, i: number) => {
+    // จอยาว (h/w > 1) → crop + ป้าย "full page" · จอเตี้ย → โชว์เต็มจอในกรอบ (กรอบ border ปิดครบ) ไม่มีป้าย
+    const tall = (s.h ?? 5000) / (s.w ?? 1600) > 1;
+    return (
+      <button
+        key={s.src}
+        type="button"
+        onClick={() => setActive(i)}
+        aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มหน้า`}
+        // bare = ไม่เอามุมโค้งและเส้นขอบ (user สั่ง 17 ส.ค. 2026 — Wireframe & Style Guide)
+        className={
+          "group relative block w-full cursor-pointer overflow-hidden bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none" +
+          (bare ? "" : " rounded-[12px] border border-border")
+        }
+      >
+        {/* หมายเหตุ: แถบ chrome (จุดจราจรแดง/เหลือง/เขียว) ถูกเอาออกแล้ว
+            user สั่ง 17 ส.ค. 2026 — เอาออกทุกที่ที่ใช้ variant="grid" */}
+
+        {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ
+            cols=1 กรอบกว้างเต็มความกว้าง → crop สูงขึ้นตามสัดส่วน ไม่งั้นจะเห็นแค่แถบบางๆ
+            cols=3 กรอบแคบสุด → คุมความสูงไว้ 250px คงที่ (user สั่ง 18 ส.ค. 2026
+            ของเดิม clamp(240,30vw,340) ตกที่ ~290px บนจอ desktop ซึ่งสูงเกินไป) */}
+        <div
+          className={
+            "relative bg-white" +
+            (tall
+              ? cols === 1
+                ? " h-[clamp(300px,46vw,560px)] overflow-hidden"
+                : cols === 3
+                  ? " h-[250px] overflow-hidden"
+                  : " h-[clamp(240px,30vw,340px)] overflow-hidden"
+              : "")
+          }
+        >
+          <Image
+            src={s.src}
+            alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
+            width={s.w ?? 1600}
+            height={s.h ?? 5000}
+            sizes={cols === 1 ? "(max-width: 900px) 100vw, 860px" : "(max-width: 560px) 100vw, 420px"}
+            quality={88}
+            unoptimized
+            className="block h-auto w-full"
+          />
+          {tall && (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/70 to-transparent" />
+          )}
+        </div>
+      </button>
+    );
+  };
+
   return (
     // bare = ไม่มีพื้นเทา และไม่ crop เงา (overflow-hidden จะตัดเงาของจอในราง)
     <div className={bare ? "" : "overflow-hidden bg-[#f3f3f1] py-[clamp(18px,3vw,30px)]"}>
@@ -100,64 +185,32 @@ export function WebScreensPanel({
           รูปกำลังจะมา — เร็วๆ นี้
         </div>
       ) : variant === "grid" ? (
-        /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */
-        <div
-          className={`grid grid-cols-1 items-start gap-4 min-[560px]:gap-6 ${bare ? "" : "px-[clamp(18px,3vw,30px)]"} ${
-            cols === 1
-              ? ""
-              : cols === 3
-                ? "min-[560px]:grid-cols-2 min-[820px]:grid-cols-3"
-                : "min-[560px]:grid-cols-2"
-          }`}
-        >
-          {shots.map((s, i) => {
-            // จอยาว (h/w > 1) → crop + ป้าย "full page" · จอเตี้ย → โชว์เต็มจอในกรอบ (กรอบ border ปิดครบ) ไม่มีป้าย
-            const tall = (s.h ?? 5000) / (s.w ?? 1600) > 1;
-            return (
-              <button
-                key={s.src}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มหน้า`}
-                // bare = ไม่เอามุมโค้งและเส้นขอบ (user สั่ง 17 ส.ค. 2026 — Wireframe & Style Guide)
-                className={
-                  "group relative block w-full cursor-pointer overflow-hidden bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none" +
-                  (bare ? "" : " rounded-[12px] border border-border")
-                }
-              >
-                {/* หมายเหตุ: แถบ chrome (จุดจราจรแดง/เหลือง/เขียว) ถูกเอาออกแล้ว
-                    user สั่ง 17 ส.ค. 2026 — เอาออกทุกที่ที่ใช้ variant="grid" */}
-
-                {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ
-                    cols=1 กรอบกว้างเต็มความกว้าง → crop สูงขึ้นตามสัดส่วน ไม่งั้นจะเห็นแค่แถบบางๆ */}
-                <div
-                  className={
-                    "relative bg-white" +
-                    (tall
-                      ? cols === 1
-                        ? " h-[clamp(300px,46vw,560px)] overflow-hidden"
-                        : " h-[clamp(240px,30vw,340px)] overflow-hidden"
-                      : "")
-                  }
-                >
-                  <Image
-                    src={s.src}
-                    alt={[title, s.label].filter(Boolean).join(" — ") || "screen"}
-                    width={s.w ?? 1600}
-                    height={s.h ?? 5000}
-                    sizes={cols === 1 ? "(max-width: 900px) 100vw, 860px" : "(max-width: 560px) 100vw, 420px"}
-                    quality={88}
-                    unoptimized
-                    className="block h-auto w-full"
-                  />
-                  {tall && (
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/70 to-transparent" />
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+        /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · กดดูเต็ม
+           มี groups = แบ่งเป็นหัวข้อย่อย แต่ยังอยู่บนพื้นเทาผืนเดียวกัน */
+        grouped ? (
+          <div className="flex flex-col gap-[clamp(28px,4vw,40px)]">
+            {(() => {
+              let offset = 0;
+              return grouped.map((g) => {
+                const items = g.screens.filter((s): s is Shot => Boolean(s.src));
+                const start = offset;
+                offset += items.length;
+                return (
+                  <div key={g.title}>
+                    <div className={bare ? "" : "px-[clamp(18px,3vw,30px)]"}>
+                      <GroupHeading>{g.title}</GroupHeading>
+                    </div>
+                    <div className={`mt-6 ${gridClass}`}>
+                      {items.map((s, j) => gridCard(s, start + j))}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        ) : (
+          <div className={gridClass}>{shots.map((s, i) => gridCard(s, i))}</div>
+        )
       ) : (
         /* rail — จอเรียง free scroll แนวนอน (ไม่มี snap) · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา
            ScrollRail = กดค้างลากด้วยเมาส์ได้ (ลากแล้วปล่อยจะไม่เปิด lightbox) */
