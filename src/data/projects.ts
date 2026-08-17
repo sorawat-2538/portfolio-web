@@ -1116,9 +1116,12 @@ export const placeholderProjects = {
         // รูปเทียบก่อน/หลัง — ใช้ figures (กริด 2 คอลัมน์) ไม่ใช้ before/after
         // เพราะ variant pair จะ crop ความสูงไว้ 500px ซึ่งตัดจอมือถือขาดครึ่ง
         // ไฟล์ user วางไว้ใน public/uploads เองแล้ว (Renthub_Map_UI_Before / _After)
+        // ⚠️ ตั้งชื่อไฟล์เป็น kebab-case ตัวเล็กล้วนเสมอ (เดิมชื่อ RentHub_Map_UI_Before/After.jpg)
+        //    17 ส.ค. 2026: การแทนที่คำว่า RentHub → Renthub ทั้งไฟล์ไปโดนชื่อไฟล์ในนี้ด้วย
+        //    Windows ไม่แยกตัวพิมพ์เลยไม่พังตอน dev แต่ Vercel รันบน Linux → รูป 404 บนเว็บจริง
         figures: [
-          { src: "/uploads/Renthub_Map_UI_Before.jpg", label: "Before", w: 1125, h: 2436 },
-          { src: "/uploads/Renthub_Map_UI_After.jpg", label: "After", w: 868, h: 1887 },
+          { src: "/uploads/renthub-app-map-before.jpg", label: "Before", w: 1125, h: 2436 },
+          { src: "/uploads/renthub-app-map-after.jpg", label: "After", w: 868, h: 1887 },
         ],
         // ขนาดรูปเท่าตอนวาง 3 รูป แต่จัดไว้กลาง (user สั่ง 17 ส.ค. 2026)
         figuresCols: 3,

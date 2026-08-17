@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "dev": "next dev",
+    "check:images": "node scripts/check-image-refs.mjs",
+    "prebuild": "node scripts/check-image-refs.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
