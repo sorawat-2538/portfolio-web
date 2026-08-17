@@ -46,12 +46,9 @@ export type ProcessPhase = {
   rail?: "wide" | "phone";
 };
 
-/** ย่อหน้าอธิบาย Design Process ที่ใช้เป็นค่าตั้งต้นทุกโปรเจกต์
- *  แต่ละงานเขียนของตัวเองได้โดยส่ง prop `note` เข้ามาทับ
- *  ⚠️ ข้อความนี้ user เขียนเอง 14 ส.ค. 2026 ห้ามเรียบเรียงใหม่ · ยกตัวอย่างของ Propertyhub
- *     (ตอนนี้มีแค่หน้า propertyhub ที่ใช้ค่านี้) ถ้าโปรเจกต์อื่นจะใช้ ให้ส่ง `note` ของตัวเองมาแทน */
-const DEFAULT_NOTE =
-  "ขั้นตอนการ research เป็นสิ่งที่สำคัญสำหรับกระบวนการออกแบบและเป็นส่วนหนึ่งของการตัดสินใจของงานในหลายๆครั้ง เช่น การออกแบบ Input Field ในหน้าลงประกาศเพื่อให้การลงประกาศและหน้าแสดงผลมีความยืดหยุ่นสำหรับรองรับทุกประเภทอสังหาฯ";
+// หมายเหตุ: เดิมมี DEFAULT_NOTE เป็นย่อหน้ากลางที่ทุกงานได้อัตโนมัติ — ย้ายไปเก็บเป็น
+// `processNote` ของ propertyhub ใน data/projects.ts แล้ว (17 ส.ค. 2026) เพราะข้อความนั้น
+// ยกตัวอย่างของ Propertyhub โดยเฉพาะ ไม่ควรถูกใช้ซ้ำกับงานอื่น
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -126,17 +123,18 @@ export function ProcessSection({
     <section id="s-process" className="scroll-mt-24">
       <H2>{heading ?? "Process & Key Decisions"}</H2>
 
-      {/* ── Design Process (บล็อกนำ) ── ปิดอยู่ตั้งแต่ 17 ส.ค. 2026 (user สั่งเอาออก)
-          แสดงเฉพาะโปรเจกต์ที่ส่ง prop `note` หรือ `image` เข้ามาเท่านั้น — ตอนนี้ไม่มีใครส่ง
-          เดิม: แถบ 5 ขั้น (Research ถูกไฮไลต์) + ย่อหน้าอธิบายว่าทำไม
-          ขั้น Research คือขั้นที่ยากที่สุด · แทนที่การ์ด bento 8 ใบ (WorkflowProcess)
-          และตัวอย่าง 3 เฟส (ProcessPhases) ที่เคยวางเทียบกันไว้ — user เลือกแบบนี้
-          หมายเหตุ: WorkflowProcess ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉยๆ
+      {/* ── Design Process (บล็อกนำ) ── แถบ 5 ขั้น (Research ไฮไลต์) + ย่อหน้าอธิบาย
+          **เป็นของที่แต่ละงานเลือกเปิดเอง ไม่ใช่ค่าตั้งต้นของทุกงาน** — โชว์ต่อเมื่อโปรเจกต์นั้น
+          ส่ง `note` (ข้อความของงานตัวเอง) หรือ `image` (บอร์ด process ของงานตัวเอง) เข้ามา
+          ตอนนี้เปิดอยู่หน้าเดียวคือ propertyhub ผ่าน `processNote` ใน data/projects.ts
 
-          ⚠️ โปรเจกต์ที่มี `phases` (เล่าทีละขั้นอยู่แล้ว) จะไม่แสดงบล็อกนำนี้ เพราะแถบ 5 ขั้น
-          กับหัวข้อย่อยด้านล่างเป็นเรื่องเดียวกัน — user สั่ง 14 ส.ค. 2026 ให้ย้ายย่อหน้า
-          Design Thinking ของ Propertyhub App ลงไปอยู่ในขั้น Requirement แทน
-          (ยังบังคับให้แสดงได้ด้วยการส่ง prop `image` หรือ `note` มาพร้อม phases) */}
+          ⚠️ ห้ามทำให้เป็นค่า default ที่ทุกหน้าได้อัตโนมัติอีก — 17 ส.ค. 2026 เคยตั้งเงื่อนไขไว้ว่า
+          "หน้าไหนไม่มี phases ให้โชว์" ผลคือย่อหน้าที่ยกตัวอย่าง Input Field ของ Propertyhub
+          ไปโผล่บนหน้า Renthub App · ตอนแก้ก็ไปปิดทั้งระบบจน Propertyhub ที่เป็นเจ้าของข้อความหายไปด้วย
+
+          หมายเหตุ: โปรเจกต์ที่มี `phases` (เล่าทีละขั้นอยู่แล้ว เช่น Propertyhub App) ไม่ควรเปิดบล็อกนี้
+          เพราะแถบ 5 ขั้นกับหัวข้อย่อยด้านล่างเป็นเรื่องเดียวกัน
+          WorkflowProcess (การ์ด bento) ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉย ๆ */}
       {(note || image) && (
         <div className="mt-7">
           {image ? (
@@ -153,7 +151,7 @@ export function ProcessSection({
               className="block h-auto w-full"
             />
           )}
-          <Body className="mt-6">{note ?? DEFAULT_NOTE}</Body>
+          {note && <Body className="mt-6">{note}</Body>}
         </div>
       )}
 

@@ -605,7 +605,12 @@ export function CaseStudyView({
       {hasProcess(p.decisions) && (
         <>
           <Divider />
-          <ProcessSection title={p.title} decisions={p.decisions} />
+          <ProcessSection
+            title={p.title}
+            decisions={p.decisions}
+            // บล็อกนำ Design Process ขึ้นเฉพาะงานที่เขียน processNote ของตัวเองไว้ใน projects.ts
+            note={p.processNote}
+          />
         </>
       )}
 
