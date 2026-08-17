@@ -24,6 +24,7 @@ import { MeasurementStory } from "./measurement-story";
 import { DecisionFigures } from "./decision-figures";
 import { SectionNav, type NavSection } from "./section-nav";
 import { ProcessSection, hasProcess, isPlaceholder } from "./process-section";
+import { CraftShowcase } from "./craft-showcase";
 import { StatusBadge } from "./status-badge";
 import { ProjectNav } from "./project-nav";
 
@@ -248,7 +249,10 @@ export function CaseStudyView({
 
   // ── สารบัญลอยขอบขวา ──
   // เงื่อนไขแต่ละข้อต้องตรงกับเงื่อนไข render ของ section นั้นเป๊ะ ไม่งั้นสารบัญจะชี้ไปที่ไม่มีอยู่
-  // ตอนนี้เปิดเฉพาะ propertyhub (หน้ายาวสุด) — เอาออกจาก NAV_SLUGS ถ้าไม่อยากให้โชว์
+  // สารบัญลอยขอบขวา — ปิดทุกหน้าแล้ว (user สั่ง 17 ส.ค. 2026 · propertyhub เป็นหน้าสุดท้ายที่เอาออก)
+  // ตั้งเป็น true เพื่อเปิดคืน แล้วใส่ slug ที่ต้องการใน NAV_SLUGS
+  // (view อื่นมีสวิตช์ชื่อเดียวกันของตัวเอง — placeholder / propertyhub-app / propertyos / data-analysis / early-work)
+  const SHOW_SECTION_NAV = false;
   const NAV_SLUGS: string[] = ["propertyhub"];
   const navSections: NavSection[] = ([
     { id: "s-overview", label: "Overview", show: true },
@@ -259,6 +263,11 @@ export function CaseStudyView({
       id: "s-process",
       label: "Process & Key Decisions",
       show: hasProcess(p.decisions),
+    },
+    {
+      id: "s-craft",
+      label: "Craft Showcase",
+      show: Boolean(p.craft?.items.length),
     },
     {
       id: "s-solution",
@@ -321,7 +330,7 @@ export function CaseStudyView({
 
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
-      {NAV_SLUGS.includes(slug) && <SectionNav sections={navSections} />}
+      {SHOW_SECTION_NAV && NAV_SLUGS.includes(slug) && <SectionNav sections={navSections} />}
 
       {/* ── HEADER ── */}
       <section>
@@ -597,6 +606,16 @@ export function CaseStudyView({
         <>
           <Divider />
           <ProcessSection title={p.title} decisions={p.decisions} />
+        </>
+      )}
+
+      {/* ── CRAFT SHOWCASE ── ผ่าหน้า final ออกเป็นบล็อก + เหตุผลของแต่ละบล็อก
+          วางก่อน Final User Interface เพื่อให้อ่านที่มาของแต่ละส่วนก่อนเห็นหน้าเต็ม
+          ไม่มี p.craft = ไม่แสดง section (ตอนนี้มีเฉพาะ renthub) */}
+      {p.craft && p.craft.items.length > 0 && (
+        <>
+          <Divider />
+          <CraftShowcase title={p.title} intro={p.craft.intro} items={p.craft.items} />
         </>
       )}
 

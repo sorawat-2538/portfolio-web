@@ -1,5 +1,5 @@
 // BuilderPanelsMock — โครง 3 พาเนลของ Website Builder ที่ร่างไว้เป็น ASCII
-// ใช้ใน section "What did I do with this project?" ของหน้า PropertyOS
+// ใช้ใน section "What I Did" ของหน้า PropertyOS
 // (หน้าจอจริงที่แกะจากไฟล์เดียวกันเป็นรูปนำของบล็อก Website Builder → BuilderScreenMock)
 // static ล้วน ไม่มี animation ลอยขึ้นลง — อยู่กลางหน้า ไม่ใช่ hero
 //

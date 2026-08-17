@@ -35,6 +35,16 @@ export type Decision = {
   /** รูปเทียบก่อน/หลังของ decision นี้ — ใส่ทั้งคู่ถึงจะแสดง */
   before?: CaseImage;
   after?: CaseImage;
+  /** ชุดรูปประกอบ decision — วางใต้หัวข้อทันที เรียงเป็นกริด (default 3 คอลัมน์)
+   *  ใช้กับ flow ที่มีหลายจอ เช่น ฟอร์มลงประกาศทีละสเต็ปของ Propertyhub App */
+  figures?: CaseImage[];
+  figuresCols?: 2 | 3;
+  /** true = จัดรูปไว้กลาง แต่ขนาดรูปเท่าคอลัมน์ของ figuresCols
+   *  (Before/After ของ Renthub App: 2 รูป ขนาดเท่าตอนวาง 3 รูป แต่อยู่กลาง) */
+  figuresCenter?: boolean;
+  /** ชื่อหัวข้อท่อนที่ 3 เฉพาะ decision นี้ — ทับค่าที่ส่งมาทั้ง section
+   *  (Propertyhub App ใช้ "Why this works" เป็นค่ารวม แต่ข้อที่มีผลเทสจริงใช้ "Validation") */
+  validationLabel?: string;
   /** fake-UI / diagram ประกอบ decision (แทนรูป before/after) — resolve เป็น component ใน ProcessSection
    *  "listing-dialog"  = หน้า Listing Detail ย่อส่วน + ปุ่ม "ดูทั้งหมด" ที่กดเปิด dialog ได้จริง
    *  "feature-phases"  = ตารางคัดฟีเจอร์เข้า phase แรก vs รอบถัดไป (Propertyhub App decision 1) */
@@ -43,6 +53,24 @@ export type Decision = {
   pending?: boolean;
   /** @deprecated ยุบไปอยู่ใน options แล้ว — เก็บไว้เพราะโปรเจกต์อื่นยังมี field นี้ */
   cut?: string;
+};
+
+/** 1 บล็อกใน Craft Showcase — รูป crop ของ section นั้นบนหน้า final + เหตุผลที่ออกแบบมาแบบนั้น
+ *  w/h = ขนาดจริงของไฟล์ crop (กัน layout shift) */
+export type CraftItem = {
+  title: string;
+  body: string;
+  src: string;
+  w: number;
+  h: number;
+  /** จอเพิ่มเติมของบล็อกนี้ — ซ่อนอยู่หลังปุ่ม กดแล้วกางออกมา (กดที่จอเปิดดูเต็มจอได้ต่อ)
+   *  ใช้กับ flow ที่มีหลายขั้นแต่ไม่อยากให้กินพื้นที่หน้าหลัก เช่น Find My Home ของ Expat */
+  drawer?: {
+    /** ข้อความบนปุ่ม — ไม่ใส่ = "ดูจอทั้งหมด" */
+    label?: string;
+    /** desc = คำอธิบายใต้ชื่อจอ (จัดกลางใต้รูปในแผง) */
+    screens: { src: string; label?: string; desc?: string; w?: number; h?: number }[];
+  };
 };
 
 export type ResultRow = { label: string; change: string };
@@ -153,6 +181,11 @@ export type Project = {
   /** ── SOLUTION ──
    *  สิ่งที่ออกแบบออกมาจริง — แต่ละ point ต้องผูกกลับไปที่ problem ได้ */
   solution?: { intro?: string; points: { title: string; body: string }[] };
+
+  /** ── CRAFT SHOWCASE ── (ดูตัวอย่างที่ renthub)
+   *  ผ่าหน้า final ออกเป็นบล็อก แล้วบอกที่มาของแต่ละบล็อก (เลข + หัวข้อ + เหตุผล + รูป crop)
+   *  รูป crop ตัดจาก capture หน้าเต็มด้วย sharp · ไม่ใส่ = ไม่แสดง section */
+  craft?: { intro?: string; items: CraftItem[] };
 
   /** ── REFLECTION ── ย่อหน้าสิ่งที่เรียนรู้ (ต่อท้ายด้วย reflectResource/reflectLesson ที่มีอยู่เดิม) */
   reflection?: { body: string[] };
@@ -324,10 +357,11 @@ export const projects = {
       {
         // ย้ายมาจากหัวข้อย่อย "UX Challenge" ใน section Business Goal (13 ส.ค. 2026)
         // ยังไม่มี trade-off / validation ของขั้นนี้ — เว้นเป็นค่าว่างไว้ ตัว render จะซ่อนหัวข้อนั้นเอง
+        // user สั่งเลิกใช้คำว่า "Data Architecture" เปลี่ยนเป็น "Input Field" (14 ส.ค. 2026)
         title:
-          "ออกแบบ Data Architecture ให้รองรับทรัพย์ทุกประเภท โดยแยกโครงสร้าง Input ของแต่ละประเภทออกจากกัน",
+          "ออกแบบ Input Field ให้รองรับทรัพย์ทุกประเภท โดยแยกโครงสร้าง Input ของแต่ละประเภทออกจากกัน",
         reasoning:
-          "ไม่มีข้อมูลของอสังหาริมทรัพย์ประเภทอื่น ๆ สำหรับการลงประกาศ ต้องออกแบบ Data Architecture ใหม่ เพราะก่อนหน้านั้นสามารถลงประกาศได้แค่คอนโดมิเนียม ปัญหาคือไม่รู้ข้อมูล input ต่าง ๆ ว่าต้องมีอะไรบ้าง",
+          "ไม่มีข้อมูลของอสังหาริมทรัพย์ประเภทอื่น ๆ สำหรับการลงประกาศ ต้องออกแบบ Input Field ใหม่ เพราะก่อนหน้านั้นสามารถลงประกาศได้แค่คอนโดมิเนียม ปัญหาคือไม่รู้ข้อมูล input ต่าง ๆ ว่าต้องมีอะไรบ้าง",
         reasoningImage: {
           src: "/uploads/propertyhub-field-matrix.png",
           label: "Field matrix ข้อมูลที่แต่ละประเภทต้องกรอก (required / optional / ไม่มี field นี้) กดดูเต็มได้",
@@ -479,13 +513,15 @@ export const projects = {
     heroPhone: "/uploads/renthub-app-home.png",
     hideMeasure: true,
     screensFull: true,
+    // หน้าเต็มของเว็บเวอร์ชันปัจจุบัน — แคปสดจาก renthub.in.th ด้วย Chrome (กว้าง 1600px) 14 ส.ค. 2026
+    // ไฟล์เก่า renthub-home-full.jpg (1600×9509) = เวอร์ชันก่อนหน้า ยังอยู่ใน public/uploads เผื่ออยากทำ before/after
     screens: [
       {
         label: "Home",
         url: "renthub.in.th",
-        src: "/uploads/renthub-home-full.jpg",
+        src: "/uploads/renthub-home-2026.jpg",
         w: 1600,
-        h: 9509,
+        h: 9654,
       },
     ],
     tagline:
@@ -494,18 +530,17 @@ export const projects = {
     metaTimeline: "[ MMM YYYY – MMM YYYY ]",
     metaMethod: "Hypothesis-driven + Manual A/B test",
     metaScale: "[ __,000+ ] sessions measured",
-    tools: ["Figma"],
+    tools: ["Figma", "Illustrator"],
     // ย่อหน้า 1 = ทำอะไร ให้ใคร · ย่อหน้า 2 = duration / role / team (โครงเดียวกับ propertyhub)
-    // ⚠️ ย่อหน้า 2 เป็นร่างจาก AI — user ยังไม่ได้ยืนยันระยะเวลาและรายชื่อทีมจริง
+    // ข้อความจาก user โดยตรง (14 ส.ค. 2026) — ไม่ใช่ร่างจาก AI แล้ว
     overview: [
-      "RentHub คือเว็บไซต์รวมประกาศหอพัก อพาร์ทเม้นท์ และห้องเช่าทั่วประเทศไทยกว่า 20,000 แห่ง ทั้งแบบรายเดือน รายวัน โรงแรม และที่พักเลี้ยงสัตว์ได้ ผู้ใช้ค้นหาตามแนวรถไฟฟ้า มหาวิทยาลัย จังหวัด ถนน ห้างฯ หรือนิคมอุตสาหกรรม ดูภาพและทัวร์เสมือน 360° พร้อมแชทถามห้องว่างกับเจ้าของได้ ส่วนเจ้าของหอลงประกาศฟรี",
-      "โปรเจกต์นี้เป็นเว็บไซต์หลักของบริษัทที่พัฒนาต่อเนื่อง จึงไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off จนถึงตรวจงานก่อน Deploy",
+      "ออกแบบหน้า Home Page ของ RentHub ใหม่ ซึ่งเป็นแพลตฟอร์มรวมประกาศหอพัก อพาร์ทเมนต์ และห้องเช่าทั่วประเทศไทยกว่า 20,000 แห่ง ครอบคลุมทั้งที่พักรายเดือนและรายวัน ช่วยให้ผู้ใช้งานสามารถค้นหาที่พักที่ตรงกับความต้องการได้ง่ายและสะดวกยิ่งขึ้น ไม่ว่าจะค้นหาตามทำเล ใกล้สถานศึกษา หรือใกล้สถานีรถไฟฟ้า",
+      "การ Redesign หน้านี้ใช้เวลาประมาณ 2 เดือน รับผิดชอบงานออกแบบหน้า Home แบบ end-to-end ทำงานร่วมกับทีม Business และ Marketing โดยงานภาพบนหน้ามาจากทั้งที่ออกแบบเองและกราฟิกที่ได้รับจากฝั่ง Business",
     ],
-    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
-    // (แทนที่ ctxProblem/ctxBusiness เดิมที่เป็นข้อความสมมติและมี em dash)
+    // ข้อความจาก user โดยตรง (14 ส.ค. 2026)
     problem: {
       statement: [
-        "รวมประกาศห้องเช่าทั่วประเทศไว้ในที่เดียว ให้ผู้เช่าค้นหาห้องที่ตรงเงื่อนไขได้จากจุดอ้างอิงที่ใช้จริงในชีวิตประจำวัน ทั้งแนวรถไฟฟ้า มหาวิทยาลัย จังหวัด ถนน ห้างสรรพสินค้า และนิคมอุตสาหกรรม แล้วตัดสินใจได้เร็วขึ้นด้วยภาพจริงและทัวร์เสมือน 360° ก่อนติดต่อเจ้าของโดยตรง ฝั่งเจ้าของหอลงประกาศได้ฟรี เพื่อให้จำนวนประกาศบนแพลตฟอร์มเติบโตต่อเนื่อง",
+        "โจทย์จากธุรกิจคือการปรับ Home Page ให้รองรับ Section ที่หลากหลายมากขึ้น จากเดิมที่เน้นการแสดง Apartment List เป็นหลัก สู่หน้าที่ช่วยนำผู้ใช้เข้าสู่เส้นทางการค้นหาที่ตรงกับความต้องการได้รวดเร็วยิ่งขึ้น พร้อมรองรับการขยายและเพิ่ม Section ใหม่ ๆ ของธุรกิจในอนาคต",
       ],
     },
     ctxBusiness:
@@ -525,13 +560,57 @@ export const projects = {
       "Secondary: จำนวนห้องที่ถูกเปรียบเทียบต่อ session",
     ],
     guardrailMetrics: ["Lead quality ต้องไม่ลด", "Bounce rate ต้องไม่เพิ่ม"],
+    // ── CRAFT SHOWCASE ── ผ่าหน้า Home ออกเป็น 5 บล็อก
+    // รูป crop มาจาก renthub-home-2026.jpg (1600×9654 · แคปสดจาก renthub.in.th) ตัดด้วย sharp ที่พิกัด y:
+    //   search 0-1090 · featured 1090-2845 · stay 2845-4600 · destination 4600-5968 · location 6900-8620
+    //   ช่วงที่ไม่ได้เอามา: 5968-6900 (แถบชวนโหลดแอป + ตัวเลข 1.2M/700k/20k/4,000) และ 8620-9654 (footer)
+    //   อยากได้เพิ่มค่อยตัดจากไฟล์เต็มด้วยพิกัดนี้
+    // ⚠️ ตัด crop ใหม่ = ตั้งชื่อไฟล์ใหม่ (v2, v3, …) อย่าทับชื่อเดิม ไม่งั้น next/image เสิร์ฟรูปเก่าค้าง
+    // body ทั้ง 5 บล็อกเป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) ห้ามเรียบเรียงใหม่
+    // ส่วน title เป็นภาษาอังกฤษสั้น ๆ ที่ AI ตั้งให้ (user สั่งให้คิดให้) เปลี่ยนได้ตามต้องการ
+    craft: {
+      // intro ถูกเอาออกตามคำสั่ง user (14 ส.ค. 2026) — ให้เข้าบล็อกแรกเลย
+      items: [
+        {
+          title: "Search Entry Point",
+          body: "สร้างระบบการค้นหาที่ครบครันโดยการพิมพ์ค้นหาทำเลหรืออพาร์ทเม้นท์ในช่องค้นหา หาอพาร์ทเม้นท์ตาม BTS/MRT ในรูปแผนที่ interactive โดยอ้างอิงผู้ใช้งานที่ต้องการหาอพาร์ทเม้นท์ใกล้สถานีรถไฟฟ้า",
+          src: "/uploads/renthub-craft-v3-search.jpg",
+          w: 1600,
+          h: 1090,
+        },
+        {
+          title: "Featured & Rental Periods",
+          body: "อพาร์ทเม้นท์แนะนำไว้สำหรับเป็นพื้นโฆษณาของฝั่งเจ้าของหอพักที่จะลงโฆษณากับทาง Renthub เพื่อให้อพาร์ทเม้นท์ของตัวเองโดดเด่นเพื่อเป็นที่น่าดึงดูดสำหรับผู้เช่า และมี section ระยะเวลาเข้าพัก รายเดือน สามเดือน หกเดือน และรายปี เพื่อให้ผู้เช่ามีทางเลือกหลากหลายหากต้องการเช่าห้องในระยะสั้น",
+          src: "/uploads/renthub-craft-v3-featured.jpg",
+          w: 1600,
+          h: 1755,
+        },
+        {
+          title: "Dedicated Segments",
+          body: "แยก section เฉพาะกลุ่มที่มีเงื่อนไขชัดเจนออกมาให้เห็นง่าย ตอบโจทย์ธุรกิจที่ต้องการรองรับหลาย segment บนหน้าเดียว ไม่ว่าจะเป็นโรงแรมหรือที่พัก รวมถึงผู้เช่าที่ชอบเลี้ยงสัตว์ก็สามารถค้นหาได้จาก section นี้ และมีการเพิ่มโครงการคอนโดของ Propertyhub เข้ามาเป็นตัวเลือกอีกด้วย",
+          src: "/uploads/renthub-craft-v3-stay.jpg",
+          w: 1600,
+          h: 1755,
+        },
+        {
+          title: "Explore by Place",
+          body: "ช่วงกลางหน้าเปลี่ยนเป็น section เชิงสำรวจ สำหรับผู้ใช้ที่ยังไม่มีทำเลในใจ ใช้ภาพสถานที่จริงเป็น entry point แทนการให้กรอกเงื่อนไข เลือกจากจังหวัดหรือมหาวิทยาลัยที่ตัวเองอยู่ก่อน",
+          src: "/uploads/renthub-craft-v3-destination.jpg",
+          w: 1600,
+          h: 1368,
+        },
+        {
+          title: "Local Areas & Content",
+          body: "ปิดท้ายด้วยการค้นหาทำเล ย่าน และถนนในกรุงเทพ รองรับผู้ใช้ที่เข้ามาสำรวจโดยยังไม่พร้อมค้นหา และปิดท้ายด้วยส่วนบทความที่รองรับงานฝั่ง Marketing และ SEO โดยตรง วางไว้ล่างสุดเพราะไม่ใช่เส้นทางหลักของคนที่มาหาห้อง",
+          src: "/uploads/renthub-craft-v3-location.jpg",
+          w: 1600,
+          h: 1720,
+        },
+      ],
+    },
     decisionsIntro: "",
-    // section Process & Key Decisions โครงเดียวกับ propertyhub — เปิดไว้รอเนื้อหาจริง
-    // (user สั่ง 14 ส.ค. 2026) · พอมีเรื่องเล่าจริงให้แทน pending ด้วย title/reasoning/tradeoff/outcome
-    decisions: [
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-    ],
+    // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ (14 ส.ค. 2026) · ใส่ decision กลับมาเมื่อไหร่ section ก็ขึ้นเอง
+    decisions: [],
     expWhy:
       "ไม่มี A/B testing tool ผมใช้ GA4 event + Clarity เก็บพฤติกรรมจริง แล้วเทียบ conversion rate before/after ระหว่าง design เดิมกับ design ใหม่",
     expSegment: "[ วิธีแบ่ง variant ]",
@@ -809,12 +888,17 @@ export type PlaceholderProject = {
   overview?: string[];
   /** section "Business Goal" (โครงเดียวกับหน้า propertyhub) — ไม่ใส่ = ไม่แสดง section */
   businessGoal?: string[];
+  /** รูปประกอบใต้ย่อหน้า Business Goal (กดดูเต็มจอได้) — เทียบเท่า problem.goalImage ของหน้า project จริง */
+  businessGoalImage?: CaseImage;
   /** section "Process & Key Decisions" (โครงเดียวกับหน้า propertyhub · เรนเดอร์ด้วย ProcessSection)
    *  decision ที่ยังไม่มีเนื้อหาจริงใส่ `{ pending: true }` → การ์ดเส้นประ "รอเนื้อหาจริง"
    *  ไม่ใส่ field นี้เลย = ไม่แสดง section (ใช้กับ Archive / Data & AI Workflow) */
   decisions?: Decision[];
   /** ย่อหน้าใต้รูป process ของ section นี้ — ไม่ใส่ = ใช้ข้อความกลางของ ProcessSection */
   processNote?: string;
+  /** ชื่อ H2 ของ section นี้ — ไม่ใส่ = "Process & Key Decisions"
+   *  Renthub App ใช้ "Key Decision" เพราะ Wireframe ถูกแยกไปเป็น section ของตัวเอง */
+  processHeading?: string;
   /** รูปหัว section Process (เช่น บอร์ด Design Thinking) — ไม่ใส่ = ใช้แถบ 5 ขั้นมาตรฐาน */
   processImage?: CaseImage;
   /** ขั้นย่อยใน Process (Requirement / Research / Wireframe & Style Guide ฯลฯ)
@@ -828,6 +912,9 @@ export type PlaceholderProject = {
     hideCaptions?: boolean;
     /** true = รูปในขั้นนี้กดขยายเต็มจอไม่ได้ */
     noZoom?: boolean;
+    /** มีค่านี้ = รูปในขั้นนี้เรียงเป็นแถวเดียวเลื่อนแนวนอน (ลากด้วยเมาส์ได้ + กดดูเต็มจอ) แทนกริด
+     *  "phone" = สล็อตแคบสำหรับจอมือถือ · ใช้กับ Wireframe ของ Renthub App */
+    rail?: "wide" | "phone";
   }[];
   /** เครื่องมือที่ใช้ — โชว์เป็นการ์ดใน section Tools (ถ้าไม่ใส่ = empty state) */
   tools?: string[];
@@ -853,8 +940,27 @@ export type PlaceholderProject = {
    *  category ที่ยังไม่มีรูป = ปล่อย screens: [] → โชว์ป้าย "เร็ว ๆ นี้" */
   /** phone: true = เรนเดอร์ด้วย AppScreensShowcase (จอมือถือขนาดเท่า App projects · ไม่มี lightbox) แทน rail เว็บ */
   webScreens?: { category: string; phone?: boolean; screens: { src?: string; label?: string; group?: string; w?: number; h?: number }[] }[];
-  /** Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มความกว้างเรียงลงมา) */
+  /** Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มความกว้างเรียงลงมา)
+   *  ถ้ามี `wireframes` ด้วย section จะเปลี่ยนชื่อเป็น "Wireframe & Style Guide"
+   *  แล้วแบ่งเป็นหัวข้อย่อย Wireframe → Style Guide (user สั่ง 17 ส.ค. 2026) */
   styleGuide?: { label: string; src?: string; w?: number; h?: number }[];
+  /** จอ wireframe — วางเป็นหัวข้อย่อยแรกของ section Style Guide (กดดูเต็มจอได้)
+   *  ย้ายมาจาก webScreens category "Wireframe" เพื่อไม่ให้ไปปนกับ Final User Interface */
+  wireframes?: { label?: string; src?: string; w?: number; h?: number }[];
+  /** มีค่านี้ = wireframe เรียงเป็นแถวเดียวเลื่อนแนวนอนแทนกริด ("phone" = สล็อตแคบสำหรับจอมือถือ)
+   *  Renthub App ใช้ "phone" · Expat ไม่ใส่ (จอเว็บ ใช้กริด 3 คอลัมน์) */
+  wireframesRail?: "wide" | "phone";
+  /** ── USER FLOW ── ผังการใช้งานจากจอที่ออกแบบไว้ (จอไหน → ไปจอไหน)
+   *  แสดงใน section Process & Key Decisions ก่อนขั้นย่อยของ process
+   *  1 lane = 1 เส้นทาง · step ใช้ path รูปจอเดียวกับที่อยู่ใน appScreens */
+  userFlow?: {
+    title?: string;
+    body?: string;
+    lanes: { title: string; steps: { src: string; label: string }[] }[];
+  };
+  /** ── CRAFT SHOWCASE ── โครงเดียวกับของ renthub (ดู CraftItem)
+   *  ผ่าหน้า final ออกเป็นบล็อก + เหตุผลของแต่ละบล็อก · ไม่ใส่ = ไม่แสดง section */
+  craft?: { intro?: string; items: CraftItem[] };
 };
 
 export const placeholderProjects = {
@@ -875,10 +981,10 @@ export const placeholderProjects = {
     tagline:
       "แอปมือถือของ Propertyhub — ค้นหา เปรียบเทียบ และติดต่อประกาศเช่า/ขายได้ครบในมือ",
     // โครงเดียวกับ overview ของ propertyhub (เว็บ): ทำอะไรกับโปรเจกต์ → ตัวเลขหลังเปิดตัว
-    // ข้อความทั้ง 2 ย่อหน้าตามที่ user เขียนเอง 14 ส.ค. 2026 — ห้ามเรียบเรียงใหม่
+    // ข้อความทั้ง 2 ย่อหน้าตามที่ user เขียนเอง (แก้ล่าสุด 17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
-      "แอปพลิเคชัน Propertyhub บน iOS และ Android สำหรับซื้อ ขาย และเช่าอสังหาริมทรัพย์ทั่วไทย ครอบคลุมคอนโด บ้าน ที่ดิน และประเภทอื่น ๆ กว่า 240,000 ประกาศ ผู้ใช้ค้นหาได้ทั้งบนแผนที่และตามทำเล รถไฟฟ้า ห้าง หรือมหาวิทยาลัย บันทึกประกาศโปรด เซฟการค้นหา และแชทกับผู้ลงประกาศได้โดยตรง หลังเปิดตัวครบปีแรก มียอดดาวน์โหลดกว่า 73,000 ครั้ง และการเข้าชมกว่า 18.4 ล้านหน้า",
-      "ใช้เวลาพัฒนาราว 4 เดือนก่อนปล่อยขึ้นสโตร์ รับผิดชอบในฐานะ Designer เพียงคนเดียวแบบ end-to-end ตั้งแต่ research, Design System, interface design ไปจนถึง hand-off และตรวจงานก่อน deploy ทำงานร่วมกับ PM, Business, Marketing, Sale และ Developer",
+      "ออกแบบแอปพลิเคชัน Propertyhub บน iOS และ Android สำหรับซื้อ ขาย และเช่าอสังหาริมทรัพย์ทั่วไทย ครอบคลุมคอนโด บ้าน ที่ดิน และอสังหาริมทรัพย์กว่า 240,000 ประกาศ พร้อมฟีเจอร์ค้นหาผ่านแผนที่ บันทึกประกาศและการค้นหา รวมถึงแชทกับผู้ลงประกาศโดยตรง หลังเปิดตัวปีแรก มียอดดาวน์โหลดกว่า 73,000 ครั้ง และการเข้าชมกว่า 18.4 ล้านหน้า",
+      "ใช้เวลาพัฒนาประมาณ 4 เดือนก่อนเปิดตัว โดยรับผิดชอบในฐานะ Designer เพียงคนเดียวแบบ End-to-End ตั้งแต่การทำ Research, วาง Design System, ออกแบบ Interface, Hand-off ไปจนถึงการตรวจสอบงานก่อน Deploy โดยทำงานร่วมกับทีม PM, Business, Marketing, Sales และ Developer เพื่อให้การออกแบบตอบโจทย์ทั้งด้านผู้ใช้งานและ Business Goal ของโปรเจกต์",
     ],
     // ── PROCESS & KEY DECISIONS ── แบ่งเป็นขั้นย่อย (user สั่ง 14 ส.ค. 2026)
     // ไม่มี processNote = ไม่แสดงแถบ process 5 ขั้นด้านบน (ย่อหน้าย้ายลงไปอยู่ใน Requirement แล้ว)
@@ -956,8 +1062,30 @@ export const placeholderProjects = {
         outcome:
           "การตัดสินใจนี้มองว่ามือถือคือช่องทางของผู้หาที่ต้องการค้นหาได้ทุกที่ทุกเวลา ขณะที่การลงประกาศเป็นงานที่ทำบนเดสก์ท็อปได้ดีกว่า การโฟกัสฝั่งผู้หาก่อนจึงเป็นส่วนสำคัญหลักของแอปที่ต้องส่งให้ถึงมือผู้ใช้กลุ่มใหญ่ที่สุดก่อน แล้วค่อยขยายไปฝั่งผู้ลงประกาศเมื่อพร้อม",
       },
-      // Decision 2 (เรื่อง checklist ก่อนปล่อยงาน) ถูกตัดออกตามคำสั่ง user 14 ส.ค. 2026
-      // ถ้าจะเอากลับมา เพิ่ม object ใหม่ต่อท้ายได้เลย
+      {
+        // Decision 2 — ข้อความทั้งหมด (หัวข้อ / Problem / Trade-off / Validation)
+        // เป็นของ user โดยตรง 17 ส.ค. 2026 ห้ามเรียบเรียงใหม่
+        // (Decision 2 เดิมเรื่อง checklist ก่อนปล่อยงาน ถูกตัดไปแล้ว 14 ส.ค. 2026)
+        title:
+          "เปลี่ยน Input Form ยาวๆเป็นแบบทีละสเต็ป แบ่งข้อมูลการลงประกาศเป็นหน้าย่อย เพื่อลดความรู้สึกซับซ้อนและน่าเบื่อของผู้ใช้งาน เพราะการลงประกาศข้อมูลค่อนข้างเยอะ",
+        // จอจริงของฟอร์มลงประกาศ — เห็นแถบบอกขั้นตอนด้านบนและปุ่ม "บันทึกแบบ" ที่พูดถึงใน Validation
+        // user เปลี่ยนเป็นชุด screenshot ไม่มีกรอบเครื่อง 17 ส.ค. 2026
+        // (ต้นฉบับ Downloads/S__31686661_0.jpg, S__31686662_0.jpg, S__31686663_0.jpg)
+        // ไฟล์ชุดเดิม propertyhub-app-post-step1/2.png ไม่ได้ใช้แล้ว แต่ยังอยู่ใน public/uploads
+        figures: [
+          { src: "/uploads/propertyhub-app-post-form-1.jpg", label: "ข้อมูลทั่วไป", w: 921, h: 1777 },
+          { src: "/uploads/propertyhub-app-post-form-2.jpg", label: "ประเภทประกาศ / ราคา", w: 924, h: 1772 },
+          { src: "/uploads/propertyhub-app-post-form-3.jpg", label: "จัดการรูปภาพ", w: 923, h: 1773 },
+        ],
+        reasoning:
+          "จากการทำ User Testing พบว่าผู้ใช้งานรู้สึกเหนื่อยในการกรอก เพราะกล่อง Input Field ค่อนข้างเยอะ จะส่งผลให้รู้สึกว่าขั้นตอนยุ่งยากและเลิกใช้งานไปในที่สุด",
+        tradeoff:
+          "ช่วยลด Cognitive Overload โดยแบ่งข้อมูลเป็นสัดส่วน ผู้ใช้โฟกัสทีละเรื่อง มี Progress Bar บอกชัดเจนว่าเหลืออีกกี่ขั้นตอน แต่สิ่งที่ต้องแลกคือ ผู้ใช้ไม่สามารถเห็นภาพรวมของฟอร์มทั้งหมดได้ในพริบตาและจำนวนคลิกเพิ่มขึ้นเพราะต้องกดปุ่ม “ถัดไป” หลายครั้ง",
+        // ข้อนี้มีผลเทสจริง จึงใช้หัวข้อ "Validation" แทนค่ารวมของหน้านี้ที่เป็น "Why this works"
+        validationLabel: "Validation",
+        outcome:
+          "จากการทำ Usability Testing รอบใหม่ ฟีดแบ็กว่า “รู้สึกกรอกง่ายขึ้น ไม่น่าเบื่อเหมือนก่อน” ทำให้ไม่หลุดโฟกัสในการกรอก มีบอกว่ากำลังอยู่ step ไหนตอนกรอก และนอกจากนี้ยังเพิ่มปุ่ม “บันทึกแบบ” เพื่อแก้ปัญหาการกรอกทีเดียวทั้งหมดก่อนถึงจะบันทึกได้ ผู้ใช้จะบันทึกตอนไหนก็ได้ไม่จำเป็นต้องกรอกให้เสร็จทีเดียว",
+      },
     ],
     // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
     businessGoal: [
@@ -974,19 +1102,52 @@ export const placeholderProjects = {
     status: "available",
     tagline:
       "แอปหาหอพัก/คอนโดให้เช่า — เปรียบเทียบห้องและนัดดูห้องได้จากมือถือ",
+    // ข้อความทั้ง 2 ย่อหน้าจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
-      "RentHub App คือแอปพลิเคชันหาหอพักและอพาร์ทเม้นท์ให้เช่าทั่วไทยกว่า 16,000 แห่ง ทั้งรายเดือนและรายวัน ค้นหาที่พักใกล้ตัวหรือใกล้จุดสำคัญอย่างรถไฟฟ้า มหาวิทยาลัย และห้างฯ ดูภาพจริงและทัวร์เสมือน 360° ได้โดยไม่ต้องเดินทางไปดูเอง แชทถามห้องว่างกับเจ้าของแบบเรียลไทม์ พร้อมเครื่องหมาย Verify ยืนยันตัวตนเจ้าของหอเพื่อความน่าเชื่อถือ",
-      // ⚠️ ย่อหน้า 2 (duration / role / team) เป็นร่างจาก AI — user ยังไม่ได้ยืนยันถ้อยคำ
-      "แอปพลิเคชันตัวนี้เป็นผลิตภัณฑ์ของบริษัทที่พัฒนาต่อเนื่องทั้ง iOS และ Android จึงไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off จนถึงตรวจงานก่อนปล่อยขึ้นสโตร์",
+      "ออกแบบแอปพลิเคชัน RentHub บน iOS และ Android สำหรับค้นหาหอพักและอพาร์ทเมนต์ให้เช่าทั่วไทยกว่า 20,000 แห่ง ทั้งรายเดือนและรายวัน พร้อมฟีเจอร์ค้นหาตามทำเลและจุดสำคัญ เปรียบเทียบหอพัก ดูภาพและ Virtual Tour 360° รวมถึงแชทกับเจ้าของแบบเรียลไทม์ และ Verify เพื่อเพิ่มความน่าเชื่อถือของประกาศ โดยในปี 2025 แพลตฟอร์มมีผู้ใช้งานกว่า 10 ล้านคน, 106 ล้าน Pageviews และยอดดาวน์โหลดแอปกว่า 770,000 ครั้งบน iOS และ Android",
+      "ใช้เวลาพัฒนาประมาณ 3–5 เดือน ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Prototype, Interface Design, Hand-off ไปจนถึงตรวจงานก่อนปล่อยขึ้นสโตร์",
     ],
-    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
+    // section "Key Decision" — เนื้อหาทั้งหมดเป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) ห้ามเรียบเรียงใหม่
     decisions: [
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
+      {
+        title:
+          "เปลี่ยนการแสดงผลบนแผนที่จากหมุดไอคอนเป็นป้ายราคา เพื่อเพิ่มการค้นหาราคาที่ตรงกับความต้องการของผู้ใช้งานมากขึ้น",
+        // รูปเทียบก่อน/หลัง — ใช้ figures (กริด 2 คอลัมน์) ไม่ใช้ before/after
+        // เพราะ variant pair จะ crop ความสูงไว้ 500px ซึ่งตัดจอมือถือขาดครึ่ง
+        // ไฟล์ user วางไว้ใน public/uploads เองแล้ว (RentHub_Map_UI_Before / _After)
+        figures: [
+          { src: "/uploads/RentHub_Map_UI_Before.jpg", label: "Before", w: 1125, h: 2436 },
+          { src: "/uploads/RentHub_Map_UI_After.jpg", label: "After", w: 868, h: 1887 },
+        ],
+        // ขนาดรูปเท่าตอนวาง 3 รูป แต่จัดไว้กลาง (user สั่ง 17 ส.ค. 2026)
+        figuresCols: 3,
+        figuresCenter: true,
+        reasoning:
+          "ราคาคือปัจจัยอันดับ 1 ในการตัดสินใจเลือกเช่าหอพักของผู้ใช้งาน Renthub โดยการใช้หมุดไอคอนแบบเดิม บังคับให้ผู้ใช้ต้อง “สุ่มกด” (Blind Clicking) เปิดดูทีละหมุดเพื่อเช็คราคาว่าอยู่ในงบประมาณหรือไม่ เกิด Friction ส่งผลให้ผู้ใช้ Bounce ไปก่อนจะเจอห้องที่ต้องการ",
+        tradeoff:
+          "สิ่งที่ได้มาคือผู้ใช้เปรียบเทียบราคาในทำเลเดียวกันได้ทันที สแกนหาห้องพักที่อยู่ในงบได้เร็วขึ้น แต่สิ่งที่ต้องแลกมาคือ ความแออัดของหน้าจอ (UI Cluttering) ป้ายราคาใช้พื้นที่บนจอมากกว่าหมุดไอคอนปกติ หากมีหอพักในบริเวณนั้นหนาแน่น ป้ายจะซ้อนทับกันจนอ่านไม่ออก รวมถึงการดึงข้อมูลและเรนเดอร์ตัวเลขราคาจำนวนมากพร้อมกันบนแผนที่ อาจทำให้แอปกระตุกหรือโหลดช้าลง",
+        outcome:
+          "จากการทำ Usability Testing พบว่าผู้ทดสอบสามารถมองหาและจิ้มเลือกห้องพักที่อยู่ในงบประมาณของตัวเองได้ทันทีในครั้งแรก โดยไม่มีใครสุ่มกดหมุดก่อนเพื่อดูราคาในการ์ดด้านล่างเหมือนใน UI เก่า",
+      },
     ],
-    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    // หมายเหตุ: เคยมี `userFlow` (ผังจอ 3 เส้นทาง) ตรงนี้ — user สั่งเอาออก 17 ส.ค. 2026
+    //   component ยังอยู่ที่ components/case-study/user-flow.tsx ถ้าจะกลับมาใช้
+    // section Process เปลี่ยนชื่อเป็น "Key Decision" เพราะ Wireframe ถูกแยกไปรวมกับ Style Guide
+    // เป็น section "Wireframe & Style Guide" แบบหน้า Expat (user สั่ง 17 ส.ค. 2026)
+    processHeading: "Key Decision",
+    // จอ wireframe — โชว์เป็นหัวข้อย่อยแรกของ section Wireframe & Style Guide (แถวเลื่อนแนวนอน)
+    // ไฟล์ชุดใหม่ที่ user วางไว้ใน public/uploads เอง (17 ส.ค. 2026)
+    // ชุดเดิม renthub-app-wireframe*.png ไม่ได้ใช้แล้ว แต่ยังอยู่ในโฟลเดอร์
+    // เหลือ 3 จอ วางเป็นกริด 3 คอลัมน์กว้างเท่ากัน (user สั่ง 17 ส.ค. 2026)
+    // จอที่ 4 "รายการที่พัก" (Renthub-Wirefram-4.jpg) ถูกตัดออก ไฟล์ยังอยู่ในโฟลเดอร์
+    wireframes: [
+      { label: "หน้าแรก", src: "/uploads/Renthub-Wirefram-1.jpg", w: 374, h: 820 },
+      { label: "รายละเอียดที่พัก", src: "/uploads/Renthub-Wirefram-2.jpg", w: 319, h: 701 },
+      { label: "ค้นหาบนแผนที่", src: "/uploads/Renthub-Wirefram-3.jpg", w: 296, h: 646 },
+    ],
+    // ข้อความจาก user โดยตรง (17 ส.ค. 2026)
     businessGoal: [
-      "นำประสบการณ์การหาห้องเช่าจากเว็บมาไว้บนมือถือ ให้ผู้เช่าค้นหาที่พักจากตำแหน่งที่ยืนอยู่จริงหรือจากจุดอ้างอิงที่ใช้ในชีวิตประจำวันอย่างรถไฟฟ้า มหาวิทยาลัย และห้างสรรพสินค้า ลดขั้นตอนการเดินทางไปดูห้องด้วยภาพจริงและทัวร์เสมือน 360° แล้วพาไปสู่การแชทกับเจ้าของหอโดยตรง โดยมีเครื่องหมาย Verify เป็นตัวสร้างความน่าเชื่อถือให้ทั้งสองฝั่ง",
+      "สร้าง Mobile App เพื่อขยายการเข้าถึงผู้ใช้งานบนมือถือ และรองรับพฤติกรรมการค้นหาที่พักที่ต้องการความสะดวกและรวดเร็วมากขึ้น โดยสร้างประสบการณ์ตั้งแต่การค้นหาที่พักตามตำแหน่งและทำเล ไปจนถึงการดูรายละเอียดและติดต่อเจ้าของหอโดยตรง เพื่อเพิ่ม Engagement และโอกาสในการเปลี่ยนผู้ค้นหาให้เป็นผู้เช่า",
     ],
     tools: ["Figma"],
     appStoreUrl: "https://apps.apple.com/th/app/renthub/id1609161570",
@@ -996,60 +1157,34 @@ export const placeholderProjects = {
       { label: "Onboarding", src: "/uploads/renthub-app-onboarding.png", w: 660, h: 1320 },
       { label: "Home", src: "/uploads/renthub-app-home-main.png", w: 660, h: 1320 },
     ],
-    // Screens แยกตาม section (Wireframe / Home / Favorite / Chat / Profile)
-    // section ที่ยังไม่มีรูป = screens: [] → โชว์ "เร็ว ๆ นี้"
+    // Style Guide ของแอป — 5 บอร์ด เรียงตามที่ user กำหนด (17 ส.ค. 2026)
+    // แสดงเป็นกริด 3 คอลัมน์ 2 แถว (ไม่ใช้แถวเลื่อน เพราะเงาโดนตัด)
+    // ไฟล์ย่อจาก 4320px เหลือ 2160px แล้ว (ต้นฉบับอยู่ที่ Downloads/DPM_Wireframe)
+    styleGuide: [
+      { label: "Typography", src: "/uploads/renthub-app-ds-typography.jpg", w: 2160, h: 1536 },
+      { label: "Color", src: "/uploads/renthub-app-ds-color.jpg", w: 2160, h: 1536 },
+      { label: "Element", src: "/uploads/renthub-app-ds-element.jpg", w: 2160, h: 1536 },
+      { label: "Spacing", src: "/uploads/renthub-app-ds-spacing.jpg", w: 2160, h: 1536 },
+      { label: "Button", src: "/uploads/renthub-app-ds-buttons.jpg", w: 2160, h: 1536 },
+    ],
+    // Final User Interface — กลุ่มเดียวรวมทุกจอ (user สั่งตัด Related ออก 17 ส.ค. 2026)
+    // จอ Wireframe อยู่ใน Process & Key Decisions (processPhases ด้านบน) ไม่ได้อยู่ในนี้
     appScreens: [
       {
-        title: "Wireframe",
+        title: "Main Screen",
+        // 9 จอ เรียงตามเลขที่ user เขียนกำกับบนรูป (17 ส.ค. 2026)
+        // จอที่กากบาททิ้ง: Onboarding 5 จอ · รีวิวทั้งหมด · หอพักที่เคยเข้าชม · แชท 2 จอ
+        //   · เข้าสู่ระบบ · โปรไฟล์ (เข้าสู่ระบบแล้ว) · แก้ไขข้อมูลส่วนตัว — ไฟล์ยังอยู่ครบ
         screens: [
-          { src: "/uploads/renthub-app-wireframe.png", label: "หน้าแรก (wireframe)" },
-          { src: "/uploads/renthub-app-wireframe-2.png", label: "รายละเอียดที่พัก (wireframe)" },
-          { src: "/uploads/renthub-app-wireframe-3.png", label: "ค้นหาบนแผนที่ (wireframe)" },
-          { src: "/uploads/renthub-app-wireframe-4.png", label: "รายการที่พัก (wireframe)" },
-        ],
-      },
-      {
-        title: "Onboarding",
-        screens: [
-          { src: "/uploads/renthub-app-onboarding.png", label: "แหล่งรวมหอพัก" },
-          { src: "/uploads/renthub-app-onboarding-2.png", label: "ค้นหาห้องได้ง่ายขึ้น" },
-          { src: "/uploads/renthub-app-onboarding-3.png", label: "Virtual Tour 360°" },
-          { src: "/uploads/renthub-app-onboarding-4.png", label: "Verified" },
-          { src: "/uploads/renthub-app-onboarding-5.png", label: "Chat กับเจ้าของหอ" },
-        ],
-      },
-      {
-        title: "Home",
-        screens: [
-          { src: "/uploads/renthub-app-home-main.png", label: "หน้าแรก" },
-          { src: "/uploads/renthub-app-search.png", label: "ค้นหาตามสถานี" },
-          { src: "/uploads/renthub-app-map.png", label: "ค้นหาบนแผนที่" },
-          { src: "/uploads/renthub-app-detail.png", label: "รายละเอียดที่พัก" },
-          { src: "/uploads/renthub-app-review.png", label: "รีวิวทั้งหมด" },
-        ],
-      },
-      {
-        title: "Favorite",
-        screens: [
-          { src: "/uploads/renthub-app-favorite.png", label: "หอพักที่คุณสนใจ" },
-          { src: "/uploads/renthub-app-viewed.png", label: "หอพักที่เคยเข้าชม" },
-        ],
-      },
-      {
-        title: "Chat",
-        screens: [
-          { src: "/uploads/renthub-app-chat-list.png", label: "กล่องข้อความ" },
-          { src: "/uploads/renthub-app-chat-1.png", label: "แชทกับเจ้าของ" },
-          { src: "/uploads/renthub-app-chat-2.png", label: "ส่งรูปในแชท" },
-        ],
-      },
-      {
-        title: "Profile",
-        screens: [
-          { src: "/uploads/renthub-app-profile.png", label: "โปรไฟล์ (ยังไม่เข้าสู่ระบบ)" },
-          { src: "/uploads/renthub-app-login.png", label: "เข้าสู่ระบบ" },
-          { src: "/uploads/renthub-app-profile-loggedin.png", label: "โปรไฟล์ (เข้าสู่ระบบแล้ว)" },
-          { src: "/uploads/renthub-app-profile-edit.png", label: "แก้ไขข้อมูลส่วนตัว" },
+          { src: "/uploads/renthub-app-home-main.png", label: "หน้าแรก" }, // 1
+          { src: "/uploads/renthub-app-favorite.png", label: "หอพักที่คุณสนใจ" }, // 2
+          { src: "/uploads/renthub-app-chat-list.png", label: "กล่องข้อความ" }, // 3
+          { src: "/uploads/renthub-app-profile.png", label: "โปรไฟล์" }, // 4
+          { src: "/uploads/renthub-app-map.png", label: "ค้นหาบนแผนที่" }, // 5
+          { src: "/uploads/renthub-app-detail.png", label: "รายละเอียดที่พัก" }, // 6
+          { src: "/uploads/renthub-app-search.png", label: "ค้นหาตามสถานี" }, // 7
+          { src: "/uploads/renthub-app-compare.png", label: "เลือกเปรียบเทียบจากหน้ารายละเอียด" }, // 8
+          { src: "/uploads/renthub-app-compare-detail.png", label: "เปรียบเทียบที่พัก" }, // 9
         ],
       },
     ],
@@ -1061,86 +1196,151 @@ export const placeholderProjects = {
     tagline:
       "เว็บแพลตฟอร์มหาที่พักให้เช่าสำหรับชาวต่างชาติในกรุงเทพฯ — ค้นหา เปรียบเทียบ และติดต่อเอเจนต์ได้ในที่เดียว",
     liveUrl: "https://expathome.dev/",
+    // ข้อความทั้ง 2 ย่อหน้าจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
     overview: [
-      "Expat คือเว็บแพลตฟอร์มค้นหาที่พักให้เช่าสำหรับผู้เช่าชาวต่างชาติเป็นหลัก มุ่งเน้นอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่บริหารการตลาดและหาผู้เช่าด้วยตนเอง ซึ่งไม่ได้ลงประกาศบน RentHub โดยทีมงานเป็นผู้ติดต่อเพื่อรวบรวมข้อมูลอพาร์ตเมนต์เหล่านั้นมานำเสนอบนแพลตฟอร์ม จุดต่างสำคัญจาก RentHub อยู่ที่รูปแบบรายได้ กล่าวคือ Expat รับค่าคอมมิชชันจากอพาร์ตเมนต์โดยตรงเมื่อผู้เช่าระบุว่ามาจาก Expat ขณะที่ RentHub อาศัยให้เจ้าของลงประกาศเองและเก็บค่าโฆษณาจากผู้ที่ต้องการให้ประกาศแสดงบนหน้าแรก",
-      // ⚠️ ย่อหน้า 2 (duration / role / team) เป็นร่างจาก AI — user ยังไม่ได้ยืนยันถ้อยคำ
-      "โปรเจกต์นี้เป็นแพลตฟอร์มใหม่ของบริษัทที่อยู่ระหว่างพัฒนา จึงยังไม่มีกำหนดระยะเวลาตายตัว ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่รับ Requirement, Research, Wireframe, Style Guide, Interface Design ทั้งเว็บและมือถือ จนถึง Hand-off ให้ทีม Developer",
+      "ออกแบบเว็บไซต์ Expat แพลตฟอร์มค้นหาที่พักให้เช่าสำหรับชาวต่างชาติ โดยรวบรวมอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่ไม่ได้ลงประกาศบน RentHub มานำเสนอในรูปแบบที่เหมาะกับกลุ่มผู้เช่าต่างชาติ ครอบคลุมทั้งประสบการณ์บน Web และ Mobile",
+      "ใช้เวลาพัฒนาประมาณ 3 เดือน ทำงานร่วมกับ PM, Business และ Developer ในฐานะ Designer คนเดียวของโปรเจกต์ รับผิดชอบตั้งแต่ Requirement, Research, Wireframe, Style Guide, Interface Design ทั้ง Web และ Mobile ไปจนถึง Hand-off ให้ทีม Developer",
     ],
-    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
-    decisions: [
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-    ],
-    // ⚠️ AI ร่างจาก overview ของโปรเจกต์นี้ — user ยังไม่ได้ยืนยันถ้อยคำ
+    // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ก่อน (17 ส.ค. 2026)
+    // ใส่ decision กลับเข้ามาเมื่อไหร่ section ก็ขึ้นเอง
+    decisions: [],
+    // ข้อความจาก user โดยตรง (17 ส.ค. 2026) — ยุบจาก 2 ย่อหน้าเหลือย่อหน้าเดียว
+    // รูปสรุปโมเดลรายได้ (โฆษณา → คอมมิชชัน + funnel ที่ต้องพาไปให้ถึงการติดต่อ)
+    // user ส่งไฟล์มา 17 ส.ค. 2026 (Downloads/renthub_expat_commission.png)
+    businessGoalImage: {
+      src: "/uploads/expat-commission-flow.png",
+      label: "Business Model การสร้างรายได้ของ Expat",
+      w: 2720,
+      h: 2264,
+    },
     businessGoal: [
-      "เปิดช่องทางรายได้ใหม่ที่ต่างจากโมเดลโฆษณาของ RentHub โดยจับกลุ่มอพาร์ตเมนต์ระดับราคาค่าเช่าสูงที่บริหารการตลาดและหาผู้เช่าด้วยตนเอง ซึ่งไม่ได้ลงประกาศบน RentHub อยู่แล้ว แล้วรวบรวมข้อมูลมานำเสนอกับผู้เช่าชาวต่างชาติในกรุงเทพฯ ที่มองหาที่พักระดับนี้โดยเฉพาะ",
-      "เนื่องจากรายได้มาจากค่าคอมมิชชันที่อพาร์ตเมนต์จ่ายให้เมื่อผู้เช่าระบุว่ามาจาก Expat เป้าหมายของแพลตฟอร์มจึงอยู่ที่การพาผู้เช่าไปให้ถึงขั้นติดต่ออพาร์ตเมนต์ให้ได้มากที่สุด ไม่ใช่แค่ทำให้มีคนเข้าเว็บเยอะ",
+      "เปิดช่องทางรายได้ใหม่ที่แตกต่างจากโมเดลโฆษณาของ RentHub โดยเจาะกลุ่มอพาร์ตเมนต์ระดับราคาค่าเช่าสูงและผู้เช่าชาวต่างชาติในกรุงเทพฯ เน้นสร้าง Conversion จากผู้ค้นหาไปสู่การติดต่ออพาร์ตเมนต์ เนื่องจากรายได้หลักมาจากค่าคอมมิชชันเมื่อผู้เช่าระบุว่ามาจาก Expat",
     ],
     tools: ["Figma"],
     heroWeb: "/uploads/renthub-agency-web-laptop.png",
     heroPhone: "/uploads/renthub-agency-app-home.png",
-    // Style Guide — บอร์ด Color/Font/Icon (โชว์แบบเดียวกับ Propertyhub — รูปเต็มเรียงลงมา)
+    // ── CRAFT SHOWCASE ── ผ่าหน้า Home ของ Expat ออกเป็น 6 บล็อก (โครงเดียวกับ renthub)
+    // crop จาก renthub-agency-home.jpg (1600×6807) ด้วย sharp ที่พิกัด y:
+    //   hero 0-1194 · neighborhood 1206-2563 · destination 2572-3263
+    //   recommend 3266-4978 · steps 4980-5508 · contact 5510-6252
+    //   (เลี่ยงเส้นคั่นของหน้าที่ y=1200 กับ 2567 และรอยต่อพื้นหลังแต่ละ section)
+    // body ทั้ง 6 เป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
+    craft: {
+      items: [
+        {
+          title: "Search & Mass Transit",
+          body: "Hero Section ที่ผสาน Value Proposition เข้ากับ Search Bar เพื่อให้ผู้ใช้สามารถเริ่มค้นหาที่พักได้ทันที โดยรองรับการค้นหาตามจุดหมาย ช่วงราคา และประเภทห้อง พร้อม Explore by BTS/MRT สำหรับค้นหาที่พักตามสถานีรถไฟฟ้ายอดนิยม เหมาะสำหรับผู้ใช้ที่เดินทางด้วยระบบขนส่งสาธารณะเป็นหลัก",
+          src: "/uploads/expat-craft-v1-hero.jpg",
+          w: 1600,
+          h: 1194,
+        },
+        {
+          title: "Bangkok Neighborhoods",
+          body: "นำเสนอย่านยอดนิยมในกรุงเทพฯ เช่น Thonglor, Silom, Sathorn และ Asoke ผ่าน Visual Grid ขนาดใหญ่ ช่วยให้ผู้ใช้สามารถสำรวจและเลือกทำเลที่สนใจได้ง่ายขึ้น โดยไม่จำเป็นต้องเริ่มต้นจากการค้นหาด้วยตัวเอง",
+          src: "/uploads/expat-craft-v1-neighborhood.jpg",
+          w: 1600,
+          h: 1357,
+        },
+        {
+          title: "Top Destinations",
+          body: "ขยายการค้นหาไปยังจุดหมายปลายทางยอดนิยม เช่น Phuket, Pattaya และ Chonburi ผ่าน Carousel เพื่อให้ผู้ใช้สามารถสำรวจตัวเลือกที่พักในพื้นที่ต่าง ๆ ได้อย่างรวดเร็ว",
+          src: "/uploads/expat-craft-v1-destination.jpg",
+          w: 1600,
+          h: 691,
+        },
+        {
+          title: "Recommended Apartments",
+          body: "แสดงรายการอพาร์ตเมนต์แนะนำในรูปแบบ Card โดยรวบรวมข้อมูลสำคัญสำหรับการตัดสินใจไว้ในจุดเดียว ทั้งราคาเริ่มต้น รีวิว และสิ่งอำนวยความสะดวก พร้อม CTA “Check Availability” สำหรับดูรายละเอียดและติดต่ออพาร์ตเมนต์",
+          src: "/uploads/expat-craft-v1-recommend.jpg",
+          w: 1600,
+          h: 1712,
+        },
+        {
+          title: "Find My Home in 4 Steps",
+          body: "Guided Search ที่ช่วยให้ผู้ใช้ค้นหาที่พักผ่าน 4 ขั้นตอน ได้แก่ Bedroom, Budget, Amenities และ Location โดยออกแบบให้การค้นหาเป็นลำดับและเข้าใจง่าย เหมาะสำหรับผู้ใช้ที่ยังไม่มีเกณฑ์การค้นหาที่ชัดเจน",
+          src: "/uploads/expat-craft-v1-steps.jpg",
+          w: 1600,
+          h: 528,
+          // จอจริงของ flow นี้ ย้ายมาจาก webScreens category "Find My Home" (user สั่ง 17 ส.ค. 2026)
+          drawer: {
+            label: "See all steps",
+            // desc เป็นข้อความจาก user โดยตรง (17 ส.ค. 2026) — ห้ามเรียบเรียงใหม่
+            screens: [
+              {
+                label: "Step 1 — Contact info",
+                desc: "ระบุข้อมูลเบื้องต้นเพื่อให้ง่ายในการติดต่อกลับ",
+                src: "/uploads/renthub-agency-home-step1-contact-v2.jpg",
+                w: 4320,
+                h: 3072,
+              },
+              {
+                label: "Step 2 — Budget",
+                desc: "เลือกช่วงราคา รูปแบบห้อง ระยะเวลาการเข้าพัก วันพร้อมเข้าอยู่ เพื่อให้ได้ห้องที่ตรงความต้องการ",
+                src: "/uploads/renthub-agency-home-step2-budget-v2.jpg",
+                w: 4320,
+                h: 3072,
+              },
+              {
+                label: "Step 3 — Amenities",
+                desc: "เลือกสิ่งอำนวยความสะดวกเพื่อให้ตรงตาม life style ของตัวเอง",
+                src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg",
+                w: 4320,
+                h: 3072,
+              },
+              {
+                label: "Step 4 — Location",
+                desc: "เลือกทำเลตามความต้องการ และสามารถระบุให้มากกว่า 1 พื้นที่",
+                src: "/uploads/renthub-agency-home-step4-location-v2.jpg",
+                w: 4320,
+                h: 3072,
+              },
+              {
+                label: "Well done",
+                desc: "รอระบบคัดกรองอพาร์ทเม้นท์มาให้ตรงตามความต้องการ",
+                src: "/uploads/renthub-agency-home-welldone.jpg",
+                w: 4320,
+                h: 3072,
+              },
+            ],
+          },
+        },
+        {
+          title: "Contact & Lead Capture",
+          body: "Contact Form สำหรับผู้ใช้ที่ต้องการคำแนะนำเพิ่มเติม โดยเก็บข้อมูลพื้นฐาน ได้แก่ Name, Email และ Phone เพื่อให้สามารถติดต่อและให้คำแนะนำเกี่ยวกับที่พักที่เหมาะสมได้",
+          src: "/uploads/expat-craft-v1-contact.jpg",
+          w: 1600,
+          h: 742,
+        },
+      ],
+    },
+    // Wireframe + Style Guide = section เดียวกัน "Wireframe & Style Guide" (user สั่ง 17 ส.ค. 2026)
+    // wireframes ย้ายมาจาก webScreens category "Wireframe" เดิม
+    wireframes: [
+      { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 4320, h: 12396 },
+      { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 4320, h: 10824 },
+      { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 4320, h: 15072 },
+    ],
     styleGuide: [
       { label: "Color", src: "/uploads/renthub-agency-ds-color.jpg", w: 6000, h: 6000 },
       { label: "Font", src: "/uploads/renthub-agency-ds-font.jpg", w: 6000, h: 6000 },
       { label: "Icon", src: "/uploads/renthub-agency-ds-icon.jpg", w: 6000, h: 6000 },
     ],
-    // Screens ของ Expat — แยกตาม category (โชว์แบบ App) · Wireframe = category ย่อยหนึ่ง
+    // Screens ของ Expat — แยกตาม category
+    // เอาออกแล้ว: "Wireframe" (ย้ายไป field wireframes) · "Sign Up / Sign In" (user สั่งตัดทิ้ง 17 ส.ค. 2026
+    // — ไฟล์ renthub-agency-signin-v2.jpg / signup-v2.jpg ยังอยู่ใน public/uploads เอากลับมาได้)
     webScreens: [
       {
-        category: "Wireframe",
-        screens: [
-          { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 4320, h: 12396 },
-          { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 4320, h: 10824 },
-          { label: "Listing Detail", src: "/uploads/renthub-agency-wireframe-listing-detail.jpg", w: 4320, h: 15072 },
-        ],
-      },
-      {
-        category: "Sign Up / Sign In",
-        screens: [
-          { label: "Sign in", src: "/uploads/renthub-agency-signin-v2.jpg", w: 4320, h: 3072 },
-          { label: "Sign up", src: "/uploads/renthub-agency-signup-v2.jpg", w: 4320, h: 3072 },
-        ],
-      },
-      {
-        category: "Home",
+        // panel เทาผืนเดียวชื่อ "Main Screen" (โครงเดียวกับหน้า Propertyhub · user สั่ง 17 ส.ค. 2026)
+        // ยุบจาก 4 category เดิม: Home / Listing Result / Listing Detail / Shortlist
+        // เหลือ 5 จอ — user สั่งตัดรูปที่ 3, 6, 7, 9, 10 ออก 17 ส.ค. 2026 (ไฟล์ยังอยู่ใน public/uploads)
+        // "Find My Home" ถูกย้ายไปเป็น drawer ของ Craft Showcase บล็อก 05 แล้ว
+        category: "Main Screen",
         screens: [
           { label: "Home", src: "/uploads/renthub-agency-home.jpg", w: 1600, h: 6807 },
-        ],
-      },
-      {
-        // flow ให้ผู้ใช้กรอกความต้องการ (ติดต่อ → งบ → สิ่งอำนวยความสะดวก → ทำเล) แล้วให้ทีมช่วยหาห้อง
-        category: "Find My Home",
-        screens: [
-          { label: "Step 1 — Contact info", src: "/uploads/renthub-agency-home-step1-contact-v2.jpg", w: 4320, h: 3072 },
-          { label: "Step 2 — Budget", src: "/uploads/renthub-agency-home-step2-budget-v2.jpg", w: 4320, h: 3072 },
-          { label: "Step 3 — Amenities", src: "/uploads/renthub-agency-home-step3-amenities-v2.jpg", w: 4320, h: 3072 },
-          { label: "Step 4 — Location", src: "/uploads/renthub-agency-home-step4-location-v2.jpg", w: 4320, h: 3072 },
-          { label: "Well done", src: "/uploads/renthub-agency-home-welldone.jpg", w: 4320, h: 3072 },
-        ],
-      },
-      {
-        category: "Listing Result",
-        screens: [
           { label: "Listing result", src: "/uploads/renthub-agency-listing-result.jpg", w: 4320, h: 10839 },
-          { label: "Empty state", src: "/uploads/renthub-agency-listing-empty.jpg", w: 4320, h: 7599 },
-          { label: "Map view", src: "/uploads/renthub-agency-listing-map.jpg", w: 4320, h: 3072 },
-        ],
-      },
-      {
-        category: "Listing Detail",
-        screens: [
+          { label: "Listing result — map view", src: "/uploads/renthub-agency-listing-map.jpg", w: 4320, h: 3072 },
           { label: "Listing detail", src: "/uploads/renthub-agency-detail-renthub.jpg", w: 4320, h: 15942 },
-          { label: "Serviced apartment", src: "/uploads/renthub-agency-detail-serviced.jpg", w: 4320, h: 16185 },
-          { label: "Contact host — sent", src: "/uploads/renthub-agency-detail-contact.jpg", w: 4320, h: 16608 },
-        ],
-      },
-      {
-        category: "Shortlist",
-        screens: [
           { label: "Shortlist", src: "/uploads/renthub-agency-shortlist-main.jpg", w: 4320, h: 5454 },
-          { label: "Unsave", src: "/uploads/renthub-agency-shortlist-filled.jpg", w: 4320, h: 5454 },
-          { label: "Empty state", src: "/uploads/renthub-agency-shortlist-empty.jpg", w: 4320, h: 5454 },
         ],
       },
       {
@@ -1148,13 +1348,11 @@ export const placeholderProjects = {
         // phone: true → โชว์ขนาดจอเท่า App projects (AppScreensShowcase) · ไม่มี lightbox
         category: "Mobile (Responsive)",
         phone: true,
+        // เหลือ 3 จอ (user สั่งตัด Room detail / Shortlist / Sign in ออก 17 ส.ค. 2026 — ไฟล์ยังอยู่)
         screens: [
           { label: "Home", src: "/uploads/renthub-agency-mobile-home.png", w: 864, h: 1726 },
           { label: "Search results", src: "/uploads/renthub-agency-mobile-result.png", w: 864, h: 1726 },
           { label: "Apartment detail", src: "/uploads/renthub-agency-mobile-detail.png", w: 864, h: 1726 },
-          { label: "Room detail", src: "/uploads/renthub-agency-mobile-room.png", w: 864, h: 1726 },
-          { label: "Shortlist", src: "/uploads/renthub-agency-mobile-shortlist.png", w: 864, h: 1726 },
-          { label: "Sign in", src: "/uploads/renthub-agency-mobile-signin.png", w: 864, h: 1726 },
         ],
       },
     ],
@@ -1181,12 +1379,10 @@ export const placeholderProjects = {
     status: "process",
     tagline:
       "แพลตฟอร์มรวมงานของเอเจนต์อสังหาฯ ไว้ที่เดียว — หน้านี้เล่างาน Website Builder ที่อยู่ในนั้น: ชุดธีม 3 แบบ × 3 ประเภทหน้า ที่ระบบเอาไปสร้างเว็บให้เอเจนต์ได้ในคลิกเดียว",
-    // section Process & Key Decisions — เปิดโครงไว้รอเนื้อหาจริง (user สั่ง 14 ส.ค. 2026)
+    // Process & Key Decisions — user สั่งตัดออกจากหน้านี้ (17 ส.ค. 2026)
+    // ใส่ decision กลับเข้ามาเมื่อไหร่ section ก็ขึ้นเอง (propertyos-view เช็คด้วย hasProcess)
     // เนื้อหาอื่นของหน้านี้อยู่ที่ data/propertyos.ts
-    decisions: [
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-      { pending: true, title: "", reasoning: "", tradeoff: "" },
-    ],
+    decisions: [],
   },
   // คลังงานเก่า 2018–2020 — render ด้วย EarlyWorkView (special-case ใน work/[slug])
   "early-work": {

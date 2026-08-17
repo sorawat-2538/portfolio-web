@@ -142,7 +142,11 @@ export function ClaudeSection({
   return (
     <section>
       {/* ── TOOLS — กริดการ์ด ดีไซน์เดียวกับ section Tools ของหน้า case study อื่น ── */}
-      <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
+      {/* id ใช้เป็นเป้าของสารบัญลอยขอบขวา (SectionNav ใน data-analysis-view) */}
+      <h2
+        id="s-tools"
+        className="scroll-mt-24 text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground"
+      >
         Tools
       </h2>
       <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
@@ -160,7 +164,10 @@ export function ClaudeSection({
             <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           )}
 
-          <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
+          <h2
+            id={`s-sec-${si}`}
+            className="scroll-mt-24 text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground"
+          >
             {sec.heading}
           </h2>
 

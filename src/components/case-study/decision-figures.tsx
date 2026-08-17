@@ -25,6 +25,7 @@ export function DecisionFigures({
   cols = 3,
   captions = true,
   zoomable = true,
+  center = false,
 }: {
   images: CaseImage[];
   title: string;
@@ -37,6 +38,9 @@ export function DecisionFigures({
   /** false = รูปกดขยายไม่ได้ (ไม่มีปุ่ม ไม่มี lightbox)
    *  ใช้กับรูปประกอบที่ดูจากขนาดในหน้าก็พอ เช่น จอแอปในตลาดขั้น Research */
   zoomable?: boolean;
+  /** true = variant "grid" จัดรูปไว้กลาง โดยรูปกว้างเท่าคอลัมน์ของ cols เดิม
+   *  ใช้ตอนมีรูปน้อยกว่าจำนวนคอลัมน์ (เช่น Before/After 2 รูปในความกว้างแบบ 3 คอลัมน์) */
+  center?: boolean;
 }) {
   const [active, setActive] = React.useState<LightboxImg | null>(null);
   const pair = variant === "pair";
@@ -44,7 +48,17 @@ export function DecisionFigures({
 
   return (
     <>
-      <div className={pair ? GRID_COLS[2] : grid ? GRID_COLS[cols] : ""}>
+      <div
+        className={
+          pair
+            ? GRID_COLS[2]
+            : grid
+              ? center
+                ? "flex flex-wrap justify-center gap-5"
+                : GRID_COLS[cols]
+              : ""
+        }
+      >
         {images.map((img) => {
           const frame = (
             <div
@@ -75,7 +89,17 @@ export function DecisionFigures({
           );
 
           return (
-            <figure key={img.src} className="min-w-0">
+            <figure
+              key={img.src}
+              className={
+                "min-w-0 " +
+                (grid && center
+                  ? cols === 3
+                    ? "w-full min-[560px]:w-[calc((100%-40px)/3)]"
+                    : "w-full min-[560px]:w-[calc((100%-20px)/2)]"
+                  : "")
+              }
+            >
               {zoomable ? (
                 <button
                   type="button"

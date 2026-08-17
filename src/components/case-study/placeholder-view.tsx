@@ -13,12 +13,24 @@ import { AppScreensShowcase } from "./app-screens-showcase";
 import { WebScreensPanel } from "./web-screens-panel";
 import { ProcessSection, hasProcess } from "./process-section";
 import { ProjectNav } from "./project-nav";
+import { SectionNav, type NavSection } from "./section-nav";
+import { CraftShowcase } from "./craft-showcase";
+import { DecisionFigures } from "./decision-figures";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="text-[clamp(24px,3vw,32px)] font-bold tracking-[-0.02em] text-foreground">
       {children}
     </h2>
+  );
+}
+
+/** หัวข้อย่อยในหนึ่ง section (เช่น Wireframe / Style Guide) — ชุดเดียวกับขั้นย่อยใน ProcessSection */
+function H3({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
+      {children}
+    </h3>
   );
 }
 
@@ -85,8 +97,38 @@ export function PlaceholderView({
   const HeroIcon = note.icon;
   const hasPresent = Boolean(p.heroWeb && p.heroPhone);
 
+  // สารบัญลอยขอบขวา — ปิดไว้ (user สั่ง 17 ส.ค. 2026: จำเป็นแค่หน้า propertyhub ที่ยาวกว่าหน้าอื่น)
+  // ตั้งเป็น true เพื่อเปิดคืน · id ของ section ยังอยู่ครบ ใช้เป็น anchor ได้เหมือนเดิม
+  const SHOW_SECTION_NAV = false;
+  // สารบัญลอยขอบขวา — เงื่อนไข show ต้องตรงกับเงื่อนไข render ของ section นั้นเป๊ะ
+  // หน้านี้มี Final User Interface ได้ 2 แบบ (จอแอป / จอเว็บ) แยก id กันไว้
+  const navSections: NavSection[] = (
+    [
+      { id: "s-overview", label: "Overview", show: true },
+      { id: "s-tools", label: "Tools", show: true },
+      { id: "s-goal", label: "Business Goal", show: Boolean(p.businessGoal?.length) },
+      { id: "s-process", label: "Process & Key Decisions", show: hasProcess(p.decisions) },
+      { id: "s-screens", label: "Final User Interface", show: Boolean(p.appScreens?.length) },
+      {
+        id: "s-style",
+        label: p.wireframes?.length ? "Wireframe & Style Guide" : "Style Guide",
+        show: Boolean(p.styleGuide?.length),
+      },
+      { id: "s-craft", label: "Craft Showcase", show: Boolean(p.craft?.items.length) },
+      {
+        id: "s-webscreens",
+        label: p.appScreens?.length ? "Final User Interface (Web)" : "Final User Interface",
+        show: Boolean(p.webScreens?.length),
+      },
+    ] as (NavSection & { show: boolean })[]
+  )
+    .filter((s) => s.show)
+    .map(({ id, label }) => ({ id, label }));
+
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {SHOW_SECTION_NAV && <SectionNav sections={navSections} />}
+
       {/* ── HEADER — เหมือนหน้า project จริงทุกอย่าง ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -215,7 +257,7 @@ export function PlaceholderView({
       <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW — เนื้อหาจริง (ถ้ามี) หรือ empty state ── */}
-      <section>
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
         {p.overview && p.overview.length > 0 ? (
           <div className="mt-[22px] space-y-[18px]">
@@ -235,7 +277,7 @@ export function PlaceholderView({
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS — การ์ดเครื่องมือ (ถ้ามี) หรือ empty state ── */}
-      <section>
+      <section id="s-tools" className="scroll-mt-24">
         <H2>Tools</H2>
         {p.tools && p.tools.length > 0 ? (
           <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
@@ -255,7 +297,7 @@ export function PlaceholderView({
       {p.businessGoal && p.businessGoal.length > 0 && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
+          <section id="s-goal" className="scroll-mt-24">
             <H2>Business Goal</H2>
             <div className="mt-[22px] space-y-[18px]">
               {p.businessGoal.map((para, i) => (
@@ -264,6 +306,18 @@ export function PlaceholderView({
                 </p>
               ))}
             </div>
+
+            {/* รูปสรุปเป้าหมาย/โมเดลธุรกิจ — วางใต้ย่อหน้า กดดูเต็มจอได้
+                (treatment เดียวกับ problem.goalImage ของหน้า Propertyhub) */}
+            {p.businessGoalImage && (
+              <div className="mt-8">
+                <DecisionFigures
+                  images={[p.businessGoalImage]}
+                  title={p.title}
+                  variant="single"
+                />
+              </div>
+            )}
           </section>
         </>
       )}
@@ -275,26 +329,13 @@ export function PlaceholderView({
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
           <ProcessSection
             title={p.title}
+            heading={p.processHeading}
             decisions={p.decisions!}
             note={p.processNote}
             image={p.processImage}
             phases={p.processPhases}
+            flow={p.userFlow}
           />
-        </>
-      )}
-
-      {/* ── SCREENS — จอแอปแยกตาม section (แบบ Propertyhub App) ── */}
-      {p.appScreens && p.appScreens.length > 0 && (
-        <>
-          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
-            <H2>Final User Interface</H2>
-            <div className="mt-8 flex flex-col gap-6">
-              {p.appScreens.map((s) => (
-                <AppScreensShowcase key={s.title} title={s.title} screens={s.screens} />
-              ))}
-            </div>
-          </section>
         </>
       )}
 
@@ -302,27 +343,95 @@ export function PlaceholderView({
       {p.styleGuide && p.styleGuide.length > 0 && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
-            <H2>Style Guide</H2>
-            <div className="mt-7 space-y-10">
-              {p.styleGuide.map((b) =>
-                b.src ? (
-                  <Image
-                    key={b.label}
-                    src={b.src}
-                    alt={`${p.title} style guide — ${b.label}`}
-                    width={b.w ?? 4320}
-                    height={b.h ?? 4320}
-                    sizes="(max-width: 900px) 100vw, 860px"
-                    quality={88}
-                    className="block h-auto w-full shadow-[0_22px_60px_-28px_rgba(30,50,90,0.4)]"
-                  />
-                ) : (
-                  <EmptyState key={b.label} icon={ImageIcon} text={`${b.label} — รูปกำลังจะมา เร็ว ๆ นี้`} />
-                ),
-              )}
+          <section id="s-style" className="scroll-mt-24">
+            {/* มี wireframes = รวมสอง section เป็นอันเดียว แล้วแบ่งเป็นหัวข้อย่อย (user สั่ง 17 ส.ค. 2026) */}
+            <H2>{p.wireframes?.length ? "Wireframe & Style Guide" : "Style Guide"}</H2>
+
+            {p.wireframes && p.wireframes.length > 0 && (
+              <div className="mt-7">
+                <H3>Wireframe</H3>
+                <div className="mt-6">
+                  {/* wireframesRail = แถวเดียวเลื่อนแนวนอน (จอมือถือของ Renthub App)
+                      ไม่ใส่ = กริด 3 คอลัมน์ treatment เดียวกับหน้า Propertyhub App / Expat */}
+                  {p.wireframesRail ? (
+                    <WebScreensPanel
+                      screens={p.wireframes}
+                      variant="rail"
+                      railWidth={p.wireframesRail}
+                      bare
+                    />
+                  ) : (
+                    <DecisionFigures
+                      // crop เฉพาะรูปที่ยาวมาก (หน้าเว็บเต็มหน้าของ Expat)
+                      // จอมือถือ (สัดส่วนราว 1:2.2) ไม่ต้อง crop ไม่งั้นถูกตัดครึ่งจอ
+                      images={p.wireframes.flatMap((w) =>
+                        w.src
+                          ? [
+                              {
+                                src: w.src,
+                                label: w.label,
+                                w: w.w ?? 4320,
+                                h: w.h ?? 4320,
+                                crop: (w.h ?? 1) / (w.w ?? 1) > 2.4,
+                              },
+                            ]
+                          : [],
+                      )}
+                      title={p.title}
+                      variant="grid"
+                      cols={3}
+                      captions={false}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {p.wireframes && p.wireframes.length > 0 && (
+              <div className="mt-10">
+                <H3>Style Guide</H3>
+              </div>
+            )}
+
+            {/* บอร์ด Style Guide — กริด 3 คอลัมน์ (ชุดเดียวกับ Propertyhub App) กดดูรูปใหญ่ได้
+                เคยลองเป็นแถวเดียวเลื่อนแนวนอน แต่เงาโดนตัด user จึงสั่งกลับมาเป็นกริด 17 ส.ค. 2026
+                hideCaptions เพราะในรูปมีชื่อหัวข้ออยู่แล้ว */}
+            <div className="mt-6">
+              <DecisionFigures
+                images={p.styleGuide.flatMap((b) =>
+                  b.src ? [{ src: b.src, label: b.label, w: b.w ?? 4320, h: b.h ?? 4320 }] : [],
+                )}
+                title={p.title}
+                variant="grid"
+                cols={3}
+                captions={false}
+              />
             </div>
           </section>
+        </>
+      )}
+
+      {/* ── SCREENS — จอแอปแยกตาม section (แบบ Propertyhub App) ── */}
+      {p.appScreens && p.appScreens.length > 0 && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <section id="s-screens" className="scroll-mt-24">
+            <H2>Final User Interface</H2>
+            {/* พื้นเทาผืนเดียว แบ่งกลุ่มด้วยชื่อหน้า · กริด 3 จอต่อแถว ไม่มี scroll แนวนอน
+                (treatment เดียวกับ Final User Interface ของ Propertyhub App — user สั่ง 17 ส.ค. 2026) */}
+            <div className="mt-8">
+              <AppScreensShowcase groups={p.appScreens} />
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── CRAFT SHOWCASE ── ผ่าหน้า final เป็นบล็อก + เหตุผลของแต่ละบล็อก (โครงเดียวกับ renthub)
+          วางก่อน Final User Interface เพื่อให้อ่านที่มาของแต่ละส่วนก่อนเห็นหน้าเต็ม */}
+      {p.craft && p.craft.items.length > 0 && (
+        <>
+          <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
+          <CraftShowcase title={p.title} intro={p.craft.intro} items={p.craft.items} />
         </>
       )}
 
@@ -330,7 +439,7 @@ export function PlaceholderView({
       {p.webScreens && p.webScreens.length > 0 && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
+          <section id="s-webscreens" className="scroll-mt-24">
             <H2>Final User Interface</H2>
             <div className="mt-8 flex flex-col gap-6">
               {p.webScreens.map((c) =>
@@ -339,12 +448,14 @@ export function PlaceholderView({
                   <AppScreensShowcase
                     key={c.category}
                     title={c.category}
+                    variant="grid"
                     screens={c.screens.flatMap((s) => (s.src ? [{ src: s.src, label: s.label ?? "" }] : []))}
                   />
                 ) : (
+                  // desktop — วางเดี่ยวเรียงลงมาเต็มความกว้าง (cols=1 แบบหน้า Propertyhub)
                   // แบบเดิม (rail — จอเต็มสูง เลื่อนแนวนอน) · เก็บไว้เผื่อกลับมาใช้
                   // <WebScreensPanel key={c.category} title={c.category} screens={c.screens} />
-                  <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" />
+                  <WebScreensPanel key={c.category} title={c.category} screens={c.screens} variant="grid" cols={1} />
                 ),
               )}
             </div>

@@ -16,6 +16,7 @@ import { toolMeta } from "@/data/tools";
 import { StatusBadge } from "./status-badge";
 import { AppScreensShowcase } from "./app-screens-showcase";
 import { ProcessSection, hasProcess } from "./process-section";
+import { SectionNav, type NavSection } from "./section-nav";
 import { ProjectNav } from "./project-nav";
 
 const APP_STORE_URL = "https://apps.apple.com/th/app/propertyhub/id1574599780?l=th";
@@ -133,8 +134,26 @@ function PhoneShot({
 
 // ── page ─────────────────────────────────────────────────────────────────────
 export function PropertyhubAppView({ project: p }: { project: PlaceholderProject }) {
+  // สารบัญลอยขอบขวา — ปิดไว้ (user สั่ง 17 ส.ค. 2026: จำเป็นแค่หน้า propertyhub ที่ยาวกว่าหน้าอื่น)
+  // ตั้งเป็น true เพื่อเปิดคืน · id ของ section ยังอยู่ครบ ใช้เป็น anchor ได้เหมือนเดิม
+  const SHOW_SECTION_NAV = false;
+  // สารบัญลอยขอบขวา — เงื่อนไข show ต้องตรงกับเงื่อนไข render ของ section นั้นเป๊ะ
+  const navSections: NavSection[] = (
+    [
+      { id: "s-overview", label: "Overview", show: true },
+      { id: "s-tools", label: "Tools", show: true },
+      { id: "s-goal", label: "Business Goal", show: Boolean(p.businessGoal?.length) },
+      { id: "s-process", label: "Process & Key Decisions", show: hasProcess(p.decisions) },
+      { id: "s-screens", label: "Final User Interface", show: true },
+    ] as (NavSection & { show: boolean })[]
+  )
+    .filter((s) => s.show)
+    .map(({ id, label }) => ({ id, label }));
+
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {SHOW_SECTION_NAV && <SectionNav sections={navSections} />}
+
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -191,7 +210,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
       <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW ── */}
-      <section>
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
         <div className="mt-[22px] space-y-[18px]">
           {(p.overview ?? []).map((para, i) => (
@@ -203,7 +222,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── (กว้างเท่า layout 4 กล่อง → grid 4 คอลัมน์) */}
-      <section>
+      <section id="s-tools" className="scroll-mt-24">
         <H2>Tools</H2>
         <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
           {TOOLS.map((t) => (
@@ -217,7 +236,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
       {p.businessGoal && p.businessGoal.length > 0 && (
         <>
           <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-          <section>
+          <section id="s-goal" className="scroll-mt-24">
             <H2>Business Goal</H2>
             <div className="mt-[22px] space-y-[18px]">
               {p.businessGoal.map((para, i) => (
@@ -252,7 +271,7 @@ export function PropertyhubAppView({ project: p }: { project: PlaceholderProject
 
       {/* ── FINAL USER INTERFACE ── พื้นเทาผืนเดียว แบ่งกลุ่มด้วยชื่อหน้า (Home / Detail / …)
           แต่ละกลุ่มเรียงกริด 3 จอต่อแถว ไม่มี scroll แนวนอน */}
-      <section>
+      <section id="s-screens" className="scroll-mt-24">
         <H2>Final User Interface</H2>
         <div className="mt-8">
           <AppScreensShowcase groups={MAIN_GROUPS} />

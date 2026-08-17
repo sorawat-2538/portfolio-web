@@ -2,7 +2,7 @@
 //
 // โครงหน้า (ตามที่ user กำหนด):
 //   badge → H1 → avatar bar → hero (หน้าต่าง editor: หน้า Dashboard ของแพลตฟอร์ม)
-//   → Overview → Tools → What did I do with this project? (การ์ด 2 ใบ)
+//   → Overview → Tools → What I Did (การ์ด 2 ใบ)
 //   → Chat System      : หน้าต่าง editor (หน้าแชท) → ย่อหน้าเดียว → จอจริงทั้งหมด
 //   → Website Builder  : หน้าต่าง editor (ไฟล์ screen flow) → ย่อหน้าเดียว →
 //                        onboarding → โครง editor → ธีมและ layout ทั้งหมด
@@ -28,6 +28,7 @@ import { BuilderScreenMock } from "./builder-screen-mock";
 import { LayoutPickerMock } from "./layout-picker-mock";
 import { ProcessSection, hasProcess } from "./process-section";
 import { ProjectNav } from "./project-nav";
+import { SectionNav, type NavSection } from "./section-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -190,7 +191,7 @@ function Tag({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** การ์ดใน "What did I do with this project?" กดแล้วเลื่อนไปที่บล็อกของงานนั้น
+/** การ์ดใน "What I Did" กดแล้วเลื่อนไปที่บล็อกของงานนั้น
  *  (key ของ contribution.items → id ของ section · scroll-behavior: smooth ตั้งไว้ที่ globals.css) */
 const SECTION_ID: Record<string, string> = {
   chat: "chat-system",
@@ -206,8 +207,27 @@ function splitName(name: string) {
 }
 
 export function PropertyosView({ project: p }: { project: PlaceholderProject }) {
+  // สารบัญลอยขอบขวา — ปิดไว้ (user สั่ง 17 ส.ค. 2026: จำเป็นแค่หน้า propertyhub ที่ยาวกว่าหน้าอื่น)
+  // ตั้งเป็น true เพื่อเปิดคืน · id ของ section ยังอยู่ครบ ใช้เป็น anchor ได้เหมือนเดิม
+  const SHOW_SECTION_NAV = false;
+  // สารบัญลอยขอบขวา — เงื่อนไข show ต้องตรงกับเงื่อนไข render ของ section นั้นเป๊ะ
+  const navSections: NavSection[] = (
+    [
+      { id: "s-overview", label: "Overview", show: true },
+      { id: "s-tools", label: "Tools", show: true },
+      { id: "s-contribution", label: po.contribution.title, show: true },
+      { id: "s-process", label: "Process & Key Decisions", show: hasProcess(p.decisions) },
+      { id: "chat-system", label: po.chat.title, show: true },
+      { id: "website-builder", label: po.builder.title, show: true },
+    ] as (NavSection & { show: boolean })[]
+  )
+    .filter((s) => s.show)
+    .map(({ id, label }) => ({ id, label }));
+
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {SHOW_SECTION_NAV && <SectionNav sections={navSections} />}
+
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -244,7 +264,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
       <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW ── */}
-      <section>
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
         <div className="mt-[22px] space-y-[18px]">
           {po.overview.map((para, i) => (
@@ -258,7 +278,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── */}
-      <section>
+      <section id="s-tools" className="scroll-mt-24">
         <H2>Tools</H2>
         <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-3">
           {po.tools.map((t) => (
@@ -271,7 +291,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
 
       {/* ── ทำอะไรให้โปรเจกต์นี้บ้าง — การ์ด image + title + description
              ช่องรูปคือหน้าต่าง editor ของงานนั้น ๆ ย่อลงมาทั้งอัน (ไม่ใช่ screenshot) ── */}
-      <section>
+      <section id="s-contribution" className="scroll-mt-24">
         <H2>{po.contribution.title}</H2>
 
         <div className="mt-6 grid grid-cols-1 gap-4 min-[720px]:grid-cols-2">
@@ -320,7 +340,7 @@ export function PropertyosView({ project: p }: { project: PlaceholderProject }) 
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ══ บล็อก 1 — CHAT SYSTEM ══ (รูปนำ → ข้อความใต้รูป → จอทั้งหมด)
-             id = เป้าหมายของการ์ดใน "What did I do with this project?"
+             id = เป้าหมายของการ์ดใน "What I Did"
              scroll-mt เผื่อ header ที่ sticky อยู่ด้านบน */}
       <section id="chat-system" className="scroll-mt-24">
         <H2>{po.chat.title}</H2>

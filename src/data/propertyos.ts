@@ -61,7 +61,7 @@ export const propertyos = {
   /** สรุปสั้น ๆ ว่าทำอะไรให้โปรเจกต์นี้บ้าง — 2 ใบ ไม่ต้องร่ายยาว
    *  ภาพประกอบของ section นี้คือหน้าต่างไฟล์ screen flow (BuilderPanelsMock) ไม่ใช่รูปหน้าเว็บ */
   contribution: {
-    title: "What did I do with this project?",
+    title: "What I Did",
     items: [
       {
         key: "chat",

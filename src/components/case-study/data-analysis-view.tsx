@@ -16,6 +16,7 @@ import { StatusBadge } from "./status-badge";
 import { AnalysisTerminal } from "./analysis-terminal";
 import { ClaudeSection } from "./claude-section";
 import { ProjectNav } from "./project-nav";
+import { SectionNav, type NavSection } from "./section-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -26,8 +27,20 @@ function H2({ children }: { children: React.ReactNode }) {
 }
 
 export function DataAnalysisView({ project: p }: { project: PlaceholderProject }) {
+  // สารบัญลอยขอบขวา — ปิดไว้ (user สั่ง 17 ส.ค. 2026: จำเป็นแค่หน้า propertyhub ที่ยาวกว่าหน้าอื่น)
+  // ตั้งเป็น true เพื่อเปิดคืน · id ของ section ยังอยู่ครบ ใช้เป็น anchor ได้เหมือนเดิม
+  const SHOW_SECTION_NAV = false;
+  // สารบัญลอยขอบขวา — Tools กับหัวข้อในไทม์ไลน์อยู่ใน ClaudeSection (id: s-tools / s-sec-0..n)
+  const navSections: NavSection[] = [
+    { id: "s-overview", label: "Overview" },
+    { id: "s-tools", label: "Tools" },
+    ...dataAnalysis.sections.map((sec, i) => ({ id: `s-sec-${i}`, label: sec.heading })),
+  ];
+
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {SHOW_SECTION_NAV && <SectionNav sections={navSections} />}
+
       {/* ── HEADER — โครงเดียวกับหน้า project จริง ── */}
       <section>
         <StatusBadge status={p.status} />
@@ -66,7 +79,7 @@ export function DataAnalysisView({ project: p }: { project: PlaceholderProject }
       <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW — บอกว่าหน้านี้คืออะไร ทำอะไรได้ ── */}
-      <section>
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
         <div className="mt-[22px] space-y-[18px]">
           {dataAnalysis.overview.map((para, i) => (

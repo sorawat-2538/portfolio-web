@@ -15,6 +15,8 @@ import type { CaseImage, Decision } from "@/data/projects";
 import { DecisionFigures } from "./decision-figures";
 import { ListingDialogMock } from "./listing-dialog-mock";
 import { FeaturePhaseFlow } from "./feature-phase-flow";
+import { UserFlow, type UserFlowLane } from "./user-flow";
+import { WebScreensPanel } from "./web-screens-panel";
 
 /** ค่าที่ยังเป็น placeholder "[ ... ]" ใน data/projects.ts — ห้ามหลุดขึ้นหน้าเว็บ
  *  (นิยามอยู่ที่ไฟล์นี้ไฟล์เดียว · case-study-view.tsx import ไปใช้ต่อ) */
@@ -39,12 +41,17 @@ export type ProcessPhase = {
   hideCaptions?: boolean;
   /** true = รูปในขั้นนี้กดขยายไม่ได้ (เช่น จอแอปในตลาดขั้น Research) */
   noZoom?: boolean;
+  /** มีค่านี้ = รูปในขั้นนี้เรียงเป็นแถวเดียวเลื่อนแนวนอน (ลากด้วยเมาส์ได้ + กดดูเต็มจอ)
+   *  แทนกริด · "phone" = สล็อตแคบสำหรับจอมือถือ · ใช้กับ Wireframe ของ Renthub App */
+  rail?: "wide" | "phone";
 };
 
 /** ย่อหน้าอธิบาย Design Process ที่ใช้เป็นค่าตั้งต้นทุกโปรเจกต์
- *  แต่ละงานเขียนของตัวเองได้โดยส่ง prop `note` เข้ามาทับ */
+ *  แต่ละงานเขียนของตัวเองได้โดยส่ง prop `note` เข้ามาทับ
+ *  ⚠️ ข้อความนี้ user เขียนเอง 14 ส.ค. 2026 ห้ามเรียบเรียงใหม่ · ยกตัวอย่างของ Propertyhub
+ *     (ตอนนี้มีแค่หน้า propertyhub ที่ใช้ค่านี้) ถ้าโปรเจกต์อื่นจะใช้ ให้ส่ง `note` ของตัวเองมาแทน */
 const DEFAULT_NOTE =
-  "สิ่งที่ยากที่สุดใน design process ไม่ใช่การออกแบบ แต่คือ research ที่อยู่ตรงรอยต่อระหว่าง requirement กับ wireframe งานตรงนี้คือการแปลความต้องการของธุรกิจให้กลายเป็นไอเดียที่ตอบโจทย์ผู้ใช้จริง และต้องกล้าตัดสินใจว่าอะไรคือ must have อะไรเป็นแค่ nice to have";
+  "ขั้นตอนการ research เป็นสิ่งที่สำคัญสำหรับกระบวนการออกแบบและเป็นส่วนหนึ่งของการตัดสินใจของงานในหลายๆครั้ง เช่น การออกแบบ Input Field ในหน้าลงประกาศเพื่อให้การลงประกาศและหน้าแสดงผลมีความยืดหยุ่นสำหรับรองรับทุกประเภทอสังหาฯ";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -85,14 +92,19 @@ function Callout({ children }: { children: React.ReactNode }) {
 
 export function ProcessSection({
   title,
+  heading,
   decisions,
   note,
   image,
   phases,
+  flow,
   validationLabel,
 }: {
   /** ชื่อโปรเจกต์ — ใช้ใน alt ของรูป */
   title: string;
+  /** ชื่อ H2 ของ section — ไม่ใส่ = "Process & Key Decisions"
+   *  (Renthub App ใช้ "Key Decision" เพราะ Wireframe แยกไปเป็น section ของตัวเอง) */
+  heading?: string;
   decisions: readonly Decision[];
   /** ย่อหน้าใต้รูป process (ไม่ใส่ = ใช้ข้อความกลาง) */
   note?: string;
@@ -102,6 +114,9 @@ export function ProcessSection({
   /** ขั้นย่อยของ process (Requirement / Research / Wireframe & Style Guide ฯลฯ)
    *  วางระหว่างแถบ process กับส่วน Decision */
   phases?: readonly ProcessPhase[];
+  /** ผังการใช้งาน (จอไหน → ไปจอไหน) — วางก่อนขั้นย่อยของ process
+   *  ไม่ใส่ = ไม่แสดง · เนื้อหาอยู่ใน `userFlow` ของโปรเจกต์นั้น */
+  flow?: { title?: string; body?: string; lanes: readonly UserFlowLane[] };
   /** ชื่อหัวข้อท่อนที่ 3 ของ decision — default "Validation"
    *  หน้า Propertyhub App ใช้ "Why this works" เพราะเป็นเหตุผลของการเดิมพัน ไม่ใช่ผลที่วัดมาแล้ว
    *  (user สั่ง 14 ส.ค. 2026 · เฉพาะหน้านั้นหน้าเดียว) */
@@ -109,9 +124,11 @@ export function ProcessSection({
 }) {
   return (
     <section id="s-process" className="scroll-mt-24">
-      <H2>Process &amp; Key Decisions</H2>
+      <H2>{heading ?? "Process & Key Decisions"}</H2>
 
-      {/* ── Design Process (บล็อกนำ) ── แถบ 5 ขั้น (Research ถูกไฮไลต์) + ย่อหน้าอธิบายว่าทำไม
+      {/* ── Design Process (บล็อกนำ) ── ปิดอยู่ตั้งแต่ 17 ส.ค. 2026 (user สั่งเอาออก)
+          แสดงเฉพาะโปรเจกต์ที่ส่ง prop `note` หรือ `image` เข้ามาเท่านั้น — ตอนนี้ไม่มีใครส่ง
+          เดิม: แถบ 5 ขั้น (Research ถูกไฮไลต์) + ย่อหน้าอธิบายว่าทำไม
           ขั้น Research คือขั้นที่ยากที่สุด · แทนที่การ์ด bento 8 ใบ (WorkflowProcess)
           และตัวอย่าง 3 เฟส (ProcessPhases) ที่เคยวางเทียบกันไว้ — user เลือกแบบนี้
           หมายเหตุ: WorkflowProcess ยังใช้อยู่บนหน้าแรก · ProcessPhases เก็บไฟล์ไว้เฉย ๆ
@@ -120,7 +137,7 @@ export function ProcessSection({
           กับหัวข้อย่อยด้านล่างเป็นเรื่องเดียวกัน — user สั่ง 14 ส.ค. 2026 ให้ย้ายย่อหน้า
           Design Thinking ของ Propertyhub App ลงไปอยู่ในขั้น Requirement แทน
           (ยังบังคับให้แสดงได้ด้วยการส่ง prop `image` หรือ `note` มาพร้อม phases) */}
-      {(!phases?.length || note || image) && (
+      {(note || image) && (
         <div className="mt-7">
           {image ? (
             <DecisionFigures images={[image]} title={title} variant="single" />
@@ -140,6 +157,17 @@ export function ProcessSection({
         </div>
       )}
 
+      {/* ── USER FLOW ── ผังจอ (จอไหน → ไปจอไหน) จากจอที่ออกแบบไว้จริง */}
+      {flow && flow.lanes.length > 0 && (
+        <div className="mt-8">
+          <H3>{flow.title ?? "User Flow"}</H3>
+          {flow.body && <Body className="mt-3">{flow.body}</Body>}
+          <div className="mt-6">
+            <UserFlow lanes={flow.lanes} />
+          </div>
+        </div>
+      )}
+
       {/* ── ขั้นย่อยของ process ── หัวข้อ + ย่อหน้า + รูปของขั้นนั้น (กดดูเต็มจอได้)
           ขั้นที่ยังไม่มีรูปจะแสดงแค่ข้อความ ไม่ขึ้นกล่องว่าง */}
       {phases && phases.length > 0 && (
@@ -150,14 +178,24 @@ export function ProcessSection({
               {ph.body && <Body className="mt-3">{ph.body}</Body>}
               {ph.images && ph.images.length > 0 && (
                 <div className="mt-6">
-                  <DecisionFigures
-                    images={ph.images}
-                    title={title}
-                    variant={ph.cols && ph.cols > 1 ? "grid" : "single"}
-                    cols={ph.cols === 2 ? 2 : 3}
-                    captions={!ph.hideCaptions}
-                    zoomable={!ph.noZoom}
-                  />
+                  {ph.rail ? (
+                    /* แถวเดียวเลื่อนแนวนอน — เงา/lightbox ชุดเดียวกับ Style Guide */
+                    <WebScreensPanel
+                      screens={ph.images.map((im) => ({ src: im.src, label: im.label, w: im.w, h: im.h }))}
+                      variant="rail"
+                      railWidth={ph.rail}
+                      bare
+                    />
+                  ) : (
+                    <DecisionFigures
+                      images={ph.images}
+                      title={title}
+                      variant={ph.cols && ph.cols > 1 ? "grid" : "single"}
+                      cols={ph.cols === 2 ? 2 : 3}
+                      captions={!ph.hideCaptions}
+                      zoomable={!ph.noZoom}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -165,13 +203,21 @@ export function ProcessSection({
         </div>
       )}
 
-      <div className="mt-12 flex flex-col gap-10">
+      {/* ระยะห่างจากหัวข้อ section: 48px เมื่อมีบล็อกอยู่เหนือ (ขั้น process / user flow / บล็อกนำ)
+          เพื่อแยกสองก้อนออกจากกัน · ไม่มีอะไรอยู่เหนือ = 28px เท่ากับ H2 อื่นในหน้า
+          (user ทัก 17 ส.ค. 2026 ว่า Key Decision ของ Renthub App ห่างกว่าที่อื่น) */}
+      <div
+        className={`flex flex-col gap-10 ${
+          phases?.length || flow?.lanes.length || note || image ? "mt-12" : "mt-7"
+        }`}
+      >
         {decisions
           .filter((d) => d.pending || !isPlaceholder(d.title))
           .map((d, i) => (
             <div key={i}>
-              {/* เส้นคั่นเหนือ decision แรก = แบ่ง Design Process ออกจากส่วน Decision */}
-              <div className="mb-9 h-px bg-border" />
+              {/* เส้นคั่นระหว่าง decision — ข้อแรกไม่ต้องมี เพราะบล็อก Design Process เหนือมันถูกเอาออกแล้ว
+                  (17 ส.ค. 2026 — เส้นลอยอยู่ใต้หัวข้อ section เฉย ๆ) */}
+              {i > 0 && <div className="mb-9 h-px bg-border" />}
 
               <h3 className="text-[clamp(19px,2.1vw,22px)] font-bold leading-snug tracking-[-0.01em] text-foreground">
                 Decision {i + 1}
@@ -203,6 +249,19 @@ export function ProcessSection({
                   {d.mock === "feature-phases" && (
                     <div className="mt-7">
                       <FeaturePhaseFlow />
+                    </div>
+                  )}
+
+                  {/* ชุดรูปประกอบ decision (เช่น ฟอร์มลงประกาศทีละสเต็ป) — กริด กดดูเต็มจอได้ */}
+                  {d.figures && d.figures.length > 0 && (
+                    <div className="mt-7">
+                      <DecisionFigures
+                        images={d.figures}
+                        title={title}
+                        variant="grid"
+                        cols={d.figuresCols ?? 3}
+                        center={d.figuresCenter}
+                      />
                     </div>
                   )}
 
@@ -240,7 +299,7 @@ export function ProcessSection({
 
                   {!isPlaceholder(d.outcome) && (
                     <div className="mt-6">
-                      <H4>{validationLabel ?? "Validation"}</H4>
+                      <H4>{d.validationLabel ?? validationLabel ?? "Validation"}</H4>
                       <Body className="mt-2">{d.outcome}</Body>
                       {d.outcomeImage && (
                         <div className="mt-5">

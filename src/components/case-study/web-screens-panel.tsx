@@ -38,6 +38,8 @@ export function WebScreensPanel({
   screens,
   variant = "rail",
   cols = 2,
+  bare = false,
+  railWidth = "wide",
 }: {
   title?: string;
   screens: WebScreen[];
@@ -46,6 +48,12 @@ export function WebScreensPanel({
   /** grid เท่านั้น — จำนวนคอลัมน์บนจอกว้าง
    *  1 = วางเดี่ยวเรียงลงมาเต็มความกว้าง (crop สูงกว่าเพราะกรอบกว้างขึ้น) · 3 = เทียบกันในสายตาเดียว */
   cols?: 1 | 2 | 3;
+  /** true = ไม่มีพื้นหลังเทาและ padding รอบนอก (วางบนพื้นขาวของหน้าเลย)
+   *  ใช้กับ Wireframe / Style Guide ของ Expat ที่อยู่ในหัวข้อย่อยอยู่แล้ว (user สั่ง 17 ส.ค. 2026) */
+  bare?: boolean;
+  /** rail เท่านั้น — ความกว้างของแต่ละสล็อต
+   *  "wide" (default) = บอร์ด/จอเว็บ · "phone" = จอมือถือ แคบลงเพราะจอสูง */
+  railWidth?: "wide" | "phone";
 }) {
   const shots = screens.filter((s): s is Shot => Boolean(s.src));
   const [active, setActive] = React.useState<number | null>(null);
@@ -76,7 +84,8 @@ export function WebScreensPanel({
   const columns = buildColumns(shots);
 
   return (
-    <div className="overflow-hidden bg-[#f3f3f1] py-[clamp(18px,3vw,30px)]">
+    // bare = ไม่มีพื้นเทา และไม่ crop เงา (overflow-hidden จะตัดเงาของจอในราง)
+    <div className={bare ? "" : "overflow-hidden bg-[#f3f3f1] py-[clamp(18px,3vw,30px)]"}>
       {/* header — title(ชื่อ category) + เส้นใต้ accent (เหมือน AppScreensShowcase) · ไม่มี title = ไม่โชว์ header */}
       {title && (
         <div className="mb-6 px-[clamp(18px,3vw,30px)]">
@@ -93,7 +102,7 @@ export function WebScreensPanel({
       ) : variant === "grid" ? (
         /* grid — จอในกรอบ browser · crop หัวเท่ากัน + ป้าย "full page" · 2 ต่อแถว (≥560px) · กดดูเต็ม */
         <div
-          className={`grid grid-cols-1 items-start gap-4 px-[clamp(18px,3vw,30px)] min-[560px]:gap-6 ${
+          className={`grid grid-cols-1 items-start gap-4 min-[560px]:gap-6 ${bare ? "" : "px-[clamp(18px,3vw,30px)]"} ${
             cols === 1
               ? ""
               : cols === 3
@@ -110,16 +119,14 @@ export function WebScreensPanel({
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`ดู ${s.label ?? title ?? "ภาพ"} เต็มหน้า`}
-                className="group relative block w-full cursor-pointer overflow-hidden rounded-[12px] border border-border bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none"
+                // bare = ไม่เอามุมโค้งและเส้นขอบ (user สั่ง 17 ส.ค. 2026 — Wireframe & Style Guide)
+                className={
+                  "group relative block w-full cursor-pointer overflow-hidden bg-white shadow-[0_18px_44px_-24px_rgba(30,50,90,0.28)] outline-none transition-shadow duration-200 hover:shadow-[0_26px_60px_-24px_rgba(30,50,90,0.34)] focus:outline-none focus-visible:outline-none" +
+                  (bare ? "" : " rounded-[12px] border border-border")
+                }
               >
-                {/* chrome — traffic lights */}
-                <div className="flex items-center gap-2 border-b border-border bg-white px-3.5 py-2.5">
-                  <span className="flex shrink-0 gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#ff5f57" }} />
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#febc2e" }} />
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: "#28c840" }} />
-                  </span>
-                </div>
+                {/* หมายเหตุ: แถบ chrome (จุดจราจรแดง/เหลือง/เขียว) ถูกเอาออกแล้ว
+                    user สั่ง 17 ส.ค. 2026 — เอาออกทุกที่ที่ใช้ variant="grid" */}
 
                 {/* จอยาว = top-crop สูงเท่ากัน + fade + ป้าย full page · จอเตี้ย = เต็มจอในกรอบ
                     cols=1 กรอบกว้างเต็มความกว้าง → crop สูงขึ้นตามสัดส่วน ไม่งั้นจะเห็นแค่แถบบางๆ */}
@@ -154,11 +161,17 @@ export function WebScreensPanel({
       ) : (
         /* rail — จอเรียง free scroll แนวนอน (ไม่มี snap) · top-align · แต่ละสล็อตอาจเป็นจอเดี่ยว หรือจอย่อยซ้อนลงมา
            ScrollRail = กดค้างลากด้วยเมาส์ได้ (ลากแล้วปล่อยจะไม่เปิด lightbox) */
-        <ScrollRail className="flex items-start gap-4 overflow-x-auto px-[clamp(18px,3vw,30px)] pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6">
+        <ScrollRail
+          className={`flex items-start gap-4 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 ${
+            bare ? "py-2" : "px-[clamp(18px,3vw,30px)]"
+          }`}
+        >
           {columns.map((col, ci) => (
             <div
               key={ci}
-              className="flex w-[78%] shrink-0 flex-col gap-4 sm:w-[320px]"
+              className={`flex shrink-0 flex-col gap-4 ${
+                railWidth === "phone" ? "w-[44%] sm:w-[190px]" : "w-[78%] sm:w-[320px]"
+              }`}
             >
               {col.map(({ s, i }) => (
                 <button
@@ -177,7 +190,8 @@ export function WebScreensPanel({
                     quality={88}
                     unoptimized
                     draggable={false}
-                    className="block h-auto w-full"
+                    // เงาชุดเดียวกับ DecisionFigures (Wireframe & Style Guide ของ Expat / Propertyhub App)
+                    className="block h-auto w-full shadow-[0_10px_30px_-18px_rgba(30,50,90,0.35)]"
                   />
                 </button>
               ))}

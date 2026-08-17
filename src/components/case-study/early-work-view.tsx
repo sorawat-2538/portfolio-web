@@ -11,6 +11,7 @@ import { StatusBadge } from "./status-badge";
 import { ArchiveWindow } from "./archive-window";
 import { ArchiveGallery, SlideGrid } from "./slide-gallery";
 import { ProjectNav } from "./project-nav";
+import { SectionNav, type NavSection } from "./section-nav";
 
 function H2({ children }: { children: React.ReactNode }) {
   return (
@@ -41,8 +42,20 @@ function ToolCard({ name }: { name: string }) {
 }
 
 export function EarlyWorkView() {
+  // สารบัญลอยขอบขวา — ปิดไว้ (user สั่ง 17 ส.ค. 2026: จำเป็นแค่หน้า propertyhub ที่ยาวกว่าหน้าอื่น)
+  // ตั้งเป็น true เพื่อเปิดคืน · id ของ section ยังอยู่ครบ ใช้เป็น anchor ได้เหมือนเดิม
+  const SHOW_SECTION_NAV = false;
+  // สารบัญลอยขอบขวา — Overview / Tools แล้วตามด้วยหมวดงานแต่ละหมวด
+  const navSections: NavSection[] = [
+    { id: "s-overview", label: "Overview" },
+    { id: "s-tools", label: "Tools" },
+    ...earlyWork.groups.map((g, i) => ({ id: `s-group-${i}`, label: g.title })),
+  ];
+
   return (
     <article className="pt-5 pb-5 font-sans font-normal min-[900px]:py-[50px]">
+      {SHOW_SECTION_NAV && <SectionNav sections={navSections} />}
+
       {/* ── HEADER ── */}
       <section>
         <StatusBadge status="archived" />
@@ -79,7 +92,7 @@ export function EarlyWorkView() {
       <div className="h-8 min-[900px]:h-[50px]" />
 
       {/* ── OVERVIEW ── */}
-      <section>
+      <section id="s-overview" className="scroll-mt-24">
         <H2>Overview</H2>
         <p className="mt-[22px] text-[17px] leading-[1.8] text-muted-foreground">
           {earlyWork.overview}
@@ -89,7 +102,7 @@ export function EarlyWorkView() {
       <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
 
       {/* ── TOOLS ── */}
-      <section>
+      <section id="s-tools" className="scroll-mt-24">
         <H2>Tools</H2>
         <div className="mt-5 grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
           {earlyWork.tools.map((t) => (
@@ -102,13 +115,13 @@ export function EarlyWorkView() {
       <ArchiveGallery items={earlyWork.groups.flatMap((g) => g.items)}>
         {(() => {
           let offset = 0;
-          return earlyWork.groups.map((g) => {
+          return earlyWork.groups.map((g, gi) => {
             const groupOffset = offset;
             offset += g.items.length;
             return (
               <React.Fragment key={g.title}>
                 <div className="my-8 h-px bg-border min-[900px]:my-[50px]" />
-                <section>
+                <section id={`s-group-${gi}`} className="scroll-mt-24">
                   <H2>{g.title}</H2>
                   <div className="mt-[26px]">
                     <SlideGrid items={g.items} offset={groupOffset} />
