@@ -29,6 +29,8 @@ export function ScrollRail({
     if (e.pointerType !== "mouse" || e.button !== 0) return;
     const el = ref.current;
     if (!el) return;
+    // ไม่มีอะไรให้เลื่อน (เช่น rail ที่กลายเป็นกริดตั้งแต่ 560px ขึ้นไป) = ปล่อยให้คลิก/ลากตามปกติ
+    if (el.scrollWidth <= el.clientWidth + 1) return;
     drag.current = {
       startX: e.clientX,
       startScroll: el.scrollLeft,

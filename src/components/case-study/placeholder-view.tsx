@@ -384,6 +384,7 @@ export function PlaceholderView({
                       cols={3}
                       captions={false}
                       zoomable={!p.wireframesNoZoom}
+                      railOnMobile={p.wireframesRailOnMobile}
                     />
                   )}
                 </div>
@@ -408,6 +409,7 @@ export function PlaceholderView({
                 variant="grid"
                 cols={3}
                 captions={false}
+                railOnMobile={p.styleGuideRailOnMobile}
               />
             </div>
           </section>

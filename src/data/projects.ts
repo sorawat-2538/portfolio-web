@@ -42,6 +42,12 @@ export type Decision = {
   /** true = จัดรูปไว้กลาง แต่ขนาดรูปเท่าคอลัมน์ของ figuresCols
    *  (Before/After ของ Renthub App: 2 รูป ขนาดเท่าตอนวาง 3 รูป แต่อยู่กลาง) */
   figuresCenter?: boolean;
+  /** มีค่านี้ = ต่ำกว่า 560px รูปชุดนี้เลื่อนซ้ายขวาแทนเรียงลงมา (กริดเดิมตั้งแต่ 560px ขึ้นไป)
+   *  "phone" = สล็อตแคบสำหรับ screenshot มือถือ · "wide" = บอร์ด/หน้าเว็บเต็มหน้า */
+  figuresRailOnMobile?: "phone" | "wide";
+  /** true = บนมือถือวางรูป 2 ใบต่อแถว (Before/After ของ Renthub App — user สั่ง 18 ส.ค. 2026)
+   *  ใช้คู่กับ figuresCenter */
+  figuresMobilePair?: boolean;
   /** ชื่อหัวข้อท่อนที่ 3 เฉพาะ decision นี้ — ทับค่าที่ส่งมาทั้ง section
    *  (Propertyhub App ใช้ "Why this works" เป็นค่ารวม แต่ข้อที่มีผลเทสจริงใช้ "Validation") */
   validationLabel?: string;
@@ -926,6 +932,8 @@ export type PlaceholderProject = {
     /** มีค่านี้ = รูปในขั้นนี้เรียงเป็นแถวเดียวเลื่อนแนวนอน (ลากด้วยเมาส์ได้ + กดดูเต็มจอ) แทนกริด
      *  "phone" = สล็อตแคบสำหรับจอมือถือ · ใช้กับ Wireframe ของ Renthub App */
     rail?: "wide" | "phone";
+    /** มีค่านี้ = เฉพาะจอต่ำกว่า 560px ให้รูปเลื่อนซ้ายขวาแทนเรียงลงมา (กริดเดิมตั้งแต่ 560px ขึ้นไป) */
+    railOnMobile?: "wide" | "phone";
   }[];
   /** เครื่องมือที่ใช้ — โชว์เป็นการ์ดใน section Tools (ถ้าไม่ใส่ = empty state) */
   tools?: string[];
@@ -963,6 +971,11 @@ export type PlaceholderProject = {
   wireframesRail?: "wide" | "phone";
   /** true = จอ wireframe กดขยายเต็มจอไม่ได้ (Renthub App — user สั่ง 17 ส.ค. 2026) */
   wireframesNoZoom?: boolean;
+  /** มีค่านี้ = เฉพาะจอต่ำกว่า 560px จอ wireframe เลื่อนซ้ายขวาแทนเรียงลงมา
+   *  (Renthub App / Expat — รูปเยอะ เรียงลงมาแล้วหน้ายาวเกินไป · user สั่ง 18 ส.ค. 2026) */
+  wireframesRailOnMobile?: "wide" | "phone";
+  /** มีค่านี้ = เฉพาะจอต่ำกว่า 560px บอร์ด Style Guide เลื่อนซ้ายขวาแทนเรียงลงมา */
+  styleGuideRailOnMobile?: "wide" | "phone";
   /** ── USER FLOW ── ผังการใช้งานจากจอที่ออกแบบไว้ (จอไหน → ไปจอไหน)
    *  แสดงใน section Process & Key Decisions ก่อนขั้นย่อยของ process
    *  1 lane = 1 เส้นทาง · step ใช้ path รูปจอเดียวกับที่อยู่ใน appScreens */
@@ -1025,9 +1038,11 @@ export const placeholderProjects = {
       },
       {
         title: "Research",
-        // ⚠️ ย่อหน้านี้เป็นร่างจาก AI — user พิมพ์ค้างไว้แค่ "Research คือ " ยังไม่ได้ให้เนื้อความ
-        body: "สำรวจแอปอสังหาริมทรัพย์ที่มีอยู่ในตลาดเพื่อดูว่าแต่ละเจ้าจัดลำดับอะไรไว้บนหน้าแรก วางการค้นหาแบบไหน และพาผู้ใช้ไปถึงการติดต่อผู้ลงประกาศด้วยเส้นทางกี่ขั้น ข้อมูลชุดนี้ใช้ตรวจสอบว่ารายการฟีเจอร์ที่ได้จากขั้น Requirement อันไหนเป็นมาตรฐานที่ผู้ใช้คาดหวังอยู่แล้ว และอันไหนเป็นของที่เพิ่มมาโดยยังไม่มีใครทำ",
+        // ถ้อยคำจาก user โดยตรง 18 ส.ค. 2026 — ห้ามเรียบเรียงใหม่ (แทนร่างเดิมของ AI)
+        body: "สำรวจแอปอสังหาริมทรัพย์ในตลาดเพื่อวิเคราะห์ โครงสร้างหน้าแรก รูปแบบการค้นหา และเส้นทางสู่การติดต่อผู้ลงประกาศ เพื่อประเมินว่า Feature ใดเป็นมาตรฐานที่ผู้ใช้คาดหวัง และ Feature ใดเป็นโอกาสในการสร้างความแตกต่างของผลิตภัณฑ์",
         cols: 3,
+        // จอแอปคู่แข่ง 3 ใบ — บนมือถือเลื่อนซ้ายขวาแทนเรียงลงมา (user สั่ง 18 ส.ค. 2026)
+        railOnMobile: "phone",
         // user สั่ง 14 ส.ค. 2026 — จอแอปในตลาดดูจากขนาดในหน้าก็พอ ไม่ต้องกดขยาย
         noZoom: true,
         // ⚠️ research-1 ลงท้าย "-v3" เพราะเปลี่ยนรูป/ครอปหลายรอบ แล้วเบราว์เซอร์ cache URL เดิมไว้
@@ -1050,6 +1065,8 @@ export const placeholderProjects = {
         // hideCaptions = ในรูปมีคำว่า Color / Typography / Icon อยู่แล้ว ไม่ต้องซ้ำใต้รูป
         // (label ยังอยู่เพราะใช้เป็น alt และ caption ตอนกดดูเต็มจอ)
         hideCaptions: true,
+        // บอร์ด Style Guide สูงมาก — บนมือถือเลื่อนซ้ายขวาแทนเรียงลงมา (user สั่ง 18 ส.ค. 2026)
+        railOnMobile: "wide",
         images: [
           { src: "/uploads/propertyhub-app-ds-color.jpg", label: "Color", w: 4320, h: 4200 },
           { src: "/uploads/propertyhub-app-ds-typography.jpg", label: "Typography", w: 4320, h: 5700 },
@@ -1085,6 +1102,8 @@ export const placeholderProjects = {
         // user เปลี่ยนเป็นชุด screenshot ไม่มีกรอบเครื่อง 17 ส.ค. 2026
         // (ต้นฉบับ Downloads/S__31686661_0.jpg, S__31686662_0.jpg, S__31686663_0.jpg)
         // ไฟล์ชุดเดิม propertyhub-app-post-step1/2.png ไม่ได้ใช้แล้ว แต่ยังอยู่ใน public/uploads
+        // จอฟอร์ม 3 ใบ — บนมือถือเลื่อนซ้ายขวาแทนเรียงลงมา (user สั่ง 18 ส.ค. 2026)
+        figuresRailOnMobile: "phone",
         figures: [
           { src: "/uploads/propertyhub-app-post-form-1.jpg", label: "ข้อมูลทั่วไป", w: 921, h: 1777 },
           { src: "/uploads/propertyhub-app-post-form-2.jpg", label: "ประเภทประกาศ / ราคา", w: 924, h: 1772 },
@@ -1138,6 +1157,8 @@ export const placeholderProjects = {
         // ขนาดรูปเท่าตอนวาง 3 รูป แต่จัดไว้กลาง (user สั่ง 17 ส.ค. 2026)
         figuresCols: 3,
         figuresCenter: true,
+        // บนมือถือวาง Before/After คู่กัน 2 ใบต่อแถว ไม่เรียงลงมา (user สั่ง 18 ส.ค. 2026)
+        figuresMobilePair: true,
         reasoning:
           "ราคาคือปัจจัยอันดับ 1 ในการตัดสินใจเลือกเช่าหอพักของผู้ใช้งาน Renthub โดยการใช้หมุดไอคอนแบบเดิม บังคับให้ผู้ใช้ต้อง “สุ่มกด” (Blind Clicking) เปิดดูทีละหมุดเพื่อเช็คราคาว่าอยู่ในงบประมาณหรือไม่ เกิด Friction ส่งผลให้ผู้ใช้ Bounce ไปก่อนจะเจอห้องที่ต้องการ",
         tradeoff:
@@ -1158,6 +1179,9 @@ export const placeholderProjects = {
     // จอที่ 4 "รายการที่พัก" (Renthub-Wirefram-4.jpg) ถูกตัดออก ไฟล์ยังอยู่ในโฟลเดอร์
     // user สั่ง 17 ส.ค. 2026 — จอ wireframe ดูจากขนาดในหน้าก็พอ ไม่ต้องกดขยาย
     wireframesNoZoom: true,
+    // บนมือถือรูปเยอะเกินไปถ้าเรียงลงมา → เลื่อนซ้ายขวาแทน (user สั่ง 18 ส.ค. 2026)
+    wireframesRailOnMobile: "phone",
+    styleGuideRailOnMobile: "wide",
     wireframes: [
       { label: "หน้าแรก", src: "/uploads/Renthub-Wirefram-1.jpg", w: 374, h: 820 },
       { label: "รายละเอียดที่พัก", src: "/uploads/Renthub-Wirefram-2.jpg", w: 319, h: 701 },
@@ -1345,6 +1369,9 @@ export const placeholderProjects = {
     },
     // Wireframe + Style Guide = section เดียวกัน "Wireframe & Style Guide" (user สั่ง 17 ส.ค. 2026)
     // wireframes ย้ายมาจาก webScreens category "Wireframe" เดิม
+    // บนมือถือรูปเยอะเกินไปถ้าเรียงลงมา → เลื่อนซ้ายขวาแทน (user สั่ง 18 ส.ค. 2026)
+    wireframesRailOnMobile: "wide",
+    styleGuideRailOnMobile: "wide",
     wireframes: [
       { label: "Home", src: "/uploads/renthub-agency-wireframe-home.jpg", w: 1600, h: 4591 },
       { label: "Listing Result", src: "/uploads/renthub-agency-wireframe-listing-result-v2.jpg", w: 1600, h: 4009 },

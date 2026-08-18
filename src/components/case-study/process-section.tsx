@@ -44,6 +44,8 @@ export type ProcessPhase = {
   /** มีค่านี้ = รูปในขั้นนี้เรียงเป็นแถวเดียวเลื่อนแนวนอน (ลากด้วยเมาส์ได้ + กดดูเต็มจอ)
    *  แทนกริด · "phone" = สล็อตแคบสำหรับจอมือถือ · ใช้กับ Wireframe ของ Renthub App */
   rail?: "wide" | "phone";
+  /** มีค่านี้ = เฉพาะจอต่ำกว่า 560px ให้รูปเลื่อนซ้ายขวาแทนเรียงลงมา (กริดเดิมตั้งแต่ 560px ขึ้นไป) */
+  railOnMobile?: "wide" | "phone";
 };
 
 // หมายเหตุ: เดิมมี DEFAULT_NOTE เป็นย่อหน้ากลางที่ทุกงานได้อัตโนมัติ — ย้ายไปเก็บเป็น
@@ -192,6 +194,7 @@ export function ProcessSection({
                       cols={ph.cols === 2 ? 2 : 3}
                       captions={!ph.hideCaptions}
                       zoomable={!ph.noZoom}
+                      railOnMobile={ph.railOnMobile}
                     />
                   )}
                 </div>
@@ -264,6 +267,8 @@ export function ProcessSection({
                         variant="grid"
                         cols={d.figuresCols ?? 3}
                         center={d.figuresCenter}
+                        railOnMobile={d.figuresRailOnMobile}
+                        mobilePair={d.figuresMobilePair}
                       />
                     </div>
                   )}
